@@ -1,0 +1,41 @@
+
+networks:
+  hispanie_bridge:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 169.254.10.0/24
+
+services:  
+  app_dev:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev 
+    networks:
+      hispanie_bridge:
+        ipv4_address: 169.254.10.3
+        aliases:
+          - "hispanie-dev.app"
+    ports:
+      - 3202:3202  
+    volumes:
+      - ./:/app/
+      - /app/node_modules
+
+  nginx:
+    image: nginx:latest
+    networks:
+      hispanie_bridge:
+        ipv4_address: 169.254.10.4
+        aliases:
+          - "hispanie-nginx.app"
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./resources/nginx_dev_ssl.conf:/etc/nginx/conf.d/ssl.conf
+      - ./resources/ssl/nginx-selfsigned.crt:/etc/ssl/certs/nginx-selfsigned.crt
+      - ./resources/ssl/nginx-selfsigned.key:/etc/ssl/private/nginx-selfsigned.key
+      - ./resources/ssl/dhparam.pem:/etc/ssl/certs/dhparam.pem
+    depends_on:
+      - app_dev
