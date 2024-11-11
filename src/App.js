@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import NavCategories from './components/NavCategories';
-import Filters from './components/Filters';
-import EventCard from './components/EventCard';
+import HomePage from './components/HomePage';
 import Footer from './components/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Importar el archivo JSON con los datos de los eventos
+// Import JSON data
 import eventsData from './data/events.json';
 
 class App extends Component {
@@ -17,34 +17,26 @@ class App extends Component {
     };
   }
 
-  // Cargar los datos de eventos al montar el componente
   componentDidMount() {
     this.setState({ events: eventsData });
   }
 
   render() {
     return (
-      <div className="App">
-        <Header />
-        <NavCategories />
-        <Filters />
-        <div className="container my-4">
-          {this.state.events.map(event => (
-            <EventCard
-              key={event.id}
-              title={event.title}
-              date={event.date}
-              time={event.time}
-              location={event.location}
-              attendees={event.attendees}
-              tickets={event.tickets}
-              tags={event.tags}
-              image={event.image}
-            />
-          ))}
+      <Router>
+        <div className="App">
+          <Header />
+          <NavCategories />
+          <Routes>
+            <Route path="/" element={<HomePage events={this.state.events} />} />
+            <Route path="/all" element={<HomePage events={this.state.events} />} />
+            <Route path="/events" element={<HomePage events={[]} />} />
+            <Route path="/cinema" element={<HomePage events={[]} />} />
+            <Route path="/courses" element={<HomePage events={[]} />} />
+          </Routes>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </Router>
     );
   }
 }
