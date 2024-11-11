@@ -2,12 +2,25 @@ import React, { Component } from 'react';
 import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
 
 class Header extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeCategory: 'agenda' // Default active category
+    };
+  }
+
+  handleCategoryChange = (category) => {
+    this.setState({ activeCategory: category });
+  };
+
   handleLogin = () => {
     // Add functionality for login, e.g., redirect to login page
     console.log('Login button clicked');
   };
 
   render() {
+    const { activeCategory } = this.state;
+
     return (
       <Navbar bg="light" expand="lg" className="border-bottom">
         <Navbar.Brand href="#home" className="ms-3">
@@ -17,9 +30,27 @@ class Header extends Component {
           <FormControl type="search" placeholder="Buscar" className="me-2" />
         </Form>
         <Nav className="me-3">
-          <Nav.Link href="#agenda" className="text-danger fw-bold">Agenda</Nav.Link>
-          <Nav.Link href="#discover">Descubrir</Nav.Link>
-          <Nav.Link href="#map">Mapa</Nav.Link>
+          <Nav.Link
+            href="#agenda"
+            onClick={() => this.handleCategoryChange('agenda')}
+            className={activeCategory === 'agenda' ? 'text-danger fw-bold' : ''}
+          >
+            Agenda
+          </Nav.Link>
+          <Nav.Link
+            href="#discover"
+            onClick={() => this.handleCategoryChange('discover')}
+            className={activeCategory === 'discover' ? 'text-danger fw-bold' : ''}
+          >
+            Descubrir
+          </Nav.Link>
+          <Nav.Link
+            href="#map"
+            onClick={() => this.handleCategoryChange('map')}
+            className={activeCategory === 'map' ? 'text-danger fw-bold' : ''}
+          >
+            Mapa
+          </Nav.Link>
           <Button variant="outline-primary" onClick={this.handleLogin} className="ms-3">
             Login
           </Button>
