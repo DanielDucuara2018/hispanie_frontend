@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
-import NavCategories from './components/NavCategories';
-import HomePage from './components/HomePage';
 import Footer from './components/Footer';
 import MapView from './components/MapView';
+import AgendaCategories from './components/AgendaCategories';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Import JSON data
@@ -23,24 +22,20 @@ class App extends Component {
   }
 
   render() {
+    const { events } = this.state;
+
     return (
       <Router>
         <div className="App">
           <Header />
           <Routes>
-            <Route 
-                path="/agenda" 
-                element={
-                <>
-                  <NavCategories />
-                  <HomePage events={this.state.events} />
-                </>
-              } 
-            />
-            <Route path="/all" element={<HomePage events={this.state.events} />} />
-            <Route path="/events" element={<HomePage events={[]} />} />
-            <Route path="/cinema" element={<HomePage events={[]} />} />
-            <Route path="/courses" element={<HomePage events={[]} />} />
+            {/* Similar Routes Using CategoryPage */}
+            <Route path="/agenda" element={<AgendaCategories events={events} />} />
+            <Route path="/all" element={<AgendaCategories events={events} />} />
+            <Route path="/events" element={<AgendaCategories events={[]} />} />
+            <Route path="/cinema" element={<AgendaCategories events={[]} />} />
+            <Route path="/courses" element={<AgendaCategories events={[]} />} />
+            {/* Unique Route for MapView */}
             <Route path="/maps" element={<MapView />} />
           </Routes>
           <Footer />
