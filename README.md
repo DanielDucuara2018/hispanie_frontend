@@ -1,7 +1,10 @@
 # Hispanie front-end app
 
-## Main Page
+## Setup Environnement 
 
+```bash
+docker-compose -f docker-compose.dev.yml up -d --build app_dev
+```
 
 # Getting Started with Create React App
 
