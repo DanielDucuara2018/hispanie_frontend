@@ -27,9 +27,16 @@ class App extends Component {
       <Router>
         <div className="App">
           <Header />
-          <NavCategories />
           <Routes>
-            <Route path="/" element={<HomePage events={this.state.events} />} />
+            <Route 
+                path="/agenda" 
+                element={
+                <>
+                  <NavCategories />
+                  <HomePage events={this.state.events} />
+                </>
+              } 
+            />
             <Route path="/all" element={<HomePage events={this.state.events} />} />
             <Route path="/events" element={<HomePage events={[]} />} />
             <Route path="/cinema" element={<HomePage events={[]} />} />
