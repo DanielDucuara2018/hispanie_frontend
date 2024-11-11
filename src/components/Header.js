@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 class Header extends Component {
   constructor(props) {
@@ -31,21 +32,24 @@ class Header extends Component {
         </Form>
         <Nav className="me-3">
           <Nav.Link
-            href="#agenda"
+            as={Link}
+            to="/agenda"
             onClick={() => this.handleCategoryChange('agenda')}
             className={activeCategory === 'agenda' ? 'text-danger fw-bold' : ''}
           >
             Agenda
           </Nav.Link>
           <Nav.Link
-            href="#discover"
+            as={Link}
+            to="/discover"
             onClick={() => this.handleCategoryChange('discover')}
             className={activeCategory === 'discover' ? 'text-danger fw-bold' : ''}
           >
             Descubrir
           </Nav.Link>
           <Nav.Link
-            href="#map"
+            as={Link}
+            to="/maps"
             onClick={() => this.handleCategoryChange('map')}
             className={activeCategory === 'map' ? 'text-danger fw-bold' : ''}
           >

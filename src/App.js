@@ -4,6 +4,7 @@ import Header from './components/Header';
 import NavCategories from './components/NavCategories';
 import HomePage from './components/HomePage';
 import Footer from './components/Footer';
+import MapView from './components/MapView';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Import JSON data
@@ -33,6 +34,7 @@ class App extends Component {
             <Route path="/events" element={<HomePage events={[]} />} />
             <Route path="/cinema" element={<HomePage events={[]} />} />
             <Route path="/courses" element={<HomePage events={[]} />} />
+            <Route path="/maps" element={<MapView />} />
           </Routes>
           <Footer />
         </div>
