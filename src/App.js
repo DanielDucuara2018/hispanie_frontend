@@ -30,6 +30,7 @@ class App extends Component {
           <Header />
           <Routes>
             {/* Similar Routes Using CategoryPage */}
+            <Route path="/" element={<AgendaCategories events={events} />} />
             <Route path="/agenda" element={<AgendaCategories events={events} />} />
             <Route path="/all" element={<AgendaCategories events={events} />} />
             <Route path="/events" element={<AgendaCategories events={[]} />} />
