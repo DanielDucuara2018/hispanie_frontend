@@ -10,19 +10,23 @@ class HomePage extends Component {
       <>
         <Filters />
         <div className="container my-4">
-          {events.map(event => (
-            <EventCard
-              key={event.id}
-              title={event.title}
-              date={event.date}
-              time={event.time}
-              location={event.location}
-              attendees={event.attendees}
-              tickets={event.tickets}
-              tags={event.tags}
-              image={event.image}
-            />
-          ))}
+          <div className="row g-4">
+            {events.map(event => (
+              <div key={event.id} className="col-6">
+                <EventCard
+                  id={event.id}
+                  title={event.title}
+                  date={event.date}
+                  time={event.time}
+                  location={event.location}
+                  attendees={event.attendees}
+                  tickets={event.tickets}
+                  tags={event.tags}
+                  image={event.image}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </>
     );

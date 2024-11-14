@@ -55,6 +55,23 @@ class Header extends Component {
           >
             Mapa
           </Nav.Link>
+          <Nav.Link
+            as={Link}
+            to="/store"
+            onClick={() => this.handleCategoryChange('store')}
+            className={activeCategory === 'store' ? 'text-danger fw-bold' : ''}
+          >
+            Store
+          </Nav.Link>
+          <Nav.Link 
+            as={Link}
+            to="/profile"
+            onClick={() => this.handleCategoryChange('profile')}
+            className={activeCategory === 'profile' ? 'text-danger fw-bold' : ''}
+          >
+            Profile
+          </Nav.Link>
+
           <Button variant="outline-primary" onClick={this.handleLogin} className="ms-3">
             Login
           </Button>

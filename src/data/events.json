@@ -1,24 +1,32 @@
 [
-    {
-      "id": 1,
-      "title": "Los guerreros en concert à Magmaa",
-      "date": "Sábado 20 Julio 2024",
-      "time": "20:30",
-      "location": "Magma Food Hall Nantes: 15, Rue La Nouë Bras de Fer, 44200 Nantes",
-      "attendees": 1,
-      "tickets": "Entrada libre",
-      "tags": ["Cumbia", "Tropical", "Rock Hispano"],
-      "image": "https://via.placeholder.com/600x300"
-    },
-    {
-      "id": 2,
-      "title": "Festival de Cine en el Parque",
-      "date": "Domingo 21 Julio 2024",
-      "time": "18:00",
-      "location": "Parque Central Nantes",
-      "attendees": 50,
-      "tickets": "Gratis",
-      "tags": ["Cine", "Cultura"],
-      "image": "https://via.placeholder.com/600x300"
-    }
-  ]
+  {
+    "id": 1,
+    "title": "Los guerreros en concert à Magmaa",
+    "date": "Sábado 20 Julio 2024",
+    "time": "20:30",
+    "location": "Magma Food Hall Nantes: 15, Rue La Nouë Bras de Fer, 44200 Nantes",
+    "attendees": 1,
+    "tickets": "Entrada libre",
+    "tags": ["Cumbia", "Tropical", "Rock Hispano"],
+    "image": "https://firebasestorage.googleapis.com/v0/b/hispanie-creator.appspot.com/o/images%2F1720469060141.jpg?alt=media&token=e7f43fe6-8d23-4b10-a485-c370cabb4af2&quot",
+    "artistName": "my artist",
+    "description": "my description",
+    "latitude": 4.60971,
+    "longitude": -74.08175
+  },
+  {
+    "id": 2,
+    "title": "Festival de Cine en el Parque",
+    "date": "Domingo 21 Julio 2024",
+    "time": "18:00",
+    "location": "Parque Central Nantes",
+    "attendees": 50,
+    "tickets": "Gratis",
+    "tags": ["Cine", "Cultura"],
+    "image": "https://firebasestorage.googleapis.com/v0/b/hispanie-creator.appspot.com/o/images%2F1720469060141.jpg?alt=media&token=e7f43fe6-8d23-4b10-a485-c370cabb4af2&quot",
+    "artistName": "any",
+    "description": "my description",
+    "latitude": 4.60971,
+    "longitude": -74.08175
+  }
+]
