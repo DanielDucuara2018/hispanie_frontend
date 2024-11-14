@@ -28,5 +28,21 @@
     "description": "my description",
     "latitude": 4.60971,
     "longitude": -74.08175
+  },
+  {
+    "id": 3,
+    "title": "Festival de Cine en el Parque",
+    "date": "Domingo 21 Julio 2024",
+    "time": "18:00",
+    "location": "Parque Central Nantes",
+    "attendees": 50,
+    "tickets": "Gratis",
+    "tags": ["Cine", "Cultura"],
+    "image": "https://firebasestorage.googleapis.com/v0/b/hispanie-creator.appspot.com/o/images%2F1720469060141.jpg?alt=media&token=e7f43fe6-8d23-4b10-a485-c370cabb4af2&quot",
+    "artistName": "any",
+    "description": "my description",
+    "latitude": 4.60971,
+    "longitude": -74.08175
   }
+
 ]
