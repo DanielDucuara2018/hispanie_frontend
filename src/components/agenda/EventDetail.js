@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Card, Button, Badge, Row, Col, Container } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
-import eventsData from '../data/events.json';
+import eventsData from '../../data/events.json';
 
 const EventDetailWithParams = (props) => <EventDetail {...props} params={useParams()} />;
 
