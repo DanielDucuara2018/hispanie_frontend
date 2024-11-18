@@ -22,6 +22,15 @@ class Header extends Component {
   render() {
     const { activeCategory } = this.state;
 
+    // Navigation items with their labels, paths, and icons
+    const navItems = [
+      { label: 'Agenda', path: '/agenda', icon: <FaCalendarAlt /> },
+      { label: 'Descubrir', path: '/discover', icon: <FaCompass /> },
+      { label: 'Mapa', path: '/maps', icon: <FaMapMarkedAlt /> },
+      { label: 'Store', path: '/store', icon: <FaStore /> },
+      { label: 'Profile', path: '/profile', icon: <FaUserCircle /> },
+    ];
+
     return (
       <Navbar bg="light" expand="lg" className="border-bottom px-3">
         <Navbar.Brand href="#home">
@@ -36,56 +45,22 @@ class Header extends Component {
           <FormControl type="search" placeholder="Buscar" className="me-2" />
         </Form>
         <Nav>
-          {/* Agenda */}
-          <Nav.Link
-            as={Link}
-            to="/agenda"
-            onClick={() => this.handleCategoryChange('agenda')}
-            className={activeCategory === 'agenda' ? 'text-danger fw-bold d-flex align-items-center' : 'd-flex align-items-center'}
-          >
-            <FaCalendarAlt className="me-2" /> Agenda
-          </Nav.Link>
-
-          {/* Discover */}
-          <Nav.Link
-            as={Link}
-            to="/discover"
-            onClick={() => this.handleCategoryChange('discover')}
-            className={activeCategory === 'discover' ? 'text-danger fw-bold d-flex align-items-center' : 'd-flex align-items-center'}
-          >
-            <FaCompass className="me-2" /> Descubrir
-          </Nav.Link>
-
-          {/* Maps */}
-          <Nav.Link
-            as={Link}
-            to="/maps"
-            onClick={() => this.handleCategoryChange('map')}
-            className={activeCategory === 'map' ? 'text-danger fw-bold d-flex align-items-center' : 'd-flex align-items-center'}
-          >
-            <FaMapMarkedAlt className="me-2" /> Mapa
-          </Nav.Link>
-
-          {/* Store */}
-          <Nav.Link
-            as={Link}
-            to="/store"
-            onClick={() => this.handleCategoryChange('store')}
-            className={activeCategory === 'store' ? 'text-danger fw-bold d-flex align-items-center' : 'd-flex align-items-center'}
-          >
-            <FaStore className="me-2" /> Store
-          </Nav.Link>
-
-          {/* Profile */}
-          <Nav.Link
-            as={Link}
-            to="/profile"
-            onClick={() => this.handleCategoryChange('profile')}
-            className={activeCategory === 'profile' ? 'text-danger fw-bold d-flex align-items-center' : 'd-flex align-items-center'}
-          >
-            <FaUserCircle className="me-2" /> Profile
-          </Nav.Link>
-
+          {/* Generate Nav items dynamically */}
+          {navItems.map((item, index) => (
+            <Nav.Link
+              key={index}
+              as={Link}
+              to={item.path}
+              onClick={() => this.handleCategoryChange(item.label.toLowerCase())}
+              className={
+                activeCategory === item.label.toLowerCase()
+                  ? 'text-danger fw-bold d-flex align-items-center'
+                  : 'd-flex align-items-center'
+              }
+            >
+              {item.icon} <span className="ms-2">{item.label}</span>
+            </Nav.Link>
+          ))}
           <Button variant="outline-primary" onClick={this.handleLogin} className="ms-3">
             Login
           </Button>
