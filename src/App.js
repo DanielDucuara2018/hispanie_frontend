@@ -6,6 +6,7 @@ import MapView from './components/map/MapView';
 import AgendaPage from './components/agenda/AgendaPage';
 import DiscoverPage from './components/discover/DiscoverPage';
 import EventDetail from './components/agenda/EventDetail';
+import Login from './components/login/LoginPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Import JSON data
@@ -44,6 +45,7 @@ class App extends Component {
       { path: '/directors', element: <DiscoverPage artists={[]} /> },
       { path: '/restaurants', element: <DiscoverPage artists={[]} /> },
       { path: '/maps', element: <MapView /> },
+      { path: '/login', element: <Login />},
     ];
 
     return (

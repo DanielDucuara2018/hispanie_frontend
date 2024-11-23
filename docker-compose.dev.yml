@@ -1,21 +1,13 @@
-
-networks:
-  hispanie_bridge:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 169.254.10.0/24
-
 services:  
   app_dev:
     build:
       context: ./
       dockerfile: ./Dockerfile.dev 
     networks:
-      hispanie_bridge:
-        ipv4_address: 169.254.10.3
+      hispanie_hispanie_bridge:
+        ipv4_address: 169.254.10.4
         aliases:
-          - "hispanie-dev.app"
+          - "hispanie-frontend.app"
     ports:
       - 3202:3202  
     volumes:
@@ -25,10 +17,10 @@ services:
   nginx:
     image: nginx:latest
     networks:
-      hispanie_bridge:
-        ipv4_address: 169.254.10.4
+      hispanie_hispanie_bridge:
+        ipv4_address: 169.254.10.5
         aliases:
-          - "hispanie-nginx.app"
+          - "hispanie-frontend.proxy"
     ports:
       - 80:80
       - 443:443
@@ -39,3 +31,7 @@ services:
       - ./resources/ssl/dhparam.pem:/etc/ssl/certs/dhparam.pem
     depends_on:
       - app_dev
+
+networks:
+  hispanie_hispanie_bridge:
+    external: true

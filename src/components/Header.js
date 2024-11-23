@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
+import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FaCalendarAlt, FaCompass, FaMapMarkedAlt, FaStore, FaUserCircle } from 'react-icons/fa';
 
@@ -15,10 +15,6 @@ class Header extends Component {
     this.setState({ activeCategory: category });
   };
 
-  handleLogin = () => {
-    console.log('Login button clicked');
-  };
-
   render() {
     const { activeCategory } = this.state;
 
@@ -29,6 +25,11 @@ class Header extends Component {
       { label: 'Mapa', path: '/maps', icon: <FaMapMarkedAlt /> },
       { label: 'Store', path: '/store', icon: <FaStore /> },
       { label: 'Profile', path: '/profile', icon: <FaUserCircle /> },
+      {
+        label: 'Login',
+        path: '/login',
+        className: 'ms-3 btn btn-outline-primary', // Custom class for the login button
+      },
     ];
 
     return (
@@ -51,19 +52,19 @@ class Header extends Component {
               key={index}
               as={Link}
               to={item.path}
-              onClick={() => this.handleCategoryChange(item.label.toLowerCase())}
+              onClick={() =>
+                this.handleCategoryChange(item.label.toLowerCase())
+              }
               className={
-                activeCategory === item.label.toLowerCase()
+                item.className ||
+                (activeCategory === item.label.toLowerCase()
                   ? 'text-danger fw-bold d-flex align-items-center'
-                  : 'd-flex align-items-center'
+                  : 'd-flex align-items-center')
               }
             >
               {item.icon} <span className="ms-2">{item.label}</span>
             </Nav.Link>
           ))}
-          <Button variant="outline-primary" onClick={this.handleLogin} className="ms-3">
-            Login
-          </Button>
         </Nav>
       </Navbar>
     );
