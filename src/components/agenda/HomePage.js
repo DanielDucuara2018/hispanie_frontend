@@ -15,14 +15,14 @@ class HomePage extends Component {
               <div key={event.id} className="col-6">
                 <EventCard
                   id={event.id}
-                  title={event.title}
-                  date={event.date}
-                  time={event.time}
+                  title={event.name}
+                  date={event.start_date}
+                  time={event.start_date}
                   location={event.location}
-                  attendees={event.attendees}
-                  tickets={event.tickets}
+                  attendees={0}
+                  tickets={event.price}
                   tags={event.tags}
-                  image={event.image}
+                  image={""}
                 />
               </div>
             ))}

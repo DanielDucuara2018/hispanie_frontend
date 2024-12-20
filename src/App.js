@@ -1,49 +1,64 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Api from './Api';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import MapView from './components/map/MapView';
 import AgendaPage from './components/agenda/AgendaPage';
 import DiscoverPage from './components/discover/DiscoverPage';
 import EventDetail from './components/agenda/EventDetail';
+import DiscoverDetail from './components/discover/DiscoverDetail';
 import Login from './components/login/LoginPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-// Import JSON data
-import eventsData from './data/events.json';
-import artistsData from './data/artists.json';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       events: [],
-      artists: [],
+      businesses: [],
     };
   }
 
-  componentDidMount() {
-    this.setState({ events: eventsData, artists: artistsData });
+  async componentDidMount() {
+    try {
+      const header = {
+        headers: {
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYW5pZWwuZHVjdWFyYSIsImV4cCI6MTc2Nzc1OTE4MX0.brJGrsJsa_XCdGWuXL1uqmz-BeqHSZt1oooxADOsYNI",
+        },
+      }
+      // Fetch events data
+      const eventsResponse = await Api.get('/events', header);
+      const businessesResponse = await Api.get('/businesses', header);
+
+      this.setState({
+        events: eventsResponse.data,
+        businesses: businessesResponse.data,
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }
 
   render() {
-    const { events, artists } = this.state;
+    const { events, businesses } = this.state;
 
     // Define your routes in an array
     const routes = [
-      { path: '/', element: <AgendaPage events={events} /> },
+      { path: '/', element: <AgendaPage events={[]} /> },
       { path: '/agenda', element: <AgendaPage events={events} /> },
-      { path: '/all', element: <AgendaPage events={events} /> },
+      { path: '/all', element: <AgendaPage events={[]} /> },
       { path: '/events', element: <AgendaPage events={[]} /> },
       { path: '/cinema', element: <AgendaPage events={[]} /> },
       { path: '/courses', element: <AgendaPage events={[]} /> },
-      { path: '/event/:id', element: <EventDetail /> },
-      { path: '/discover', element: <DiscoverPage artists={artists} /> },
-      { path: '/artistas', element: <DiscoverPage artists={artists} /> },
-      { path: '/clubs', element: <DiscoverPage artists={[]} /> },
-      { path: '/dancers', element: <DiscoverPage artists={[]} /> },
-      { path: '/directors', element: <DiscoverPage artists={[]} /> },
-      { path: '/restaurants', element: <DiscoverPage artists={[]} /> },
+      { path: '/event/:id', element: <EventDetail events={events} /> },
+      { path: '/discover', element: <DiscoverPage businesses={businesses} /> },
+      { path: '/artistas', element: <DiscoverPage businesses={[]} /> },
+      { path: '/clubs', element: <DiscoverPage businesses={[]} /> },
+      { path: '/dancers', element: <DiscoverPage businesses={[]} /> },
+      { path: '/directors', element: <DiscoverPage businesses={[]} /> },
+      { path: '/restaurants', element: <DiscoverPage businesses={[]} /> },
+      { path: '/business/:id', element: <DiscoverDetail businesses={businesses} /> },
       { path: '/maps', element: <MapView /> },
       { path: '/login', element: <Login />},
     ];

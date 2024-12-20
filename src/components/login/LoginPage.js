@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import Api from '../../Api';
 
 class Login extends Component {
   constructor(props) {
@@ -17,19 +17,29 @@ class Login extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:8000/login', {
+    await Api.post('/accounts/login', {
         username: this.state.username,
         password: this.state.password,
-      });
-      if (response.data.success) {
-        alert('Login successful!');
-      } else {
-        this.setState({ errorMessage: 'Invalid credentials' });
+      },
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       }
-    } catch (error) {
-      this.setState({ errorMessage: 'Error connecting to server' });
-    }
+    )
+    .then((res) => {
+      console.log(res);
+      const acces_token = res.data.access_token;
+      console.log(acces_token);
+      // this.props.setToken(acces_token);
+      // this.setState({ isloggingin: false });
+    })
+    .catch((error) => {
+      this.setState({
+        errorMessage: "Invalid username or password",
+        // isloggingin: false,
+      });
+    });
   };
 
   render() {

@@ -2,10 +2,10 @@ import React from 'react';
 import Categories from './Categories';
 import HomePage from './HomePage';
 
-const DiscoverPage = ({ artists }) => (
+const DiscoverPage = ({ businesses }) => (
   <>
     <Categories />
-    <HomePage artists={artists}/>
+    <HomePage businesses={businesses}/>
   </>
 );
 

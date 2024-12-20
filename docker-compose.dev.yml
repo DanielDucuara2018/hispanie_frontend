@@ -4,7 +4,7 @@ services:
       context: ./
       dockerfile: ./Dockerfile.dev 
     networks:
-      hispanie_hispanie_bridge:
+      hispanie_backend_hispanie_bridge:
         ipv4_address: 169.254.10.4
         aliases:
           - "hispanie-frontend.app"
@@ -17,7 +17,7 @@ services:
   nginx:
     image: nginx:latest
     networks:
-      hispanie_hispanie_bridge:
+      hispanie_backend_hispanie_bridge:
         ipv4_address: 169.254.10.5
         aliases:
           - "hispanie-frontend.proxy"
@@ -33,5 +33,5 @@ services:
       - app_dev
 
 networks:
-  hispanie_hispanie_bridge:
+  hispanie_backend_hispanie_bridge:
     external: true

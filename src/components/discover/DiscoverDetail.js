@@ -3,12 +3,12 @@ import { useParams } from 'react-router-dom';
 import { Card, Button, Badge, Row, Col, Container } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
-const EventDetailWithParams = (props) => <EventDetail {...props} params={useParams()} />;
+const DiscoverDetailWithParams = (props) => <DiscoverDetail {...props} params={useParams()} />;
 
-class EventDetail extends Component {
+class DiscoverDetail extends Component {
   render() {
-    const { events, params } = this.props;
-    const data = events.find(x => x.id === String(params.id));
+    const { businesses , params } = this.props;
+    const data = businesses.find(x => x.id === String(params.id));
 
     if (!data) return <p>Evento no encontrado</p>;
 
@@ -19,7 +19,6 @@ class EventDetail extends Component {
           <Card.Img variant="top" src={""} alt={data.name} />
           <Card.Body className="text-center">
             <h1 className="mb-1">{data.name}</h1>
-            <h5 className="text-muted mb-3">{data.start_date}</h5>
             <p className="text-muted mb-4">{data.location}</p>
             <div className="d-flex justify-content-center gap-2 mb-3">
               <Badge bg="secondary">Concert</Badge>
@@ -78,4 +77,4 @@ class EventDetail extends Component {
   }
 }
 
-export default EventDetailWithParams;
+export default DiscoverDetailWithParams;
