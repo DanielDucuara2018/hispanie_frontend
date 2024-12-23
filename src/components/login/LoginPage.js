@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { AuthContext } from '../../AuthContext';
 import Api from '../../Api';
+
 
 class Login extends Component {
   constructor(props) {
@@ -11,13 +13,16 @@ class Login extends Component {
     };
   }
 
+  static contextType = AuthContext;
+
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleSubmit = async (e) => {
+  handleSubmit = async (e, login) => {
     e.preventDefault();
-    await Api.post('/accounts/login', {
+    await Api.post('/accounts/login', 
+      {
         username: this.state.username,
         password: this.state.password,
       },
@@ -25,12 +30,12 @@ class Login extends Component {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-      }
+        withCredentials: true
+      },
     )
     .then((res) => {
-      console.log(res);
-      const acces_token = res.data.access_token;
-      console.log(acces_token);
+      login()
+      console.log(res)
       // this.props.setToken(acces_token);
       // this.setState({ isloggingin: false });
     })
@@ -43,6 +48,9 @@ class Login extends Component {
   };
 
   render() {
+
+    const { login } = this.context;
+
     return (
       <div className="container mt-5">
         <div className="row justify-content-center">
@@ -55,7 +63,7 @@ class Login extends Component {
                     {this.state.errorMessage}
                   </div>
                 )}
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={(e) => this.handleSubmit(e, login)}>
                   <div className="mb-3">
                     <label htmlFor="username" className="form-label">
                       Username

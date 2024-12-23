@@ -26,6 +26,7 @@ class App extends Component {
         headers: {
           Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYW5pZWwuZHVjdWFyYSIsImV4cCI6MTc2Nzc1OTE4MX0.brJGrsJsa_XCdGWuXL1uqmz-BeqHSZt1oooxADOsYNI",
         },
+        withCredentials: true
       }
       // Fetch events data
       const eventsResponse = await Api.get('/events', header);
@@ -45,9 +46,9 @@ class App extends Component {
 
     // Define your routes in an array
     const routes = [
-      { path: '/', element: <AgendaPage events={[]} /> },
+      { path: '/', element: <AgendaPage events={events} /> },
       { path: '/agenda', element: <AgendaPage events={events} /> },
-      { path: '/all', element: <AgendaPage events={[]} /> },
+      { path: '/all', element: <AgendaPage events={events} /> },
       { path: '/events', element: <AgendaPage events={[]} /> },
       { path: '/cinema', element: <AgendaPage events={[]} /> },
       { path: '/courses', element: <AgendaPage events={[]} /> },
