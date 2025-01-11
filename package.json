@@ -2,6 +2,7 @@
   "name": "hispanie",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3201",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@testing-library/jest-dom": "^5.17.0",
