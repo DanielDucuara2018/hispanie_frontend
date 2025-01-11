@@ -46,9 +46,9 @@ class Login extends Component {
   };
 
   render() {
-
+    const agenda_path = this.props.activeCategoryAgenda
     if (this.props.isLoggedIn) {
-      return <Navigate to="/agenda" replace />;
+      return <Navigate to={ agenda_path } replace />;
     }
 
     return (
@@ -107,6 +107,7 @@ class Login extends Component {
 
 const mapStateToProps = (state) => ({
   isLoggedIn: state.appRootReducer.isLoggedIn,
+  activeCategoryAgenda: state.appRootReducer.activeCategoryAgenda,
 });
 
 const mapDispatchToProps = {

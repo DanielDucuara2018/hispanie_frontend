@@ -90,7 +90,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setIsLoggedIn,
-  setActiveCategoryHeader
+  setActiveCategoryHeader,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
