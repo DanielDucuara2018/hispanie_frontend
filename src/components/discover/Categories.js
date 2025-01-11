@@ -1,42 +1,40 @@
 import React, { Component } from 'react';
 import { Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { connect } from "react-redux";
+import { setActiveCategoryDiscover } from "../../actions/appActions";
 
 class Categories extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      activeCategory: '/artistas', // Set the default active category
-    };
-
     // Define navigation categories
     this.categories = [
-      { label: "Artistas", path: "/artistas" },
-      { label: "Clubs", path: "/clubs" },
-      { label: "Dancers", path: "/dancers" },
-      { label: "Directors", path: "/directors" },
-      { label: "Restaurants", path: "/restaurants" },
+      { label: "Artistas", path: "/discover/artistas" },
+      { label: "Clubs", path: "/discover/clubs" },
+      { label: "Dancers", path: "/discover/dancers" },
+      { label: "Directors", path: "/discover/directors" },
+      { label: "Restaurants", path: "/discover/restaurants" },
     ];
   }
 
   handleCategoryChange = (category) => {
-    this.setState({ activeCategory: category });
+    this.props.setActiveCategoryDiscover(category)
   };
 
   render() {
-    const { activeCategory } = this.state;
+    const activeCategory = this.props.activeCategoryDiscover;
 
     return (
       <Nav className="justify-content-center mb-3">
-        {this.categories.map((category, index) => (
+        {this.categories.map((data, index) => (
           <Nav.Item key={index}>
             <Nav.Link
               as={Link}
-              to={category.path}
-              onClick={() => this.handleCategoryChange(category.path)}
-              className={activeCategory === category.path ? "text-danger fw-bold" : ""}
+              to={data.path}
+              onClick={() => this.handleCategoryChange(data.path)}
+              className={activeCategory === data.path ? "text-danger fw-bold" : ""}
             >
-              {category.label}
+              {data.label}
             </Nav.Link>
           </Nav.Item>
         ))}
@@ -45,4 +43,12 @@ class Categories extends Component {
   }
 }
 
-export default Categories;
+const mapStateToProps = (state) => ({
+  activeCategoryDiscover: state.appRootReducer.activeCategoryDiscover
+});
+
+const mapDispatchToProps = {
+  setActiveCategoryDiscover
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Categories);

@@ -2,50 +2,41 @@ import React, { Component } from 'react';
 import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FaCalendarAlt, FaCompass, FaMapMarkedAlt, FaStore, FaUserCircle } from 'react-icons/fa';
-import { AuthContext } from "../AuthContext";
+import { connect } from "react-redux";
+import { setIsLoggedIn, setActiveCategoryHeader } from "../actions/appActions";
 
 class Header extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeCategory: 'agenda', // Default active category
-    };
-  }
-
-  static contextType = AuthContext;
-
   handleCategoryChange = (category) => {
-    this.setState({ activeCategory: category });
+    this.props.setActiveCategoryHeader(category);
   };
 
   handleLogout = () => {
-    const { logout } = this.context;
-    logout();
+    this.props.setIsLoggedIn(!this.props.isLoggedIn);
   };
 
   render() {
-    const { activeCategory } = this.state;
-    const { isLoggedIn, logout } = this.context;
-
+    const category = this.props.activeCategoryHeader;
     // Navigation items with their labels, paths, and icons
+    const agenda_path = this.props.activeCategoryAgenda ? this.props.activeCategoryAgenda: '/agenda'
+    const discover_path = this.props.activeCategoryDiscover ? this.props.activeCategoryDiscover : '/discover'
     const navItems = [
-      { label: 'Agenda', path: '/agenda', icon: <FaCalendarAlt />, show: true },
-      { label: 'Descubrir', path: '/discover', icon: <FaCompass />, show: true },
-      { label: 'Mapa', path: '/maps', icon: <FaMapMarkedAlt />, show: true },
+      { label: 'Agenda', path: agenda_path, icon: <FaCalendarAlt />, show: true },
+      { label: 'Discover', path: discover_path, icon: <FaCompass />, show: true },
+      { label: 'Map', path: '/maps', icon: <FaMapMarkedAlt />, show: true },
       { label: 'Store', path: '/store', icon: <FaStore />, show: true },
-      { label: 'Profile', path: '/profile', icon: <FaUserCircle />, show: isLoggedIn },
+      { label: 'Profile', path: '/profile', icon: <FaUserCircle />, show: this.props.isLoggedIn },
       {
         label: 'Login',
         path: '/login',
         className: 'ms-3 btn btn-outline-primary',
-        show: !isLoggedIn,
+        show: !this.props.isLoggedIn,
       },
       {
         label: 'Logout',
         path: '',
         className: 'ms-3 btn btn-outline-danger',
-        onClick: () => this.handleLogout(logout),
-        show: isLoggedIn,
+        onClick: () => this.handleLogout(),
+        show: this.props.isLoggedIn,
       },
     ];
 
@@ -76,7 +67,7 @@ class Header extends Component {
                 }
                 className={
                   item.className ||
-                  (activeCategory === item.label.toLowerCase()
+                  (category === item.label.toLowerCase()
                     ? 'text-danger fw-bold d-flex align-items-center'
                     : 'd-flex align-items-center')
                 }
@@ -90,4 +81,16 @@ class Header extends Component {
   }
 }
 
-export default Header;
+const mapStateToProps = (state) => ({
+  isLoggedIn: state.appRootReducer.isLoggedIn,
+  activeCategoryHeader: state.appRootReducer.activeCategoryHeader,
+  activeCategoryAgenda: state.appRootReducer.activeCategoryAgenda,
+  activeCategoryDiscover: state.appRootReducer.activeCategoryDiscover,
+});
+
+const mapDispatchToProps = {
+  setIsLoggedIn,
+  setActiveCategoryHeader
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

@@ -9,6 +9,7 @@ import DiscoverPage from './components/discover/DiscoverPage';
 import EventDetail from './components/agenda/EventDetail';
 import DiscoverDetail from './components/discover/DiscoverDetail';
 import Login from './components/login/LoginPage';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends Component {
@@ -43,23 +44,23 @@ class App extends Component {
 
   render() {
     const { events, businesses } = this.state;
-
+    const agenda = "/agenda"
+    const discover = "/discover"
     // Define your routes in an array
     const routes = [
-      { path: '/', element: <AgendaPage events={events} /> },
-      { path: '/agenda', element: <AgendaPage events={events} /> },
-      { path: '/all', element: <AgendaPage events={events} /> },
-      { path: '/events', element: <AgendaPage events={[]} /> },
-      { path: '/cinema', element: <AgendaPage events={[]} /> },
-      { path: '/courses', element: <AgendaPage events={[]} /> },
-      { path: '/event/:id', element: <EventDetail events={events} /> },
-      { path: '/discover', element: <DiscoverPage businesses={businesses} /> },
-      { path: '/artistas', element: <DiscoverPage businesses={[]} /> },
-      { path: '/clubs', element: <DiscoverPage businesses={[]} /> },
-      { path: '/dancers', element: <DiscoverPage businesses={[]} /> },
-      { path: '/directors', element: <DiscoverPage businesses={[]} /> },
-      { path: '/restaurants', element: <DiscoverPage businesses={[]} /> },
-      { path: '/business/:id', element: <DiscoverDetail businesses={businesses} /> },
+      { path: `${agenda}`, element: <AgendaPage events={events} /> },
+      { path: `${agenda}/all`, element: <AgendaPage events={events} /> },
+      { path: `${agenda}/events`, element: <AgendaPage events={[]} /> },
+      { path: `${agenda}/cinema`, element: <AgendaPage events={[]} /> },
+      { path: `${agenda}/courses`, element: <AgendaPage events={[]} /> },
+      { path: `${agenda}/event/:id`, element: <EventDetail events={events} /> },
+      { path: `${discover}`, element: <DiscoverPage businesses={businesses} /> },
+      { path: `${discover}/artistas`, element: <DiscoverPage businesses={[]} /> },
+      { path: `${discover}/clubs`, element: <DiscoverPage businesses={[]} /> },
+      { path: `${discover}/dancers`, element: <DiscoverPage businesses={[]} /> },
+      { path: `${discover}/directors`, element: <DiscoverPage businesses={[]} /> },
+      { path: `${discover}/restaurants`, element: <DiscoverPage businesses={[]} /> },
+      { path: `${discover}/business/:id`, element: <DiscoverDetail businesses={businesses} /> },
       { path: '/maps', element: <MapView /> },
       { path: '/login', element: <Login />},
     ];
@@ -82,4 +83,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App

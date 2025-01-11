@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { AuthContext } from '../../AuthContext';
 import Api from '../../Api';
-
+import { connect } from "react-redux";
+import { setIsLoggedIn } from "../../actions/appActions";
+import { Navigate } from 'react-router-dom';
 
 class Login extends Component {
   constructor(props) {
@@ -13,13 +14,11 @@ class Login extends Component {
     };
   }
 
-  static contextType = AuthContext;
-
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleSubmit = async (e, login) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
     await Api.post('/accounts/login', 
       {
@@ -34,8 +33,7 @@ class Login extends Component {
       },
     )
     .then((res) => {
-      login()
-      console.log(res)
+      this.props.setIsLoggedIn(!this.props.isLoggedIn)
       // this.props.setToken(acces_token);
       // this.setState({ isloggingin: false });
     })
@@ -49,7 +47,9 @@ class Login extends Component {
 
   render() {
 
-    const { login } = this.context;
+    if (this.props.isLoggedIn) {
+      return <Navigate to="/agenda" replace />;
+    }
 
     return (
       <div className="container mt-5">
@@ -63,7 +63,7 @@ class Login extends Component {
                     {this.state.errorMessage}
                   </div>
                 )}
-                <form onSubmit={(e) => this.handleSubmit(e, login)}>
+                <form onSubmit={(e) => this.handleSubmit(e)}>
                   <div className="mb-3">
                     <label htmlFor="username" className="form-label">
                       Username
@@ -105,4 +105,12 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = (state) => ({
+  isLoggedIn: state.appRootReducer.isLoggedIn,
+});
+
+const mapDispatchToProps = {
+  setIsLoggedIn,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
