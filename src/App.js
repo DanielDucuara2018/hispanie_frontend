@@ -9,6 +9,7 @@ import DiscoverPage from './components/discover/DiscoverPage';
 import EventDetail from './components/agenda/EventDetail';
 import DiscoverDetail from './components/discover/DiscoverDetail';
 import Login from './components/login/LoginPage';
+import EventCreateForm from './components/agenda/EventCreateForm';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -54,6 +55,7 @@ class App extends Component {
       { path: `${agenda}/cinema`, element: <AgendaPage events={[]} /> },
       { path: `${agenda}/courses`, element: <AgendaPage events={[]} /> },
       { path: `${agenda}/event/:id`, element: <EventDetail events={events} /> },
+      { path: `${agenda}/event/create`, element: <EventCreateForm />},
       { path: `${discover}`, element: <DiscoverPage businesses={businesses} /> },
       { path: `${discover}/artistas`, element: <DiscoverPage businesses={[]} /> },
       { path: `${discover}/clubs`, element: <DiscoverPage businesses={[]} /> },

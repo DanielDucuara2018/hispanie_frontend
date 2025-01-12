@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
+import { Navbar, Nav, Form, FormControl, Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FaCalendarAlt, FaCompass, FaMapMarkedAlt, FaStore, FaUserCircle } from 'react-icons/fa';
 import { connect } from "react-redux";
@@ -13,7 +13,7 @@ class Header extends Component {
 
   handleLogout = async () => {
     try {
-      const response = await Api.post('/accounts/logout', null, { withCredentials: true });
+      await Api.post('/accounts/logout', null, { withCredentials: true });
       this.props.setIsLoggedIn(!this.props.isLoggedIn); // Ensure the user is logged out
     } catch (error) {
       console.error("Error during logout:", error);
@@ -23,14 +23,18 @@ class Header extends Component {
   render() {
     const category = this.props.activeCategoryHeader;
     // Navigation items with their labels, paths, and icons
-    const agenda_path = this.props.activeCategoryAgenda ? this.props.activeCategoryAgenda: '/agenda'
-    const discover_path = this.props.activeCategoryDiscover ? this.props.activeCategoryDiscover : '/discover'
+    const agenda_path = this.props.activeCategoryAgenda ? this.props.activeCategoryAgenda : '/agenda';
+    const discover_path = this.props.activeCategoryDiscover ? this.props.activeCategoryDiscover : '/discover';
     const navItems = [
       { label: 'Agenda', path: agenda_path, icon: <FaCalendarAlt />, show: true },
       { label: 'Discover', path: discover_path, icon: <FaCompass />, show: true },
       { label: 'Map', path: '/maps', icon: <FaMapMarkedAlt />, show: true },
       { label: 'Store', path: '/store', icon: <FaStore />, show: true },
-      { label: 'Profile', path: '/profile', icon: <FaUserCircle />, show: this.props.isLoggedIn },
+      {
+        label: 'Profile',
+        show: this.props.isLoggedIn,
+        dropdown: true, // Flag to show dropdown
+      },
       {
         label: 'Login',
         path: '/login',
@@ -61,26 +65,43 @@ class Header extends Component {
         <Nav>
           {navItems
             .filter((item) => item.show) // Only display items where `show` is true
-            .map((item, index) => (
-              <Nav.Link
-                key={index}
-                as={Link}
-                to={item.path}
-                onClick={
-                  item.onClick
-                    ? item.onClick
-                    : () => this.handleCategoryChange(item.label.toLowerCase())
-                }
-                className={
-                  item.className ||
-                  (category === item.label.toLowerCase()
-                    ? 'text-danger fw-bold d-flex align-items-center'
-                    : 'd-flex align-items-center')
-                }
-              >
-                {item.icon} <span className="ms-2">{item.label}</span>
-              </Nav.Link>
-            ))}
+            .map((item, index) =>
+              item.dropdown ? (
+                <Dropdown key={index} align="end">
+                  <Dropdown.Toggle variant="link" className="d-flex align-items-center text-decoration-none">
+                    <FaUserCircle size={20} className="me-2" />
+                    Profile
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item as={Link} to="/profile">
+                      View Profile
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/agenda/event/create">
+                      Create Event
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              ) : (
+                <Nav.Link
+                  key={index}
+                  as={Link}
+                  to={item.path}
+                  onClick={
+                    item.onClick
+                      ? item.onClick
+                      : () => this.handleCategoryChange(item.label.toLowerCase())
+                  }
+                  className={
+                    item.className ||
+                    (category === item.label.toLowerCase()
+                      ? 'text-danger fw-bold d-flex align-items-center'
+                      : 'd-flex align-items-center')
+                  }
+                >
+                  {item.icon} <span className="ms-2">{item.label}</span>
+                </Nav.Link>
+              )
+            )}
         </Nav>
       </Navbar>
     );
