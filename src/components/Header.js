@@ -4,14 +4,20 @@ import { Link } from 'react-router-dom';
 import { FaCalendarAlt, FaCompass, FaMapMarkedAlt, FaStore, FaUserCircle } from 'react-icons/fa';
 import { connect } from "react-redux";
 import { setIsLoggedIn, setActiveCategoryHeader } from "../actions/appActions";
+import Api from '../Api';
 
 class Header extends Component {
   handleCategoryChange = (category) => {
     this.props.setActiveCategoryHeader(category);
   };
 
-  handleLogout = () => {
-    this.props.setIsLoggedIn(!this.props.isLoggedIn);
+  handleLogout = async () => {
+    try {
+      const response = await Api.post('/accounts/logout', null, { withCredentials: true });
+      this.props.setIsLoggedIn(!this.props.isLoggedIn); // Ensure the user is logged out
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   render() {
