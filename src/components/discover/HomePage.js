@@ -6,7 +6,7 @@ import DiscoverCard from './DiscoverCard';
 class HomePage extends Component {
   render() {
     const { businesses } = this.props;
-        
+    console.log(businesses)
     return (
       <>
         <Filters />

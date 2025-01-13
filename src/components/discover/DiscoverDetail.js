@@ -10,7 +10,7 @@ class DiscoverDetail extends Component {
     const { businesses , params } = this.props;
     const data = businesses.find(x => x.id === String(params.id));
 
-    if (!data) return <p>Evento no encontrado</p>;
+    if (!data) return <p>Business not found</p>;
 
     return (
       <Container className="my-5">

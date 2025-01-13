@@ -52,12 +52,14 @@ class Header extends Component {
 
     return (
       <Navbar bg="light" expand="lg" className="border-bottom px-3">
-        <Navbar.Brand href="#home">
-          <img
+        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
+          {/* <img
             src="https://w7.pngwing.com/pngs/402/203/png-transparent-picasa-encapsulated-postscript-logo-random-icons-miscellaneous-angle-text.png"
             alt="Logo"
-            height="40"
-          />
+            height="35"
+            className="me-2"
+          /> */}
+          <span className="fw-bold me-5">hispanie</span>
         </Navbar.Brand>
         <Form className="d-flex ms-auto me-3">
           <FormControl type="search" placeholder="Buscar" className="me-2" />
