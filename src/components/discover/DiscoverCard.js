@@ -6,7 +6,7 @@ class DiscoverCard extends Component {
   render() {
     const { id, title } = this.props;
     return (
-      <Link to={`/business/${id}`} className="text-decoration-none text-dark">
+      <Link to={`/discover/business/${id}`} className="text-decoration-none text-dark">
         <Image
           src={""}
           alt={title}

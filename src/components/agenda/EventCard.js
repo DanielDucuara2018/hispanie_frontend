@@ -6,7 +6,7 @@ class EventCard extends Component {
   render() {
     const { id, title, date, time, location, attendees, tickets, tags, image } = this.props;
     return (
-      <Link to={`/event/${id}`} className="text-decoration-none text-dark">
+      <Link to={`/agenda/event/${id}`} className="text-decoration-none text-dark">
         <Card className="h-100">
           <Card.Img variant="top" src={image} alt={title} />
           <Card.Body>

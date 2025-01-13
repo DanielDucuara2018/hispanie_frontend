@@ -1,29 +1,27 @@
 import React, { Component } from 'react';
 import { Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { connect } from "react-redux";
+import { setActiveCategoryAgenda } from "../../actions/appActions";
 
 class Categories extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      activeCategory: '/all', // Set the default active category
-    };
-
     // Define navigation categories
     this.categories = [
-      { path: '/all', label: 'Todo' },
-      { path: '/events', label: 'Eventos' },
-      { path: '/cinema', label: 'Cine' },
-      { path: '/courses', label: 'Cursos' },
+      { path: '/agenda/all', label: 'Todo' },
+      { path: '/agenda/events', label: 'Eventos' },
+      { path: '/agenda/cinema', label: 'Cine' },
+      { path: '/agenda/courses', label: 'Cursos' },
     ];
   }
 
   handleCategoryChange = (category) => {
-    this.setState({ activeCategory: category });
+    this.props.setActiveCategoryAgenda(category);
   };
 
   render() {
-    const { activeCategory } = this.state;
+    const category = this.props.activeCategoryAgenda;
 
     return (
       <Nav className="justify-content-center my-3">
@@ -33,7 +31,7 @@ class Categories extends Component {
               as={Link}
               to={path}
               onClick={() => this.handleCategoryChange(path)}
-              className={activeCategory === path ? 'text-danger fw-bold' : ''}
+              className={category === path ? 'text-danger fw-bold' : ''}
             >
               {label}
             </Nav.Link>
@@ -44,4 +42,12 @@ class Categories extends Component {
   }
 }
 
-export default Categories;
+const mapStateToProps = (state) => ({
+  activeCategoryAgenda: state.appRootReducer.activeCategoryAgenda
+});
+
+const mapDispatchToProps = {
+  setActiveCategoryAgenda
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Categories);
