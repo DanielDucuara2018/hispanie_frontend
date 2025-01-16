@@ -20,7 +20,7 @@ class Login extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    await Api.post('/accounts/login', 
+    await Api.post('/accounts/public/login', 
       {
         username: this.state.username,
         password: this.state.password,

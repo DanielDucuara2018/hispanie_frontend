@@ -24,15 +24,9 @@ class App extends Component {
 
   async componentDidMount() {
     try {
-      const header = {
-        headers: {
-          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYW5pZWwuZHVjdWFyYSIsImV4cCI6MTc2Nzc1OTE4MX0.brJGrsJsa_XCdGWuXL1uqmz-BeqHSZt1oooxADOsYNI",
-        },
-        withCredentials: true
-      }
       // Fetch events data
-      const eventsResponse = await Api.get('/events', header);
-      const businessesResponse = await Api.get('/businesses', header);
+      const eventsResponse = await Api.get('/events/public/read');
+      const businessesResponse = await Api.get('/businesses/public/read');
 
       this.setState({
         events: eventsResponse.data,
@@ -57,7 +51,7 @@ class App extends Component {
       { path: `${agenda}/event/:id`, element: <EventDetail events={events} /> },
       { path: `${agenda}/event/create`, element: <EventCreateForm />},
       { path: `${discover}`, element: <DiscoverPage businesses={businesses} /> },
-      { path: `${discover}/artistas`, element: <DiscoverPage businesses={[]} /> },
+      { path: `${discover}/artistas`, element: <DiscoverPage businesses={businesses} /> },
       { path: `${discover}/clubs`, element: <DiscoverPage businesses={[]} /> },
       { path: `${discover}/dancers`, element: <DiscoverPage businesses={[]} /> },
       { path: `${discover}/directors`, element: <DiscoverPage businesses={[]} /> },

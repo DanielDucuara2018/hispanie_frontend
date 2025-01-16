@@ -5,7 +5,7 @@ import EventCard from './EventCard';
 class HomePage extends Component {
   render() {
     const { events } = this.props;
-    
+    console.log(events)
     return (
       <>
         <Filters />

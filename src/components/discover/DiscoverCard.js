@@ -8,7 +8,7 @@ class DiscoverCard extends Component {
     return (
       <Link to={`/discover/business/${id}`} className="text-decoration-none text-dark">
         <Image
-          src={""}
+          src="https://hispanie.com/cdn/shop/collections/103931085_2892442374157190_3440336142787089498_n.jpg?v=1734831647&width=750" //{""}
           alt={title}
           roundedCircle
           fluid
