@@ -14,6 +14,7 @@ class Header extends Component {
   handleLogout = async () => {
     try {
       await Api.post('/accounts/private/logout', null, { withCredentials: true });
+      this.handleCategoryChange("")
       this.props.setIsLoggedIn(!this.props.isLoggedIn); // Ensure the user is logged out
     } catch (error) {
       console.error("Error during logout:", error);

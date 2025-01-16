@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Api from '../../Api';
 import { connect } from "react-redux";
-import { setIsLoggedIn } from "../../actions/appActions";
+import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from 'react-router-dom';
 
 class Login extends Component {
@@ -48,6 +48,8 @@ class Login extends Component {
   render() {
     const agenda_path = this.props.activeCategoryAgenda
     if (this.props.isLoggedIn) {
+      {/* TODO extact "agenda" value from agenda_path variable*/}
+      this.props.setActiveCategoryHeader("agenda"); 
       return <Navigate to={ agenda_path } replace />;
     }
 
@@ -112,6 +114,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setIsLoggedIn,
+  setActiveCategoryHeader,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
