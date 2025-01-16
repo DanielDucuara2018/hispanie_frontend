@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Api from './Api';
+import WelcomePage from './WelcomePage';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import MapView from './components/map/MapView';
@@ -43,6 +44,7 @@ class App extends Component {
     const discover = "/discover"
     // Define your routes in an array
     const routes = [
+      { path: `/`, element: <WelcomePage/> },
       { path: `${agenda}`, element: <AgendaPage events={events} /> },
       { path: `${agenda}/all`, element: <AgendaPage events={events} /> },
       { path: `${agenda}/events`, element: <AgendaPage events={[]} /> },
