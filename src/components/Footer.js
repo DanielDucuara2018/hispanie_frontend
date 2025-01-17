@@ -16,7 +16,6 @@ const Footer = () => {
               <Nav.Link href="/about">About</Nav.Link>
               <Nav.Link href="/blog">Blog</Nav.Link>
               <Nav.Link href="/contact">Contact</Nav.Link>
-              <Nav.Link href="/nantes">Nantes Habla Espanol</Nav.Link>
             </Nav>
           </Col>
           <Col md={3}>
@@ -37,8 +36,12 @@ const Footer = () => {
         </Row>
         <Row className="mb-4">
           <Col className="text-center">
+          <a href="https://www.instagram.com/nanteshablaespagnol/" target="_blank" rel="noopener noreferrer">
             <FaInstagram size={24} className="me-3" />
+          </a>
+          <a href="https://www.linkedin.com/company/hispanie/" target="_blank" rel="noopener noreferrer">
             <FaLinkedin size={24} />
+          </a>
           </Col>
         </Row>
         <Row className="border-top pt-3">

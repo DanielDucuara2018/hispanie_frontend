@@ -19,8 +19,7 @@ class ProfilePage extends Component {
   render() {
     const agenda_path = this.props.activeCategoryAgenda
     if (!this.props.isLoggedIn) {
-      {/* TODO extact "agenda" value from agenda_path variable*/}
-      this.props.setActiveCategoryHeader("agenda"); 
+      this.props.setActiveCategoryHeader("agenda"); //TODO extact "agenda" value from agenda_path variable
       return <Navigate to={ agenda_path } replace />;
     }
 
@@ -59,7 +58,7 @@ class ProfilePage extends Component {
             <p>📍 Nantes, France</p>
             <h6 className="fw-bold mt-3">Social Links</h6>
             <p>
-              <a href="#">Instagram</a> | <a href="#">Facebook</a> | <a href="#">YouTube</a>
+              <a href="https://www.instagram.com">Instagram</a> | <a href="https://www.facebook.com">Facebook</a> | <a href="https://www.linkedin.com">Linkedin</a>
             </p>
           </Col>
         </Row>

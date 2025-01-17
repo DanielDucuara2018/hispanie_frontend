@@ -48,8 +48,7 @@ class Login extends Component {
   render() {
     const agenda_path = this.props.activeCategoryAgenda
     if (this.props.isLoggedIn) {
-      {/* TODO extact "agenda" value from agenda_path variable*/}
-      this.props.setActiveCategoryHeader("agenda"); 
+      this.props.setActiveCategoryHeader("agenda"); // TODO extact "agenda" value from agenda_path variable
       return <Navigate to={ agenda_path } replace />;
     }
 

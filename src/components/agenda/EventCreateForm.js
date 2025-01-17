@@ -115,7 +115,7 @@ class EventCreateForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
+    // const formData = new FormData();
     // Object.keys(this.state).forEach((key) => {
     //   if (this.state[key] instanceof File) {
     //     formData.append(key, this.state[key]);

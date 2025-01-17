@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Row, Col, Button, Image, Carousel } from "react-bootstrap";
+import { Container, Row, Col, Button, Image } from "react-bootstrap";
 
 class WelcomePage extends Component {
   constructor(props) {
