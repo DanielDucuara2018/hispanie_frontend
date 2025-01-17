@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { Offcanvas, Card, Button, Badge } from "react-bootstrap";
 
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 class MapView extends Component {
   constructor(props) {
     super(props);
@@ -48,7 +47,7 @@ class MapView extends Component {
     },
   ];
 
-  // Custom marker icons using Leaflet
+  // Custom marker icons using Leaflet TODO centralize this is dupicated code
   createIcon = (emoji) =>
     new L.DivIcon({
       className: "custom-icon",

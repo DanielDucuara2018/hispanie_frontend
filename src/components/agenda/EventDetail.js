@@ -2,16 +2,32 @@ import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Badge, Row, Col, Container, Tabs, Tab, ListGroup } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from "leaflet";
 
 const EventDetailWithParams = (props) => <EventDetail {...props} params={useParams()} />;
 
 class EventDetail extends Component {
+
+    // Custom marker icons using Leaflet TODO centralize this is dupicated code
+    createIcon = (emoji) =>
+    new L.DivIcon({
+      className: "custom-icon",
+      html: `
+        <div class="d-flex justify-content-center align-items-center bg-white border rounded-circle shadow"
+              style="width: 40px; height: 40px; border: 2px solid #ccc;">
+          <span style="font-size: 20px;">${emoji}</span>
+        </div>`,
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+      popupAnchor: [0, -40],
+    });
+
   render() {
     const { events, params } = this.props;
     const data = events.find((x) => x.id === String(params.id));
 
     if (!data) return <p>Event not found</p>;
-
+    console.log(data)
     return (
       <>
         {/* Image */}
@@ -27,7 +43,7 @@ class EventDetail extends Component {
           <div className="mb-4">
             <h5 className="text-muted mb-2">Event · {data.start_date}</h5>
             <h1 className="fw-bold mb-1">{data.name}</h1>
-            <p className="text-muted">{data.location}</p>
+            <p className="text-muted">{data.address}</p>
             <div className="d-flex flex-wrap gap-2 mb-3">
               <Badge bg="light" text="dark">Bachata</Badge>
               <Badge bg="light" text="dark">Latino</Badge>
@@ -72,7 +88,8 @@ class EventDetail extends Component {
                   <Card className="p-3">
                     <h5 className="mb-3">Description:</h5>
                     <p>
-                      <strong>🎉 Bachatero SAO 🎉</strong>
+                      {data.description}
+                      {/* <strong>🎉 Bachatero SAO 🎉</strong>
                       <br />
                       Join us every Wednesday at SAO for an evening full of rhythm and dance! 🕺💃
                       <ul>
@@ -80,7 +97,7 @@ class EventDetail extends Component {
                         <li>21:00 - Bachata Intermediate: Perfect your movements and learn more complex figures.</li>
                         <li>22:00 - Mix Bachata: Dance freely with something for everyone!</li>
                       </ul>
-                      Come to have fun, learn, and improve in a festive and friendly atmosphere! 🎶
+                      Come to have fun, learn, and improve in a festive and friendly atmosphere! 🎶 */}
                     </p>
                   </Card>
                 </Col>
@@ -95,8 +112,8 @@ class EventDetail extends Component {
                       style={{ height: '200px', width: '100%' }}
                     >
                       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                      <Marker position={[data.latitude, data.longitude]}>
-                        <Popup>{data.location}</Popup>
+                      <Marker position={[data.latitude, data.longitude]} icon={this.createIcon("🌮")}> 
+                        <Popup>{data.address}</Popup>
                       </Marker>
                     </MapContainer>
                     <p className="text-muted mt-2">{data.location}</p>

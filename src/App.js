@@ -13,6 +13,8 @@ import Login from './components/login/LoginPage';
 import EventCreateForm from './components/agenda/EventCreateForm';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "leaflet/dist/leaflet.css";
+import ProfilePage from './components/login/ProfilePage';
 
 class App extends Component {
   constructor(props) {
@@ -45,6 +47,7 @@ class App extends Component {
     // Define your routes in an array
     const routes = [
       { path: `/`, element: <WelcomePage/> },
+      { path: `/profile`, element: <ProfilePage/> },
       { path: `${agenda}`, element: <AgendaPage events={events} /> },
       { path: `${agenda}/all`, element: <AgendaPage events={events} /> },
       { path: `${agenda}/events`, element: <AgendaPage events={[]} /> },
