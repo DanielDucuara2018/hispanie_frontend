@@ -18,7 +18,7 @@ class HomePage extends Component {
                   date={event.start_date}
                   time={event.start_date}
                   location={event.location}
-                  attendees={0}
+                  category={event.category}
                   tickets={event.price}
                   tags={event.tags}
                   image={""}

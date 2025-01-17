@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Badge, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const EventCard = ({ id, title, date, location, price, tags, image }) => {
+const EventCard = ({ id, title, date, location, category, price, tags, image }) => {
   return (
     <Link to={`/agenda/event/${id}`} className="text-decoration-none text-dark">
       <Card className="mb-4 shadow-sm border-0">
@@ -17,7 +17,7 @@ const EventCard = ({ id, title, date, location, price, tags, image }) => {
         <Card.Body>
           <Row className="mb-2">
             <Col>
-              <Badge bg="secondary" className="me-2">Event</Badge>
+              <Badge bg="secondary" className="me-2">{category}</Badge>
               <small className="text-muted">{date}</small>
             </Col>
           </Row>
