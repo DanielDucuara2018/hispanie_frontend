@@ -13,33 +13,33 @@ const Footer = () => {
           <Col md={3}>
             <h6 className="mb-3">Acerca:</h6>
             <Nav className="flex-column">
-              <Nav.Link href="/about">About</Nav.Link>
-              <Nav.Link href="/blog">Blog</Nav.Link>
-              <Nav.Link href="/contact">Contact</Nav.Link>
+              <Nav.Link href="/about" className="text-dark">About</Nav.Link>
+              <Nav.Link href="/blog" className="text-dark">Blog</Nav.Link>
+              <Nav.Link href="/contact" className="text-dark">Contact</Nav.Link>
             </Nav>
           </Col>
           <Col md={3}>
             <h6 className="mb-3">Creator:</h6>
             <Nav className="flex-column">
-              <Nav.Link href="/promote">Promote my event</Nav.Link>
-              <Nav.Link href="/companies">Companies</Nav.Link>
-              <Nav.Link href="/associations">Associations</Nav.Link>
+              <Nav.Link href="/promote" className="text-dark">Promote my event</Nav.Link>
+              <Nav.Link href="/companies" className="text-dark">Companies</Nav.Link>
+              <Nav.Link href="/associations" className="text-dark">Associations</Nav.Link>
             </Nav>
           </Col>
           <Col md={3}>
             <h6 className="mb-3">Legal:</h6>
             <Nav className="flex-column">
-              <Nav.Link href="/privacy">Privacy Policy</Nav.Link>
-              <Nav.Link href="/terms">Terms and Conditions</Nav.Link>
+              <Nav.Link href="/privacy" className="text-dark">Privacy Policy</Nav.Link>
+              <Nav.Link href="/terms" className="text-dark">Terms and Conditions</Nav.Link>
             </Nav>
           </Col>
         </Row>
         <Row className="mb-4">
           <Col className="text-center">
-          <a href="https://www.instagram.com/nanteshablaespagnol/" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.instagram.com/nanteshablaespagnol/" target="_blank" rel="noopener noreferrer" className="text-dark">
             <FaInstagram size={24} className="me-3" />
           </a>
-          <a href="https://www.linkedin.com/company/hispanie/" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.linkedin.com/company/hispanie/" target="_blank" rel="noopener noreferrer" className="text-dark">
             <FaLinkedin size={24} />
           </a>
           </Col>

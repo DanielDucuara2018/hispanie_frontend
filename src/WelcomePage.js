@@ -138,6 +138,7 @@ class WelcomePage extends Component {
                           roundedCircle
                           width={180}
                           height={180}
+                          style={{ border: "2px solid rgba(0, 0, 0, 0.1)" }}
                           className="mb-3 shadow-sm"
                       /> {/* TODO this images redirect to Discover Details */}
                         <p className="small fw-bold">{business.name}</p>

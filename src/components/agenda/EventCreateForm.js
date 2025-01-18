@@ -118,18 +118,6 @@ class EventCreateForm extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-
-    // const formData = new FormData();
-    // Object.keys(this.state).forEach((key) => {
-    //   if (this.state[key] instanceof File) {
-    //     formData.append(key, this.state[key]);
-    //   } else if (key !== "profileImagePreview" && key !== "coverImagePreview") {
-    //     formData.append(key, this.state[key]);
-    //   }
-    // });
-
-    console.log(this.state)
-
     try {
       const response = await Api.post("/events/private/create",
       this.state,
