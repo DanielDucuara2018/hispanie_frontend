@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from 'react-router-dom';
 
+//TODO Move this file to a better folder
 class ProfilePage extends Component {
   constructor(props) {
     super(props);

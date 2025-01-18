@@ -9,7 +9,8 @@ class Categories extends Component {
     super(props);
     // Define navigation categories
     this.categories = [
-      { label: "Artistas", path: "/discover/artistas" },
+      { label: 'All', path: '/discover/all' },
+      { label: "Artists", path: "/discover/artists" },
       { label: "Clubs", path: "/discover/clubs" },
       { label: "Dancers", path: "/discover/dancers" },
       { label: "Directors", path: "/discover/directors" },

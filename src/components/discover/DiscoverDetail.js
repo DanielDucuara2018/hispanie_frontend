@@ -2,10 +2,28 @@ import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Badge, Row, Col, Container, Tabs, Tab, ListGroup } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import CATEGORY_EMOJIS from '../../hooks/categoryEmojis';
+import L from "leaflet";
 
 const DiscoverDetailWithParams = (props) => <DiscoverDetail {...props} params={useParams()} />;
 
+// TODO merged DiscoverDetail and EventDetail, they have almost the same structure
 class DiscoverDetail extends Component {
+
+  // Custom marker icons using Leaflet TODO centralize this is dupicated code
+  createIcon = (emoji) =>
+  new L.DivIcon({
+    className: "custom-icon",
+    html: `
+      <div class="d-flex justify-content-center align-items-center bg-white border rounded-circle shadow"
+            style="width: 40px; height: 40px; border: 2px solid #ccc;">
+        <span style="font-size: 20px;">${emoji}</span>
+      </div>`,
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+  });
+
   render() {
     const { businesses , params } = this.props;
     const data = businesses.find(x => x.id === String(params.id));
@@ -23,9 +41,9 @@ class DiscoverDetail extends Component {
         />
     
         <Container className="my-5">
-          {/* Event Header */}
+          {/* Bussiness Header */}
           <div className="mb-4">
-            <h5 className="text-muted mb-2">Event · {data.start_date}</h5>
+            <h5 className="text-muted mb-2">{data.category}</h5>
             <h1 className="fw-bold mb-1">{data.name}</h1>
             <p className="text-muted">{data.location}</p>
             <div className="d-flex flex-wrap gap-2 mb-3">
@@ -72,7 +90,8 @@ class DiscoverDetail extends Component {
                   <Card className="p-3">
                     <h5 className="mb-3">Description:</h5>
                     <p>
-                      <strong>🎉 Bachatero SAO 🎉</strong>
+                      {data.description}
+                      {/* <strong>🎉 Bachatero SAO 🎉</strong>
                       <br />
                       Join us every Wednesday at SAO for an evening full of rhythm and dance! 🕺💃
                       <ul>
@@ -80,7 +99,7 @@ class DiscoverDetail extends Component {
                         <li>21:00 - Bachata Intermediate: Perfect your movements and learn more complex figures.</li>
                         <li>22:00 - Mix Bachata: Dance freely with something for everyone!</li>
                       </ul>
-                      Come to have fun, learn, and improve in a festive and friendly atmosphere! 🎶
+                      Come to have fun, learn, and improve in a festive and friendly atmosphere! 🎶 */}
                     </p>
                   </Card>
                 </Col>
@@ -95,7 +114,7 @@ class DiscoverDetail extends Component {
                       style={{ height: '200px', width: '100%' }}
                     >
                       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                      <Marker position={[data.latitude, data.longitude]}>
+                      <Marker position={[data.latitude, data.longitude]} icon={this.createIcon(CATEGORY_EMOJIS[data.category])}>
                         <Popup>{data.location}</Popup>
                       </Marker>
                     </MapContainer>
@@ -104,8 +123,8 @@ class DiscoverDetail extends Component {
                 </Col>
               </Row>
             </Tab>
-            <Tab eventKey="similar" title="Similar events">
-              <p>No similar events found at this time.</p>
+            <Tab bussinessKey="similar" title="Similar bussinesses">
+              <p>No similar bussiness found at this time.</p>
             </Tab>
           </Tabs>
 

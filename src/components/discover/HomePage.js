@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Filters from './Filters';
+// import Filters from './Filters';
 import { Col, Row } from 'react-bootstrap';
 import DiscoverCard from './DiscoverCard';
 
@@ -8,7 +8,7 @@ class HomePage extends Component {
     const { businesses } = this.props;
     return (
       <>
-        <Filters />
+        {/* <Filters /> */}
           <div className="container my-4">
           <Row className="text-center">
             {businesses.map((business) => (

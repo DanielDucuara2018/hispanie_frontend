@@ -7,20 +7,18 @@ import axios from "axios";
 import Api from "../../Api";
 
 // TODO Merged DiscoverCreateForn and EventCreateForm both are similar
-// TODO CATEGOTIES change
-const EVENT_CATEGORIES = [
-  { label: "Course", value: "course" },
-  { label: "Cinema", value: "cinema" },
-  { label: "Concert", value: "concert" },
-  { label: "Party", value: "party" },
-  { label: "Expositions", value:    "expositions" },
-  { label: "Language Exchange", value: "language_exchange" },
-  { label: "Theater", value: "theater" },
-  { label: "Gastronomy", value: "gastronomy" },
-  { label: "Dance", value: "dance" },
+// TODO CATEGOTIES change and this form don't have price, start_date and end_date 
+const DISCOVER_CATEGORIES = [
+  { label: "Artist", value: "artist" },
+  { label: "Restaurant", value: "restaurant" },
+  { label: "Cafe", value: "cafe" },
+  { label: "Boutique", value: "boutique" },
+  { label: "Expositions", value: "expositions" },
+  { label: "Association", value: "association" },
+  { label: "Academy", value: "academy" },
 ];
 
-class EventCreateForm extends Component {
+class DiscoverCreateForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,9 +36,9 @@ class EventCreateForm extends Component {
       category: "",
       is_public: false,
       description: null,
-      price: 0,
-      start_date: "",
-      end_date: "",
+      // price: 0,
+      // start_date: "",
+      // end_date: "",
       tags: [],
       urls: [],
       suggestions: [],
@@ -90,7 +88,6 @@ class EventCreateForm extends Component {
             },
           }
         );
-        console.log(response.data)
         this.setState({ suggestions: response.data, isLoading: false });
       } catch (error) {
         console.error("Error fetching address:", error);
@@ -131,7 +128,7 @@ class EventCreateForm extends Component {
     console.log(this.state)
 
     try {
-      const response = await Api.post("/events/private/create",
+      const response = await Api.post("/businesses/private/create",
       this.state,
       {
         headers: { 
@@ -217,7 +214,7 @@ class EventCreateForm extends Component {
 
         {/* Event Form */}
         <Card className="shadow p-4">
-          <h4 className="fw-bold text-center mb-4">Create Event</h4>
+          <h4 className="fw-bold text-center mb-4">Create Business</h4>
 
           {/* Success/Error Message */}
           {this.state.message && (
@@ -325,7 +322,7 @@ class EventCreateForm extends Component {
                   <Form.Label>Category</Form.Label>
                   <Form.Select name="category" value={this.state.category} onChange={this.handleChange} required>
                     <option value="">Select Category</option>
-                    {EVENT_CATEGORIES.map((cat) => (
+                    {DISCOVER_CATEGORIES.map((cat) => (
                       <option key={cat.value} value={cat.value}>
                         {cat.label}
                       </option>
@@ -333,10 +330,10 @@ class EventCreateForm extends Component {
                   </Form.Select>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                {/* <Form.Group className="mb-3">
                   <Form.Label>Price</Form.Label>
                   <Form.Control type="number" name="price"value={this.state.price} onChange={this.handleChange}  placeholder="Enter price" required />
-                </Form.Group>
+                </Form.Group> */}
 
                 <Form.Group className="mb-3" controlId="formDescription">
                   <Form.Label>Description</Form.Label>
@@ -350,7 +347,7 @@ class EventCreateForm extends Component {
                   />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formStartDate">
+                {/* <Form.Group className="mb-3" controlId="formStartDate">
                   <Form.Label>Start Date</Form.Label>
                   <Form.Control
                     type="datetime-local"
@@ -370,7 +367,7 @@ class EventCreateForm extends Component {
                     onChange={this.handleChange}
                     required
                   />
-                </Form.Group>
+                </Form.Group> */}
 
                 <Form.Group className="mb-3">
                   <Form.Label>Tags (comma-separated)</Form.Label>
@@ -404,4 +401,4 @@ const mapDispatchToProps = {
   setActiveCategoryHeader,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EventCreateForm);
+export default connect(mapStateToProps, mapDispatchToProps)(DiscoverCreateForm);

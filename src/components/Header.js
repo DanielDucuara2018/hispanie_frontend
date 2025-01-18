@@ -78,8 +78,11 @@ class Header extends Component {
                     <Dropdown.Item as={Link} to="/profile">
                       View Profile
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/agenda/event/create">
+                    <Dropdown.Item as={Link} to="/event/create">
                       Create Event
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/business/create">
+                      Create Business
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>

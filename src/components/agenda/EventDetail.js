@@ -2,25 +2,28 @@ import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Badge, Row, Col, Container, Tabs, Tab, ListGroup } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import CATEGORY_EMOJIS from '../../hooks/categoryEmojis';
 import L from "leaflet";
+
 
 const EventDetailWithParams = (props) => <EventDetail {...props} params={useParams()} />;
 
+// TODO merged DiscoverDetail and EventDetail, they have almost the same structure
 class EventDetail extends Component {
 
-    // Custom marker icons using Leaflet TODO centralize this is dupicated code
-    createIcon = (emoji) =>
-    new L.DivIcon({
-      className: "custom-icon",
-      html: `
-        <div class="d-flex justify-content-center align-items-center bg-white border rounded-circle shadow"
-              style="width: 40px; height: 40px; border: 2px solid #ccc;">
-          <span style="font-size: 20px;">${emoji}</span>
-        </div>`,
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-      popupAnchor: [0, -40],
-    });
+  // Custom marker icons using Leaflet TODO centralize this is dupicated code
+  createIcon = (emoji) =>
+  new L.DivIcon({
+    className: "custom-icon",
+    html: `
+      <div class="d-flex justify-content-center align-items-center bg-white border rounded-circle shadow"
+            style="width: 40px; height: 40px; border: 2px solid #ccc;">
+        <span style="font-size: 20px;">${emoji}</span>
+      </div>`,
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+  });
 
   render() {
     const { events, params } = this.props;
@@ -41,7 +44,7 @@ class EventDetail extends Component {
         <Container className="my-5">
           {/* Event Header */}
           <div className="mb-4">
-            <h5 className="text-muted mb-2">Event · {data.start_date}</h5>
+            <h5 className="text-muted mb-2">{data.category} · {data.start_date}</h5>
             <h1 className="fw-bold mb-1">{data.name}</h1>
             <p className="text-muted">{data.address}</p>
             <div className="d-flex flex-wrap gap-2 mb-3">
@@ -112,7 +115,7 @@ class EventDetail extends Component {
                       style={{ height: '200px', width: '100%' }}
                     >
                       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                      <Marker position={[data.latitude, data.longitude]} icon={this.createIcon("🌮")}> 
+                      <Marker position={[data.latitude, data.longitude]} icon={this.createIcon(CATEGORY_EMOJIS[data.category])}> 
                         <Popup>{data.address}</Popup>
                       </Marker>
                     </MapContainer>

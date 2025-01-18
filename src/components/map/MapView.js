@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { Offcanvas, Card, Button, Badge } from "react-bootstrap";
+import CATEGORY_EMOJIS from "../../hooks/categoryEmojis";
 
 import L from "leaflet";
+
+
 class MapView extends Component {
   constructor(props) {
     super(props);
@@ -11,41 +14,6 @@ class MapView extends Component {
       show: false,
     };
   }
-
-  locations = [
-    {
-      id: 1,
-      name: "Taller de Danza Mexicana mx 💃",
-      position: [47.2184, -1.5536], // Nantes, France
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/d/d4/Mexican_Folk_Dance.jpg",
-      description: "Ecole Élémentaire Bois Saint-Louis, 18 Rue des Lilas, 44700, Orvault",
-      tags: ["Dance 💃", "Mexico mx", "Traditional Dances"],
-      price: "€0,00",
-      icon: "💃",
-    },
-    {
-      id: 2,
-      name: "Mexican Food Market 🌮",
-      position: [47.2102, -1.5641],
-      image: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Taco_mexicano.jpg",
-      description: "Place du Commerce, Nantes",
-      tags: ["Food", "Tacos", "Mexican"],
-      price: "€5,00",
-      icon: "🌮",
-    },
-    {
-      id: 3,
-      name: "Latin Music Night 🎶",
-      position: [47.2163, -1.5535],
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/9/9b/Latin_music_dance.jpg",
-      description: "Le Havana Bar, Nantes",
-      tags: ["Music", "Latin", "Dance"],
-      price: "€10,00",
-      icon: "🎵",
-    },
-  ];
 
   // Custom marker icons using Leaflet TODO centralize this is dupicated code
   createIcon = (emoji) =>
@@ -70,6 +38,8 @@ class MapView extends Component {
   };
 
   render() {
+    const { events, businesses } = this.props
+
     return (
       <div className="map-container">
         <MapContainer center={[47.2184, -1.5536]} zoom={13} style={{ height: "100vh", width: "100%" }}>
@@ -78,13 +48,13 @@ class MapView extends Component {
             attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
           />
 
-          {this.locations.map((location) => (
+          {[...events, ...businesses].map((item) => (
             <Marker
-              key={location.id}
-              position={location.position}
-              icon={this.createIcon(location.icon)}
+              key={item.id}
+              position={[item.latitude, item.longitude]}
+              icon={this.createIcon(CATEGORY_EMOJIS[item.category])}
               eventHandlers={{
-                click: () => this.handleMarkerClick(location),
+                click: () => this.handleMarkerClick(item),
               }}
             />
           ))}
@@ -109,7 +79,7 @@ class MapView extends Component {
                       </Badge>
                     ))}
                   </div>
-                  <p className="fw-bold">💰 Adhesion: {this.state.selectedEvent.price}</p>
+                  {/* <p className="fw-bold">💰 Adhesion: {this.state.selectedEvent.price}</p> */}
                   <Button variant="dark" className="w-100">See More</Button>
                 </Card.Body>
               </Card>

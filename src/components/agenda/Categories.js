@@ -9,10 +9,12 @@ class Categories extends Component {
     super(props);
     // Define navigation categories
     this.categories = [
-      { path: '/agenda/all', label: 'Todo' },
-      { path: '/agenda/events', label: 'Eventos' },
-      { path: '/agenda/cinema', label: 'Cine' },
-      { path: '/agenda/courses', label: 'Cursos' },
+      { path: '/agenda/all', label: 'All' },
+      { path: '/agenda/cinemas', label: 'Cinema' },
+      { path: '/agenda/courses', label: 'Courses' },
+      { path: '/agenda/concerts', label: 'Concerts' },
+      { path: '/agenda/parties', label: 'Parties' },
+      // { path: '/agenda/expositions', label: 'Expositions' },
     ];
   }
 

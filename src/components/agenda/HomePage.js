@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Filters from './Filters';
+// import Filters from './Filters';
 import EventCard from './EventCard';
 
 class HomePage extends Component {
@@ -7,7 +7,7 @@ class HomePage extends Component {
     const { events } = this.props;
     return (
       <>
-        <Filters />
+        {/* <Filters /> */}
         <div className="container my-4">
           <div className="row g-4">
             {events.map(event => (

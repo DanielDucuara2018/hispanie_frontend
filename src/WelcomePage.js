@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Button, Image } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { setActiveCategoryHeader, setActiveCategoryDiscover } from "./actions/appActions";
 
 class WelcomePage extends Component {
   constructor(props) {
@@ -11,20 +14,15 @@ class WelcomePage extends Component {
         month: "short",
         year: "numeric",
       }),
-      artists: [
-        { id: 1, name: "Alameda", img: "https://hispanie.com/cdn/shop/collections/326983212_720382779483957_8328956269607356202_n.jpg?v=1734408523&width=750" },
-        { id: 2, name: "Association Mexicaine COMAL", img: "https://hispanie.com/cdn/shop/collections/422822287_416552314074408_573330835882904212_n.jpg?v=1734732019&width=750" },
-        { id: 3, name: "AssoColombia", img: "https://hispanie.com/cdn/shop/collections/279623341_115922814438615_2837053763006482913_n.jpg?v=1734549500&width=750" },
-        { id: 4, name: "Bailar Latino à Nantes", img: "https://hispanie.com/cdn/shop/collections/366290132_321982023493833_9139375071584274116_n.jpg?v=1734707825&width=750" },
-        { id: 5, name: "Carlito Zuma", img: "https://hispanie.com/cdn/shop/collections/353653001_1894504897588922_5603763545973655979_n.jpg?v=1734706802&width=750" },
-        { id: 6, name: "Cañas y Tapas Nantes", img: "https://hispanie.com/cdn/shop/collections/321436668_1328652091322104_4057458031450885744_n.jpg?v=1734741921&width=750" },
-        { id: 7, name: "Comalix", img: "https://hispanie.com/cdn/shop/collections/408300349_215257264951612_8964474135256976800_n.jpg?v=1734386032&width=750" },
-        { id: 8, name: "Danse Mama Nantes.", img: "https://hispanie.com/cdn/shop/collections/469340877_542305538616699_8142699608393478925_n.jpg?v=1736259738&width=750" },
-      ],
       startIndex: 0, // Tracks the first visible artist
       visibleCount: 6, // Number of artists shown at a time
     };
   }
+  
+  handleCategoryChange = (headerCategory, discoverCategory) => {
+    this.props.setActiveCategoryHeader(headerCategory);
+    this.props.setActiveCategoryDiscover(discoverCategory);
+  };
 
   handleNext = () => {
     this.setState((prevState) => ({
@@ -39,8 +37,9 @@ class WelcomePage extends Component {
   };
 
   render() {
-    const { artists, startIndex, visibleCount } = this.state;
-    const visibleArtists = artists.slice(startIndex, startIndex + visibleCount);
+    const { businesses } = this.props
+    const { startIndex, visibleCount } = this.state;
+    const visibleBusinesses = businesses.slice(startIndex, startIndex + visibleCount);
     
     return (
       <div className="bg-light min-vh-100">
@@ -86,72 +85,94 @@ class WelcomePage extends Component {
 
         {/* DISCOVER ARTISTS SECTION */}
         <Container className="mt-5">
-        <Row className="d-flex justify-content-between align-items-center">
-          <Col>
-            <h4 className="fw-bold">Artistas de la semana</h4>
-          </Col>
-          <Col xs="auto">
-            <Button variant="light" className="rounded-pill shadow-sm">
-              See More {/* TODO this button redirects to discover/artists page */}
-            </Button> 
-          </Col>
-        </Row>
-
-        {/* ARTISTS SCROLLER */}
-        <Row className="align-items-center mt-3">
-          {/* Left Button */}
-          <Col xs="auto">
-            <Button
-              variant="light"
-              className="rounded-circle shadow-sm"
-              onClick={this.handlePrev}
-              disabled={startIndex === 0}
-            >
-              ◀
-            </Button>
-          </Col>
-
-          {/* Artists Display */}
-          <Col>
-            <Row className="d-flex justify-content-center g-12 mt-6">
-            {visibleArtists.map((artist) => (
-                <Col
-                key={artist.id}
-                xs={6}
-                sm={4}
-                md={3}
-                lg={2}
-                className="text-center px-3"
+          <Row className="d-flex justify-content-between align-items-center">
+            <Col>
+              <h4 className="fw-bold">Artistas de la semana</h4>
+            </Col>
+            <Col xs="auto">
+              <Link to="/discover">
+                <Button 
+                  variant="light" 
+                  className="rounded-pill shadow-sm" 
+                  onClick={() => this.handleCategoryChange("discover", "/discover/artists")}
                 >
-                <Image 
-                    src={artist.img}
-                    roundedCircle
-                    width={180}
-                    height={180}
-                    className="mb-3 shadow-sm"
-                /> {/* TODO this images redirect to Discover Details */}
-                <p className="small fw-bold">{artist.name}</p>
-                </Col>
-            ))}
-            </Row>
-          </Col>
+                  See More
+                </Button>
+              </Link>
+            </Col>
+          </Row>
+          
+          {/* ARTISTS SCROLLER */}
+          <Row className="align-items-center mt-3">
+            {/* Left Button */}
+            <Col xs="auto">
+              <Button
+                variant="light"
+                className="rounded-circle shadow-sm"
+                onClick={this.handlePrev}
+                disabled={startIndex === 0}
+              >
+                ◀
+              </Button>
+            </Col>
 
-          {/* Right Button */}
-          <Col xs="auto">
-            <Button
-              variant="light"
-              className="rounded-circle shadow-sm"
-              onClick={this.handleNext}
-              disabled={startIndex >= artists.length - visibleCount}
-            >
-              ▶
-            </Button>
-          </Col>
-        </Row>
-      </Container>
+            {/* Artists Display */}
+            <Col>
+              <Row className="d-flex justify-content-center g-12 mt-6">
+              {visibleBusinesses.map((business) => (
+                  <Col
+                  key={business.id}
+                  xs={6}
+                  sm={4}
+                  md={3}
+                  lg={2}
+                  className="text-center px-3"
+                  >
+                    <Link 
+                      to={`/discover/business/${business.id}`} 
+                      className="text-decoration-none text-dark"
+                      onClick={() => this.handleCategoryChange("discover", "/discover/artists")}
+                    >
+                      <Image 
+                          src="https://hispanie.com/cdn/shop/collections/326983212_720382779483957_8328956269607356202_n.jpg?v=1734408523&width=750"
+                          roundedCircle
+                          width={180}
+                          height={180}
+                          className="mb-3 shadow-sm"
+                      /> {/* TODO this images redirect to Discover Details */}
+                        <p className="small fw-bold">{business.name}</p>
+                    </Link>
+                  </Col>
+              ))}
+              </Row>
+            </Col>
+
+            {/* Right Button */}
+            <Col xs="auto">
+              <Button
+                variant="light"
+                className="rounded-circle shadow-sm"
+                onClick={this.handleNext}
+                disabled={startIndex >= businesses.length - visibleCount}
+              >
+                ▶
+              </Button>
+            </Col>
+          </Row>
+        </Container>
       </div>
     );
   }
 }
 
-export default WelcomePage;
+const mapStateToProps = (state) => ({
+  activeCategoryHeader: state.appRootReducer.activeCategoryHeader,
+  activeCategoryDiscover: state.appRootReducer.activeCategoryDiscover,
+});
+
+const mapDispatchToProps = {
+  setActiveCategoryHeader,
+  setActiveCategoryDiscover,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);

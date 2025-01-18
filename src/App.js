@@ -10,11 +10,13 @@ import DiscoverPage from './components/discover/DiscoverPage';
 import EventDetail from './components/agenda/EventDetail';
 import DiscoverDetail from './components/discover/DiscoverDetail';
 import Login from './components/login/LoginPage';
+import ProfilePage from './components/login/ProfilePage';
 import EventCreateForm from './components/agenda/EventCreateForm';
+import DiscoverCreateForm from './components/discover/DiscoverCreateForm';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "leaflet/dist/leaflet.css";
-import ProfilePage from './components/login/ProfilePage';
+
 
 class App extends Component {
   constructor(props) {
@@ -46,23 +48,26 @@ class App extends Component {
     const discover = "/discover"
     // Define your routes in an array
     const routes = [
-      { path: `/`, element: <WelcomePage/> },
+      { path: `/`, element: <WelcomePage businesses={businesses}/> },
       { path: `/profile`, element: <ProfilePage/> },
       { path: `${agenda}`, element: <AgendaPage events={events} /> },
       { path: `${agenda}/all`, element: <AgendaPage events={events} /> },
-      { path: `${agenda}/events`, element: <AgendaPage events={[]} /> },
-      { path: `${agenda}/cinema`, element: <AgendaPage events={[]} /> },
+      { path: `${agenda}/cinemas`, element: <AgendaPage events={[]} /> },
       { path: `${agenda}/courses`, element: <AgendaPage events={[]} /> },
+      { path: `${agenda}/concerts`, element: <AgendaPage events={[]} /> },
+      { path: `${agenda}/parties`, element: <AgendaPage events={[]} /> },
       { path: `${agenda}/event/:id`, element: <EventDetail events={events} /> },
-      { path: `${agenda}/event/create`, element: <EventCreateForm />},
+      { path: `/event/create`, element: <EventCreateForm />},
       { path: `${discover}`, element: <DiscoverPage businesses={businesses} /> },
-      { path: `${discover}/artistas`, element: <DiscoverPage businesses={businesses} /> },
+      { path: `${discover}/all`, element: <DiscoverPage businesses={businesses} /> },
+      { path: `${discover}/artists`, element: <DiscoverPage businesses={businesses} /> },
       { path: `${discover}/clubs`, element: <DiscoverPage businesses={[]} /> },
       { path: `${discover}/dancers`, element: <DiscoverPage businesses={[]} /> },
       { path: `${discover}/directors`, element: <DiscoverPage businesses={[]} /> },
       { path: `${discover}/restaurants`, element: <DiscoverPage businesses={[]} /> },
       { path: `${discover}/business/:id`, element: <DiscoverDetail businesses={businesses} /> },
-      { path: '/maps', element: <MapView /> },
+      { path: `/business/create`, element: <DiscoverCreateForm />},
+      { path: '/maps', element: <MapView events={events} businesses={businesses}/> },
       { path: '/login', element: <Login />},
     ];
 
