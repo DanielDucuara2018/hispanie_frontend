@@ -53,7 +53,7 @@ class Login extends Component {
     }
 
     return (
-      <div className="container mt-5">
+      <div className="container min-vh-100 d-flex flex-column justify-content-center">
         <div className="row justify-content-center">
           <div className="col-md-4">
             <div className="card">
@@ -93,7 +93,7 @@ class Login extends Component {
                       required
                     />
                   </div>
-                  <button type="submit" className="btn btn-primary w-100">
+                  <button type="submit" className="btn btn-dark w-100">
                     Login
                   </button>
                 </form>
@@ -101,7 +101,7 @@ class Login extends Component {
             </div>
           </div>
         </div>
-      </div>
+      </div>    
     );
   }
 }

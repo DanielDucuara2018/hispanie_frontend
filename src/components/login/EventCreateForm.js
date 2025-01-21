@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Button, Container, Row, Col, Card, Image, ListGroup  } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Card, ListGroup  } from "react-bootstrap";
 import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from "react-router-dom";
@@ -7,18 +7,20 @@ import axios from "axios";
 import Api from "../../Api";
 
 // TODO Merged DiscoverCreateForn and EventCreateForm both are similar
-// TODO CATEGOTIES change and this form don't have price, start_date and end_date 
-const DISCOVER_CATEGORIES = [
-  { label: "Artist", value: "artist" },
-  { label: "Restaurant", value: "restaurant" },
-  { label: "Cafe", value: "cafe" },
-  { label: "Boutique", value: "boutique" },
-  { label: "Expositions", value: "expositions" },
-  { label: "Association", value: "association" },
-  { label: "Academy", value: "academy" },
+// TODO CATEGOTIES change
+const EVENT_CATEGORIES = [
+  { label: "Course", value: "course" },
+  { label: "Cinema", value: "cinema" },
+  { label: "Concert", value: "concert" },
+  { label: "Party", value: "party" },
+  { label: "Expositions", value:    "expositions" },
+  { label: "Language Exchange", value: "language_exchange" },
+  { label: "Theater", value: "theater" },
+  { label: "Gastronomy", value: "gastronomy" },
+  { label: "Dance", value: "dance" },
 ];
 
-class DiscoverCreateForm extends Component {
+class EventCreateForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,9 +38,9 @@ class DiscoverCreateForm extends Component {
       category: "",
       is_public: false,
       description: null,
-      // price: 0,
-      // start_date: "",
-      // end_date: "",
+      price: 0,
+      start_date: "",
+      end_date: "",
       tags: [],
       urls: [],
       suggestions: [],
@@ -88,6 +90,7 @@ class DiscoverCreateForm extends Component {
             },
           }
         );
+        console.log(response.data)
         this.setState({ suggestions: response.data, isLoading: false });
       } catch (error) {
         console.error("Error fetching address:", error);
@@ -116,7 +119,7 @@ class DiscoverCreateForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await Api.post("/businesses/private/create",
+      const response = await Api.post("/events/private/create",
       this.state,
       {
         headers: { 
@@ -148,61 +151,9 @@ class DiscoverCreateForm extends Component {
 
     return (
       <Container className="my-4">
-        {/* Cover Image Upload */}
-        <Card className="mb-3">
-          <Card.Img
-            src={this.state.coverImagePreview}
-            alt="Cover"
-            className="img-fluid"
-            style={{ height: "250px", objectFit: "cover" }}
-          />
-          <Card.ImgOverlay className="d-flex justify-content-center align-items-center">
-            <Form.Group>
-              {/* Label with htmlFor to trigger input */}
-              <Form.Label htmlFor="coverImageUpload" className="btn btn-dark btn-sm">
-                Upload Cover Image
-              </Form.Label>
-              <Form.Control
-                type="file"
-                id="coverImageUpload"
-                name="coverImage"
-                accept="image/*"
-                onChange={this.handleFileChange}
-                className="d-none"
-              />
-            </Form.Group>
-          </Card.ImgOverlay>
-        </Card>
-
-        {/* Profile Image Upload */}
-        <Row className="mb-4">
-          <Col md={4} className="text-center">
-            <Image
-              src={this.state.profileImagePreview}
-              roundedCircle
-              width={150}
-              height={150}
-              className="border border-3 shadow-sm"
-            />
-            <Form.Group className="mt-2">
-              <Form.Label htmlFor="profileImageUpload" className="btn btn-dark btn-sm">
-                Upload Profile Image
-              </Form.Label>
-              <Form.Control
-                type="file"
-                id="profileImageUpload"
-                name="profileImage"
-                accept="image/*"
-                onChange={this.handleFileChange}
-                className="d-none"
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-
         {/* Event Form */}
-        <Card className="shadow p-4">
-          <h4 className="fw-bold text-center mb-4">Create Business</h4>
+        <Card className="shadow-lg p-5 rounded-4 border-0 bg-light">
+          <h3 className="fw-bold text-center mb-4 text-dark">Create Event</h3>
 
           {/* Success/Error Message */}
           {this.state.message && (
@@ -271,12 +222,6 @@ class DiscoverCreateForm extends Component {
                   <Form.Control type="text" name="municipality" value={this.state.municipality} onChange={this.handleChange} placeholder="Issy-les-Moulineaux" required readOnly />
                 </Form.Group>
 
-                <Form.Group className="mb-3">
-                  <Form.Label>Postcode</Form.Label>
-                  <Form.Control type="text" name="postcode" value={this.state.postcode} onChange={this.handleChange} placeholder="92130" required readOnly />
-                </Form.Group>
-
-
                 <Form.Group className="mb-3" controlId="formIsPublic">
                   <Form.Check
                     type="checkbox"
@@ -300,6 +245,12 @@ class DiscoverCreateForm extends Component {
                   <Form.Control type="number" step="any" name="longitude" value={this.state.longitude} onChange={this.handleChange} placeholder="Enter longitude" required />
                 </Form.Group> */}
 
+                
+                <Form.Group className="mb-3">
+                  <Form.Label>Postcode</Form.Label>
+                  <Form.Control type="text" name="postcode" value={this.state.postcode} onChange={this.handleChange} placeholder="92130" required readOnly />
+                </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Region</Form.Label>
                   <Form.Control type="text" name="region" value={this.state.region} onChange={this.handleChange} placeholder="Ile de France" required readOnly />
@@ -310,7 +261,7 @@ class DiscoverCreateForm extends Component {
                   <Form.Label>Category</Form.Label>
                   <Form.Select name="category" value={this.state.category} onChange={this.handleChange} required>
                     <option value="">Select Category</option>
-                    {DISCOVER_CATEGORIES.map((cat) => (
+                    {EVENT_CATEGORIES.map((cat) => (
                       <option key={cat.value} value={cat.value}>
                         {cat.label}
                       </option>
@@ -318,24 +269,12 @@ class DiscoverCreateForm extends Component {
                   </Form.Select>
                 </Form.Group>
 
-                {/* <Form.Group className="mb-3">
+                <Form.Group className="mb-3">
                   <Form.Label>Price</Form.Label>
                   <Form.Control type="number" name="price"value={this.state.price} onChange={this.handleChange}  placeholder="Enter price" required />
-                </Form.Group> */}
-
-                <Form.Group className="mb-3" controlId="formDescription">
-                  <Form.Label>Description</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    name="description"
-                    value={this.state.description}
-                    onChange={this.handleChange}
-                    maxLength={500}
-                    placeholder="Enter description (optional)"
-                  />
                 </Form.Group>
 
-                {/* <Form.Group className="mb-3" controlId="formStartDate">
+                <Form.Group className="mb-3" controlId="formStartDate">
                   <Form.Label>Start Date</Form.Label>
                   <Form.Control
                     type="datetime-local"
@@ -355,7 +294,7 @@ class DiscoverCreateForm extends Component {
                     onChange={this.handleChange}
                     required
                   />
-                </Form.Group> */}
+                </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label>Tags (comma-separated)</Form.Label>
@@ -369,8 +308,60 @@ class DiscoverCreateForm extends Component {
               </Col>
             </Row>
 
+            <Form.Group className="mb-3" controlId="formDescription">
+              <Form.Label className="fw-bold">Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="description"
+                value={this.state.description}
+                onChange={this.handleChange}
+                maxLength={500}
+                placeholder="Enter description (optional)"
+              />
+            </Form.Group>
+
+            {/* Cover Image Upload */}
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Cover Image</Form.Label>
+              <div
+                className="border border-dashed p-4 text-center d-flex justify-content-center align-items-center"
+                style={{ borderRadius: "5px", height: "120px", borderColor: "#ccc", cursor: "pointer" }}
+                onClick={() => document.getElementById("coverImageUpload").click()} // Trigger input on click
+              >
+                <Form.Control
+                  type="file"
+                  id="coverImageUpload"
+                  name="coverImage"
+                  accept="image/*"
+                  onChange={this.handleFileChange}
+                  className="d-none"
+                />
+                <button type="button" className="btn btn-dark btn-sm">Upload Cover Image</button>
+              </div>
+            </Form.Group> 
+
+            {/* Profile Image Upload */}
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Profile Image</Form.Label>
+              <div
+                className="border border-dashed p-4 text-center d-flex justify-content-center align-items-center"
+                style={{ borderRadius: "5px", height: "120px", borderColor: "#ccc", cursor: "pointer" }}
+                onClick={() => document.getElementById("profileImageUpload").click()} // Trigger input on click
+              >
+                <Form.Control
+                  type="file"
+                  id="profileImageUpload"
+                  name="profileImage"
+                  accept="image/*"
+                  onChange={this.handleFileChange}
+                  className="d-none"
+                />
+                <button type="button" className="btn btn-dark btn-sm">Upload Profile Image</button>
+              </div>
+            </Form.Group> 
+
             <div className="text-center">
-              <Button variant="primary" type="submit">Submit</Button>
+              <Button variant="dark" type="submit">Submit</Button>
             </div>
           </Form>
         </Card>
@@ -389,4 +380,4 @@ const mapDispatchToProps = {
   setActiveCategoryHeader,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DiscoverCreateForm);
+export default connect(mapStateToProps, mapDispatchToProps)(EventCreateForm);

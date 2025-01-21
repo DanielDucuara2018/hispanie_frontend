@@ -33,7 +33,8 @@ class Categories extends Component {
               as={Link}
               to={path}
               onClick={() => this.handleCategoryChange(path)}
-              className={category === path ? 'text-danger fw-bold' : ''}
+              className={category === path ? "text-danger fw-bold" : "text-dark fw-bold"}
+              style={{fontSize: "1.4rem", fontFamily: "Figtree, sans-serif"}}
             >
               {label}
             </Nav.Link>

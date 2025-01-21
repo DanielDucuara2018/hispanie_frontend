@@ -11,8 +11,8 @@ import EventDetail from './components/agenda/EventDetail';
 import DiscoverDetail from './components/discover/DiscoverDetail';
 import Login from './components/login/LoginPage';
 import ProfilePage from './components/login/ProfilePage';
-import EventCreateForm from './components/agenda/EventCreateForm';
-import DiscoverCreateForm from './components/discover/DiscoverCreateForm';
+import EventCreateForm from './components/login/EventCreateForm';
+import DiscoverCreateForm from './components/login/DiscoverCreateForm';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "leaflet/dist/leaflet.css";

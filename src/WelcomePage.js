@@ -44,19 +44,26 @@ class WelcomePage extends Component {
     return (
       <div className="bg-light min-vh-100">
         {/* HEADER SECTION */}
-        <Container fluid className="py-5 text-center bg-gradient bg-white">
-          <p className="text-muted small">{this.state.currentDate}</p>
-          <h1 className="fw-bold">
-            Yo traigo alegría, pa' tu corazón{" "}
-            <span role="img" aria-label="heart">💖</span>, pa' los corazones{" "}
-            <span role="img" aria-label="smile">😊</span>.
-          </h1>
-          <p className="text-secondary">
-            I bring joy, for your heart{" "}
-            <span role="img" aria-label="heart">💖</span>, for the hearts{" "}
-            <span role="img" aria-label="smile">😊</span>.
-          </p>
-        </Container>
+        <div 
+          className="container-fluid isolate py-5"
+          style={{ background: "linear-gradient(145deg, #fff 0, #f5f1f7 20%, #f0f5ff 50%, #fff 100%)" }}
+        >
+          <div className="row justify-content-center">
+            <div className="col-md-8 text-left">
+              <p className="text-muted small fw-bold">{this.state.currentDate}.</p>
+              <h1 className="fw-bold animate__animated animate__slideInDown">
+                Yo traigo alegría, pa' tu corazón{" "}
+                <span role="img" aria-label="heart">❤️‍🔥</span>, pa' los corazones{" "}
+                <span role="img" aria-label="smile">😌</span>.
+              </h1>
+              <p className="text-secondary animate__animated animate__fadeIn">
+                I bring joy, for your heart{" "}
+                <span role="img" aria-label="heart">❤️‍🔥</span>, for the hearts{" "}
+                <span role="img" aria-label="smile">😌</span>.
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* DISCOVER EVENTS SECTION */}
         <Container className="mt-5">
@@ -112,7 +119,7 @@ class WelcomePage extends Component {
                 onClick={this.handlePrev}
                 disabled={startIndex === 0}
               >
-                ◀
+                {"<"}
               </Button>
             </Col>
 
@@ -156,7 +163,7 @@ class WelcomePage extends Component {
                 onClick={this.handleNext}
                 disabled={startIndex >= businesses.length - visibleCount}
               >
-                ▶
+                {">"}
               </Button>
             </Col>
           </Row>
