@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Button, Container, Row, Col, Card, ListGroup  } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Card, ListGroup, Badge } from "react-bootstrap";
 import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from "react-router-dom";
@@ -43,7 +43,7 @@ class EventCreateForm extends Component {
       end_date: "",
       tags: [],
       urls: [],
-      suggestions: [],
+      addressSuggestions: [],
       isLoading: false,
       profileImage: null,
       coverImage: null,
@@ -51,6 +51,8 @@ class EventCreateForm extends Component {
       coverImagePreview: "",
       message: "", // Success/Error message
       messageType: "", // "success" or "error"
+      tagValue: "",
+      filteredSuggestions: [],
     };
   }
 
@@ -61,6 +63,7 @@ class EventCreateForm extends Component {
     });
   };
 
+  // TODO handle file download
   handleFileChange = (e) => {
     const { name } = e.target;
     const file = e.target.files[0];
@@ -73,6 +76,7 @@ class EventCreateForm extends Component {
     }
   };
 
+  // handle addresses
   handleAddressChange = async (e) => {
     const address = e.target.value;
     this.setState({ address, isLoading: true });
@@ -91,31 +95,56 @@ class EventCreateForm extends Component {
           }
         );
         console.log(response.data)
-        this.setState({ suggestions: response.data, isLoading: false });
+        this.setState({ addressSuggestions: response.data, isLoading: false });
       } catch (error) {
         console.error("Error fetching address:", error);
         this.setState({ isLoading: false });
       }
     } else {
-      this.setState({ suggestions: [], isLoading: false });
+      this.setState({ addressSuggestions: [], isLoading: false });
     }
   };
 
   // 🏠 Select an address from suggestions
   handleSelectAddress = (place) => {
-      this.setState({
-        address: place.display_name,
-        latitude: place.lat,
-        longitude: place.lon,
-        country: place.address.country,
-        city: place.address.city,
-        municipality: place.address.municipality,
-        postcode: place.address.postcode,
-        region: place.address.state,
-        suggestions: [],
-      });
-    };
+    this.setState({
+      address: place.display_name,
+      latitude: place.lat,
+      longitude: place.lon,
+      country: place.address.country,
+      city: place.address.city,
+      municipality: place.address.municipality,
+      postcode: place.address.postcode,
+      region: place.address.state,
+      addressSuggestions: [],
+    });
+  };
 
+  // handle tags
+  handleTagInputChange = (e) => {
+    const tagValue = e.target.value;
+    const filteredSuggestions = this.props.tags.filter(
+      (tag) => tag.name.toLowerCase().includes(tagValue.toLowerCase())
+    );
+
+    this.setState({ tagValue, filteredSuggestions });
+  };
+
+  handleTagSelect = (tag) => {
+    this.setState((prevState) => ({
+      tags: [...prevState.tags, tag],
+      tagValue: "",
+      filteredSuggestions: [],
+    }));
+  };
+
+  handleTagRemove = (tagId) => {
+    this.setState((prevState) => ({
+      tags: prevState.tags.filter((tag) => tag.id !== tagId),
+    }));
+  };
+
+  // handle submit form
   handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -149,6 +178,8 @@ class EventCreateForm extends Component {
       return <Navigate to={this.props.activeCategoryAgenda} replace />;
     }
 
+    // const { tags } = this.props;
+
     return (
       <Container className="my-4">
         {/* Event Form */}
@@ -166,23 +197,23 @@ class EventCreateForm extends Component {
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Name</Form.Label>
+                  <Form.Label className="fw-bold">Name</Form.Label>
                   <Form.Control type="text" name="name" value={this.state.name} onChange={this.handleChange} placeholder="Event Name" required />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Email</Form.Label>
+                  <Form.Label className="fw-bold">Email</Form.Label>
                   <Form.Control type="email" name="email" value={this.state.email} onChange={this.handleChange} placeholder="example@email.com (Optional)" />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Phone</Form.Label>
+                  <Form.Label className="fw-bold">Phone</Form.Label>
                   <Form.Control type="tel" name="phone" value={this.state.phone} onChange={this.handleChange} placeholder="+1 234 567 890 (Optional)" />
                 </Form.Group>
 
                 {/* Address Input with Autocomplete */}
                 <Form.Group className="mb-3" controlId="formAddress">
-                  <Form.Label>Address</Form.Label>
+                  <Form.Label className="fw-bold">Address</Form.Label>
                   <Form.Control
                     type="text"
                     value={this.state.address}
@@ -192,9 +223,9 @@ class EventCreateForm extends Component {
                   {this.state.isLoading && <small>Loading...</small>}
                   
                   {/* Suggestions Dropdown */}
-                  {this.state.suggestions.length > 0 && (
+                  {this.state.addressSuggestions.length > 0 && (
                     <ListGroup className="mt-1">
-                      {this.state.suggestions.map((place, index) => (
+                      {this.state.addressSuggestions.map((place, index) => (
                         <ListGroup.Item
                           key={index}
                           action
@@ -208,17 +239,17 @@ class EventCreateForm extends Component {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Country</Form.Label>
+                  <Form.Label className="fw-bold">Country</Form.Label>
                   <Form.Control type="text" name="country" value={this.state.country} onChange={this.handleChange} placeholder="France" required readOnly />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>City</Form.Label>
+                  <Form.Label className="fw-bold">City</Form.Label>
                   <Form.Control type="text" name="city" value={this.state.city} onChange={this.handleChange} placeholder="Issy-les-Moulineaux" required readOnly />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Municipality</Form.Label>
+                  <Form.Label className="fw-bold">Municipality</Form.Label>
                   <Form.Control type="text" name="municipality" value={this.state.municipality} onChange={this.handleChange} placeholder="Issy-les-Moulineaux" required readOnly />
                 </Form.Group>
 
@@ -235,30 +266,19 @@ class EventCreateForm extends Component {
               </Col>
 
               <Col md={6}>
-                {/* <Form.Group className="mb-3">
-                  <Form.Label>Latitude</Form.Label>
-                  <Form.Control type="number" step="any" name="latitude" value={this.state.latitude} onChange={this.handleChange} placeholder="Enter latitude" required />
-                </Form.Group>
-
                 <Form.Group className="mb-3">
-                  <Form.Label>Longitude</Form.Label>
-                  <Form.Control type="number" step="any" name="longitude" value={this.state.longitude} onChange={this.handleChange} placeholder="Enter longitude" required />
-                </Form.Group> */}
-
-                
-                <Form.Group className="mb-3">
-                  <Form.Label>Postcode</Form.Label>
+                  <Form.Label className="fw-bold">Postcode</Form.Label>
                   <Form.Control type="text" name="postcode" value={this.state.postcode} onChange={this.handleChange} placeholder="92130" required readOnly />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Region</Form.Label>
+                  <Form.Label className="fw-bold">Region</Form.Label>
                   <Form.Control type="text" name="region" value={this.state.region} onChange={this.handleChange} placeholder="Ile de France" required readOnly />
                 </Form.Group>
 
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Category</Form.Label>
+                  <Form.Label className="fw-bold">Category</Form.Label>
                   <Form.Select name="category" value={this.state.category} onChange={this.handleChange} required>
                     <option value="">Select Category</option>
                     {EVENT_CATEGORIES.map((cat) => (
@@ -270,12 +290,12 @@ class EventCreateForm extends Component {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Price</Form.Label>
+                  <Form.Label className="fw-bold">Price</Form.Label>
                   <Form.Control type="number" name="price"value={this.state.price} onChange={this.handleChange}  placeholder="Enter price" required />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formStartDate">
-                  <Form.Label>Start Date</Form.Label>
+                  <Form.Label className="fw-bold">Start Date</Form.Label>
                   <Form.Control
                     type="datetime-local"
                     name="start_date"
@@ -286,7 +306,7 @@ class EventCreateForm extends Component {
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formEndDate">
-                  <Form.Label>End Date</Form.Label>
+                  <Form.Label className="fw-bold">End Date</Form.Label>
                   <Form.Control
                     type="datetime-local"
                     name="end_date"
@@ -297,16 +317,49 @@ class EventCreateForm extends Component {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Tags (comma-separated)</Form.Label>
-                  <Form.Control type="text" name="tags" value={this.state.tags} onChange={this.handleChange} placeholder="music, food, outdoors (Optional)" />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label>URLs (comma-separated)</Form.Label>
+                  <Form.Label className="fw-bold">URLs (comma-separated)</Form.Label>
                   <Form.Control type="text" name="urls" value={this.state.urls} onChange={this.handleChange} placeholder="https://example.com, https://event.com (Optional)" />
                 </Form.Group>
               </Col>
             </Row>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Tags</Form.Label>
+              <div className="border p-2 rounded">
+                {this.state.tags.map((tag) => (
+                  <Badge
+                    key={tag.id}
+                    pill
+                    bg="secondary"
+                    className="me-2 mb-2 px-3 py-2 fs-6"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => this.handleTagRemove(tag.id)}
+                  >
+                    {tag.name} ✖
+                  </Badge>
+                ))}
+                <Form.Control
+                  type="text"
+                  value={this.state.tagValue}
+                  onChange={this.handleTagInputChange}
+                  placeholder="Type to search tags..."
+                />
+              </div>
+              {this.state.filteredSuggestions.length > 0 && (
+                <ListGroup className="mt-1">
+                  {this.state.filteredSuggestions.map((tag) => (
+                    <ListGroup.Item
+                      key={tag.id}
+                      action
+                      onClick={() => this.handleTagSelect(tag)}
+                    >
+                      {tag.name}
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </Form.Group>
+
 
             <Form.Group className="mb-3" controlId="formDescription">
               <Form.Label className="fw-bold">Description</Form.Label>

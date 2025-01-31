@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Button, Badge, Row, Col, Container, Tabs, Tab, ListGroup } from 'react-bootstrap';
+import { Card, Button, Badge, Row, Col, Container, Tabs, Tab } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { LuShare } from "react-icons/lu";
 import CATEGORY_EMOJIS from '../../hooks/categoryEmojis';
 import L from "leaflet";
 
@@ -44,16 +45,27 @@ class EventDetail extends Component {
         <Container className="my-5">
           {/* Event Header */}
           <div className="mb-4">
-            <h5 className="text-muted mb-2">{data.category} · {data.start_date}</h5>
-            <h1 className="fw-bold mb-1">{data.name}</h1>
-            <p className="text-muted">{data.address}</p>
-            <div className="d-flex flex-wrap gap-2 mb-3">
-              <Badge bg="light" text="dark">Bachata</Badge>
-              <Badge bg="light" text="dark">Latino</Badge>
-              <Badge bg="light" text="dark">Modern Bachata</Badge>
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <Badge bg="light" text="dark" className="me-2">{data.category}</Badge>
+                <span className="text-muted">{data.start_date}</span>
+
+                <h1 className="fw-bold mt-2">{data.name}</h1>
+                <p className="text-muted">{data.address}</p>
+
+                <div className="d-flex flex-wrap gap-2 mb-3">
+                  <Badge bg="light" text="dark">Bachata</Badge>
+                  <Badge bg="light" text="dark">Latino</Badge>
+                  <Badge bg="light" text="dark">Modern Bachata</Badge>
+                </div>
+              </div>
+
+              {/* Buttons aligned to the right */}
+              <div className="d-flex gap-2">
+                <Button variant="dark w-100">Save</Button>
+                <Button variant="outline-dark"><LuShare /></Button>
+              </div>
             </div>
-            <Button variant="dark" className="me-2">Save</Button>
-            <Button variant="outline-dark">Share</Button>
           </div>
 
           <Tabs defaultActiveKey="info" id="event-detail-tabs" className="mb-4">
@@ -61,7 +73,7 @@ class EventDetail extends Component {
               <Row>
                 {/* Tickets Section */}
                 <Col md={8}>
-                  <Card className="p-3 mb-4">
+                  {/* <Card className="p-3 mb-4">
                     <h5 className="mb-3">Tickets:</h5>
                     <ListGroup>
                       <ListGroup.Item className="d-flex justify-content-between align-items-center">
@@ -75,32 +87,23 @@ class EventDetail extends Component {
                         <Button variant="dark" size="sm">Buy</Button>
                       </ListGroup.Item>
                     </ListGroup>
-                  </Card>
+                  </Card> */}
 
                   {/* Lineup Section */}
-                  <Card className="p-3 mb-4">
+                  {/* <Card className="p-3 mb-4">
                     <h5 className="mb-3">Lineup:</h5>
                     <ListGroup>
                       <ListGroup.Item>20:00 - Bachata Beginner</ListGroup.Item>
                       <ListGroup.Item>21:00 - Bachata Intermediate</ListGroup.Item>
                       <ListGroup.Item>22:00 - Mix Bachata</ListGroup.Item>
                     </ListGroup>
-                  </Card>
+                  </Card> */}
 
                   {/* Description Section */}
                   <Card className="p-3">
                     <h5 className="mb-3">Description:</h5>
                     <p>
                       {data.description}
-                      {/* <strong>🎉 Bachatero SAO 🎉</strong>
-                      <br />
-                      Join us every Wednesday at SAO for an evening full of rhythm and dance! 🕺💃
-                      <ul>
-                        <li>20:00 - Bachata Beginner: Learn the basics and feel the energy of bachata!</li>
-                        <li>21:00 - Bachata Intermediate: Perfect your movements and learn more complex figures.</li>
-                        <li>22:00 - Mix Bachata: Dance freely with something for everyone!</li>
-                      </ul>
-                      Come to have fun, learn, and improve in a festive and friendly atmosphere! 🎶 */}
                     </p>
                   </Card>
                 </Col>
@@ -128,13 +131,6 @@ class EventDetail extends Component {
               <p>No similar events found at this time.</p>
             </Tab>
           </Tabs>
-
-          {/* Tags Section */}
-          <div className="d-flex gap-2 mt-4">
-            <Badge bg="light" text="dark">Bachata</Badge>
-            <Badge bg="light" text="dark">Latino</Badge>
-            <Badge bg="light" text="dark">Modern Bachata</Badge>
-          </div>
         </Container>
       </>
     );

@@ -13,10 +13,12 @@ import Login from './components/login/LoginPage';
 import ProfilePage from './components/login/ProfilePage';
 import EventCreateForm from './components/login/EventCreateForm';
 import DiscoverCreateForm from './components/login/DiscoverCreateForm';
+import TagCreateForm from './components/login/TagCreateForm';
+import AboutPage from './components/AboutPage';
+import { connect } from "react-redux";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "leaflet/dist/leaflet.css";
-
 
 class App extends Component {
   constructor(props) {
@@ -24,26 +26,34 @@ class App extends Component {
     this.state = {
       events: [],
       businesses: [],
+      tags: []
     };
   }
 
   async componentDidMount() {
     try {
       // Fetch events data
-      const eventsResponse = await Api.get('/events/public/read');
-      const businessesResponse = await Api.get('/businesses/public/read');
+      const publicEvents = await Api.get('/events/public/read');
+      const publicBusinesses = await Api.get('/businesses/public/read');
 
       this.setState({
-        events: eventsResponse.data,
-        businesses: businessesResponse.data,
+        events: publicEvents.data,
+        businesses: publicBusinesses.data,
       });
+
+      if (this.props.isLoggedIn){
+        const privateTags = await Api.get('/tags/private/read', {withCredentials: true} );
+        this.setState({
+          tags: privateTags.data,
+        });
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   }
 
   render() {
-    const { events, businesses } = this.state;
+    const { events, businesses, tags } = this.state;
     const agenda = "/agenda"
     const discover = "/discover"
     // Define your routes in an array
@@ -57,7 +67,7 @@ class App extends Component {
       { path: `${agenda}/concerts`, element: <AgendaPage events={[]} /> },
       { path: `${agenda}/parties`, element: <AgendaPage events={[]} /> },
       { path: `${agenda}/event/:id`, element: <EventDetail events={events} /> },
-      { path: `/event/create`, element: <EventCreateForm />},
+      { path: `/event/create`, element: <EventCreateForm tags={tags} />},
       { path: `${discover}`, element: <DiscoverPage businesses={businesses} /> },
       { path: `${discover}/all`, element: <DiscoverPage businesses={businesses} /> },
       { path: `${discover}/artists`, element: <DiscoverPage businesses={businesses} /> },
@@ -66,14 +76,16 @@ class App extends Component {
       { path: `${discover}/directors`, element: <DiscoverPage businesses={[]} /> },
       { path: `${discover}/restaurants`, element: <DiscoverPage businesses={[]} /> },
       { path: `${discover}/business/:id`, element: <DiscoverDetail businesses={businesses} /> },
-      { path: `/business/create`, element: <DiscoverCreateForm />},
+      { path: `/business/create`, element: <DiscoverCreateForm tags={tags} />},
+      { path: `/tag/create`, element: <TagCreateForm />},
       { path: '/maps', element: <MapView events={events} businesses={businesses}/> },
       { path: '/login', element: <Login />},
+      { path: '/about', element: <AboutPage />},
     ];
-
+    const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
     return (
       <Router>
-        <div className="container-fluid p-0 d-flex flex-column min-vh-100">
+        <div className="container-fluid p-0 d-flex flex-column min-vh-100" style={custom_style}>
           <Header />
           <main className="flex-grow-1">
             <Routes>
@@ -89,4 +101,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  isLoggedIn: state.appRootReducer.isLoggedIn,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

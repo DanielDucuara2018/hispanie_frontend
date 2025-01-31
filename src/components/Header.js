@@ -51,7 +51,7 @@ class Header extends Component {
       },
     ];
 
-    const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
+    // const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
     return (
       <Navbar bg="white" expand="lg" className="border-bottom px-3">
         <Navbar.Brand 
@@ -67,7 +67,7 @@ class Header extends Component {
           />
         </Navbar.Brand>
         <Form className="d-flex ms-auto me-3">
-          <FormControl type="search" placeholder="Search" className="me-2" style={custom_style}/>
+          <FormControl type="search" placeholder="Search" className="me-2"/>
         </Form>
         <Nav>
           {navItems
@@ -77,15 +77,17 @@ class Header extends Component {
                 <Dropdown key={index} align="end">
                   <Dropdown.Toggle 
                     variant="link" 
-                    className="d-flex align-items-center text-dark text-decoration-none"
-                    style={custom_style}
+                    className="d-flex align-items-center text-decoration-none"
                   >
                     <FaUserCircle size={20} className="me-2" />
                     Profile
                   </Dropdown.Toggle>
-                  <Dropdown.Menu style={custom_style}>
+                  <Dropdown.Menu>
                     <Dropdown.Item as={Link} to="/profile">
                       View Profile
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/tag/create">
+                      Create Tag
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to="/event/create">
                       Create Event
@@ -111,7 +113,6 @@ class Header extends Component {
                       ? "text-danger fw-bold d-flex align-items-center"
                       : "d-flex align-items-center")
                   }
-                  style={custom_style}
                 >
                   {item.icon} <span className="ms-2">{item.label}</span>
                 </Nav.Link>
