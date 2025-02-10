@@ -2,15 +2,16 @@ import React from 'react';
 import { Card, Badge, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const EventCard = ({ id, title, start_date, end_date, address, category, price, tags, image }) => {
+const EventCard = ({ id, title, start_date, end_date, address, category, price, tags, files }) => {
   // const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
+  console.log(tags)
   return (
     <Link to={`/agenda/event/${id}`} className="text-decoration-none text-dark">
-      <Card className="mb-4 shadow-sm border-0">
+      <Card className="mb-4 shadow-sm border-0 h-100">
         {/* Image */}
         <Card.Img
           variant="top"
-          src="https://hispanie.com/cdn/shop/files/70921387_10157683039007716_7599387719042596864_n_600x600.png?v=1734460863" /*{image}*/
+          src={files.find((x) => x.category === "profile_image").path} /*{image}*/
           alt={title}
           style={{ height: '100%', objectFit: 'cover', borderRadius: '0.5rem 0.5rem 0 0' }}
         />
@@ -19,7 +20,7 @@ const EventCard = ({ id, title, start_date, end_date, address, category, price, 
           <Row className="mb-2">
             <Col>
               <Badge bg="secondary" className="me-2">{category}</Badge>
-              <small className="text-muted">{start_date}</small>
+              <small className="text-muted">{start_date} - {end_date}</small>
             </Col>
           </Row>
           <Card.Title className="fs-5 fw-bold">{title}</Card.Title>
@@ -35,7 +36,7 @@ const EventCard = ({ id, title, start_date, end_date, address, category, price, 
                 className="py-1 px-2"
                 style={{ fontSize: '0.9rem' }}
               >
-                {tag}
+                {tag.name}
               </Badge>
             ))}
           </div>

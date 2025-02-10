@@ -15,10 +15,12 @@ import EventCreateForm from './components/login/EventCreateForm';
 import DiscoverCreateForm from './components/login/DiscoverCreateForm';
 import TagCreateForm from './components/login/TagCreateForm';
 import AboutPage from './components/AboutPage';
+import BlogPage from './components/BlogPage';
 import { connect } from "react-redux";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "leaflet/dist/leaflet.css";
+import AccountCreationForm from './components/login/AccountCreateForm';
 
 class App extends Component {
   constructor(props) {
@@ -78,9 +80,11 @@ class App extends Component {
       { path: `${discover}/business/:id`, element: <DiscoverDetail businesses={businesses} /> },
       { path: `/business/create`, element: <DiscoverCreateForm tags={tags} />},
       { path: `/tag/create`, element: <TagCreateForm />},
+      { path: `/account/create`, element: <AccountCreationForm />},
       { path: '/maps', element: <MapView events={events} businesses={businesses}/> },
       { path: '/login', element: <Login />},
       { path: '/about', element: <AboutPage />},
+      { path: '/blog', element: <BlogPage />},
     ];
     const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
     return (

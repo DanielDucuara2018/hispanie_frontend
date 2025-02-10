@@ -228,16 +228,6 @@ class DiscoverCreateForm extends Component {
               </Col>
 
               <Col md={6}>
-                {/* <Form.Group className="mb-3">
-                  <Form.Label>Latitude</Form.Label>
-                  <Form.Control type="number" step="any" name="latitude" value={this.state.latitude} onChange={this.handleChange} placeholder="Enter latitude" required />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label>Longitude</Form.Label>
-                  <Form.Control type="number" step="any" name="longitude" value={this.state.longitude} onChange={this.handleChange} placeholder="Enter longitude" required />
-                </Form.Group> */}
-
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-bold">Postcode</Form.Label>
                   <Form.Control type="text" name="postcode" value={this.state.postcode} onChange={this.handleChange} placeholder="92130" required readOnly />
@@ -265,34 +255,6 @@ class DiscoverCreateForm extends Component {
                     ))}
                   </Form.Select>
                 </Form.Group>
-
-                {/* <Form.Group className="mb-3">
-                  <Form.Label>Price</Form.Label>
-                  <Form.Control type="number" name="price"value={this.state.price} onChange={this.handleChange}  placeholder="Enter price" required />
-                </Form.Group> */}
-
-
-                {/* <Form.Group className="mb-3" controlId="formStartDate">
-                  <Form.Label>Start Date</Form.Label>
-                  <Form.Control
-                    type="datetime-local"
-                    name="start_date"
-                    value={this.state.start_date}
-                    onChange={this.handleChange}
-                    required
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formEndDate">
-                  <Form.Label>End Date</Form.Label>
-                  <Form.Control
-                    type="datetime-local"
-                    name="end_date"
-                    value={this.state.end_date}
-                    onChange={this.handleChange}
-                    required
-                  />
-                </Form.Group> */}
 
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-bold">Tags (comma-separated)</Form.Label>

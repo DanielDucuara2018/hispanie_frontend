@@ -20,6 +20,11 @@ const EVENT_CATEGORIES = [
   { label: "Dance", value: "dance" },
 ];
 
+const imageCategoryMapping = {
+  profileImage: "profile_image",
+  coverImage: "cover_image",
+};
+
 class EventCreateForm extends Component {
   constructor(props) {
     super(props);
@@ -53,6 +58,7 @@ class EventCreateForm extends Component {
       messageType: "", // "success" or "error"
       tagValue: "",
       filteredSuggestions: [],
+      files : []
     };
   }
 
@@ -63,16 +69,63 @@ class EventCreateForm extends Component {
     });
   };
 
-  // TODO handle file download
-  handleFileChange = (e) => {
+  // TODO handle file upload
+  handleFileChange = async (e) => {
     const { name } = e.target;
     const file = e.target.files[0];
 
     if (file) {
-      this.setState({
-        [name]: file,
-        [`${name}Preview`]: URL.createObjectURL(file),
-      });
+      try {
+        // 1. Solicitar una URL prefirmada al backend to upload file
+        const upload_response = await Api.get("/files/private/generate-upload-presigned-url", { 
+          params: { 
+            filename: file.name, 
+            content_type: file.type 
+          },
+          withCredentials: true
+        });
+
+        const upload_url = upload_response.data.url;
+
+        // 2. Subir el archivo a la URL prefirmada
+        await axios.put(upload_url, file, {
+          headers: { "Content-Type": file.type },
+        });
+
+        // 3. Solicitar una URL prefirmada al backend to download file
+        const download_response = await Api.get("/files/private/generate-download-presigned-url", { 
+          params: { 
+            filename: file.name, 
+          },
+          withCredentials: true
+        });
+        
+        const download_url = download_response.data.url;
+
+        // 4. Guardar la URL pública de la imagen
+        this.setState((prevState) => ({
+          [name]: download_url,
+          [`${name}Preview`]: URL.createObjectURL(file),
+          files: [
+            ...(prevState.files || []), // Keep previous files
+            {
+              filename: file.name,
+              content_type: file.type,
+              category: imageCategoryMapping[name] || "other",
+              path: download_url,
+              description: name,
+            },
+          ],
+        }));
+        console.log(this.state.files)
+
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        this.setState({
+          message: "Error uploading image. Please try again.",
+          messageType: "error",
+        });
+      }
     }
   };
 
@@ -159,14 +212,14 @@ class EventCreateForm extends Component {
       console.log("Form submitted successfully:", response.data);
       // Show success message
       this.setState({
-        message: "Business created successfully!",
+        message: "Event created successfully!",
         messageType: "success",
       });
     } catch (error) {
       console.error("Error submitting form:", error);
       // Show error message
       this.setState({
-        message: "Error creating business. Please try again.",
+        message: "Error creating Event. Please try again.",
         messageType: "error",
       });
     }
@@ -360,7 +413,6 @@ class EventCreateForm extends Component {
               )}
             </Form.Group>
 
-
             <Form.Group className="mb-3" controlId="formDescription">
               <Form.Label className="fw-bold">Description</Form.Label>
               <Form.Control
@@ -391,6 +443,16 @@ class EventCreateForm extends Component {
                 />
                 <button type="button" className="btn btn-dark btn-sm">Upload Cover Image</button>
               </div>
+              {this.state.coverImagePreview && (
+                <div className="d-flex justify-content-center">
+                  <img
+                    src={this.state.coverImagePreview}
+                    alt="Cover Preview"
+                    className="img-fluid mt-2"
+                    style={{ maxHeight: "150px" }}
+                  />
+                </div>
+              )}
             </Form.Group> 
 
             {/* Profile Image Upload */}
@@ -411,6 +473,16 @@ class EventCreateForm extends Component {
                 />
                 <button type="button" className="btn btn-dark btn-sm">Upload Profile Image</button>
               </div>
+              {this.state.profileImagePreview && (
+                <div className="d-flex justify-content-center">
+                  <img
+                    src={this.state.profileImagePreview}
+                    alt="Profile Preview"
+                    className="img-fluid mt-2"
+                    style={{ maxHeight: "150px" }}
+                  />
+                </div>
+              )}
             </Form.Group> 
 
             <div className="text-center">

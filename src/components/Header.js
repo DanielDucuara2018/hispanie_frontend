@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Navbar, Nav, Form, FormControl, Dropdown, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { FaCalendarAlt, FaCompass, FaMapMarkedAlt, FaStore, FaUserCircle } from "react-icons/fa";
+import { FaCalendarAlt, FaCompass, FaMapMarkedAlt, FaUserCircle } from "react-icons/fa";
 import { connect } from "react-redux";
 import { setIsLoggedIn, setActiveCategoryHeader } from "../actions/appActions";
 import Api from "../Api";
@@ -30,7 +30,6 @@ class Header extends Component {
       { label: "Agenda", path: agenda_path, icon: <FaCalendarAlt />, show: true },
       { label: "Discover", path: discover_path, icon: <FaCompass />, show: true },
       { label: "Map", path: "/maps", icon: <FaMapMarkedAlt />, show: true },
-      { label: "Store", path: "/store", icon: <FaStore />, show: true },
       {
         label: "Profile",
         show: this.props.isLoggedIn,
@@ -66,9 +65,11 @@ class Header extends Component {
             height={25}
           />
         </Navbar.Brand>
+
         <Form className="d-flex ms-auto me-3">
           <FormControl type="search" placeholder="Search" className="me-2"/>
         </Form>
+
         <Nav>
           {navItems
             .filter((item) => item.show) // Only display items where `show` is true
@@ -85,6 +86,9 @@ class Header extends Component {
                   <Dropdown.Menu>
                     <Dropdown.Item as={Link} to="/profile">
                       View Profile
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/account/create">
+                      Create Account
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to="/tag/create">
                       Create Tag

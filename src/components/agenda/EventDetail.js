@@ -31,13 +31,13 @@ class EventDetail extends Component {
     const data = events.find((x) => x.id === String(params.id));
 
     if (!data) return <p>Event not found</p>;
-    console.log(data)
+    
     return (
       <>
         {/* Image */}
         <Card.Img
           variant="top"
-          src="https://hispanie.com/cdn/shop/files/70921387_10157683039007716_7599387719042596864_n_600x600.png?v=1734460863" /*{image}*/
+          src={data.files.find((x) => x.category === "cover_image").path} /*{image} TODO Fix me*/
           alt="" /*{title}*/
           style={{ height: '400px', objectFit: 'cover', borderRadius: '0.5rem 0.5rem 0 0' }}
         />
@@ -48,15 +48,23 @@ class EventDetail extends Component {
             <div className="d-flex justify-content-between align-items-center">
               <div>
                 <Badge bg="light" text="dark" className="me-2">{data.category}</Badge>
-                <span className="text-muted">{data.start_date}</span>
+                <span className="text-muted">{data.start_date} - {data.start_date}</span>
 
                 <h1 className="fw-bold mt-2">{data.name}</h1>
                 <p className="text-muted">{data.address}</p>
 
                 <div className="d-flex flex-wrap gap-2 mb-3">
-                  <Badge bg="light" text="dark">Bachata</Badge>
-                  <Badge bg="light" text="dark">Latino</Badge>
-                  <Badge bg="light" text="dark">Modern Bachata</Badge>
+                  {data.tags.map((tag, index) => (
+                    <Badge
+                      key={index}
+                      bg="light"
+                      text="dark"
+                      className="py-1 px-2"
+                      style={{ fontSize: '0.9rem' }}
+                    >
+                      {tag.name}
+                    </Badge>
+                  ))}
                 </div>
               </div>
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 // import Filters from './Filters';
 import EventCard from './EventCard';
-import { format } from 'date-fns'; // Import date formatting library
 
 class HomePage extends Component {
   render() {
@@ -49,8 +48,8 @@ class HomePage extends Component {
                       address={event.address}
                       category={event.category}
                       price={event.price}
-                      tags={["Bachata", "Latino", "Modern Bachata"]} //{event.tags}
-                      image={""}
+                      tags={event.tags}
+                      files={event.files}
                     />
                   </div>
                 ))}

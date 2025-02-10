@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Card, Carousel, Button, Image } from 'react-bootstrap';
+import { Link } from "react-router-dom"; // Import Link from React Router
 
 const founders = [
   {
@@ -31,6 +32,7 @@ const news = [
     description:
       "El 2025 comienza con un cambio trascendental para Hispanie. Después de un mes de conversaciones con nuestros usuarios actuales y futuros, hemos llegado a un descubrimiento clave: la verdadera necesidad...",
     img: "https://hispanie.com/cdn/shop/articles/Frame_268.jpg?v=1736214955&width=1500",
+    articleUrl: "/news/hispanie-2025-new-focus",
   },
   {
     title: "Hispanie: Un Paso Adelante con Emprelatam",
@@ -38,6 +40,7 @@ const news = [
     description:
       "At Hispanie, we are excited to share news that marks a before and after in our journey as promoters of Hispanic culture and talent. Our project, known for its...",
     img: "https://hispanie.com/cdn/shop/articles/1729829257187.jpg?v=1732288466&width=1500",
+    articleUrl: "/news/hispanie-emprelatam",
   },
 ];
 
@@ -158,14 +161,16 @@ const AboutPage = () => {
       <Row>
         {news.map((post, index) => (
           <Col md={6} key={index}>
-            <Card className="h-100">
-              <Card.Img variant="top" src={post.img} />
-              <Card.Body>
-                <Card.Title className="fw-bold fs-5">{post.title}</Card.Title>
-                <Card.Text className="text-muted">{post.date}</Card.Text>
-                <Card.Text>{post.description}</Card.Text>
-              </Card.Body>
-            </Card>
+            <Link to={post.articleUrl} className="text-decoration-none">
+              <Card className="h-100">
+                <Card.Img variant="top" src={post.img} />
+                <Card.Body>
+                  <Card.Title className="fw-bold fs-5">{post.title}</Card.Title>
+                  <Card.Text className="text-muted">{post.date}</Card.Text>
+                  <Card.Text>{post.description}</Card.Text>
+                </Card.Body>
+              </Card>
+            </Link>
           </Col>
         ))}
       </Row>
