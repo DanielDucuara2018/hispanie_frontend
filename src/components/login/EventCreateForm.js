@@ -3,6 +3,7 @@ import { Form, Button, Container, Row, Col, Card, ListGroup, Badge } from "react
 import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from "react-router-dom";
+import imageCategoryMapping from "../../hooks/imageCategoryMapping";
 import axios from "axios";
 import Api from "../../Api";
 
@@ -19,11 +20,6 @@ const EVENT_CATEGORIES = [
   { label: "Gastronomy", value: "gastronomy" },
   { label: "Dance", value: "dance" },
 ];
-
-const imageCategoryMapping = {
-  profileImage: "profile_image",
-  coverImage: "cover_image",
-};
 
 class EventCreateForm extends Component {
   constructor(props) {
@@ -69,7 +65,6 @@ class EventCreateForm extends Component {
     });
   };
 
-  // TODO handle file upload
   handleFileChange = async (e) => {
     const { name } = e.target;
     const file = e.target.files[0];
@@ -78,9 +73,9 @@ class EventCreateForm extends Component {
       try {
         // 1. Solicitar una URL prefirmada al backend to upload file
         const upload_response = await Api.get("/files/private/generate-upload-presigned-url", { 
-          params: { 
-            filename: file.name, 
-            content_type: file.type 
+          params: {
+            filename: file.name,
+            content_type: file.type
           },
           withCredentials: true
         });
@@ -110,7 +105,6 @@ class EventCreateForm extends Component {
             },
           ],
         }));
-        console.log(this.state.files)
 
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -223,8 +217,6 @@ class EventCreateForm extends Component {
       this.props.setActiveCategoryHeader("agenda");
       return <Navigate to={this.props.activeCategoryAgenda} replace />;
     }
-
-    // const { tags } = this.props;
 
     return (
       <Container className="my-4">

@@ -16,6 +16,7 @@ class HomePage extends Component {
                 <DiscoverCard 
                   id={business.id}
                   title={business.name}
+                  files={business.files}
                 />
               </Col>
             ))}

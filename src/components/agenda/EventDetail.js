@@ -37,7 +37,7 @@ class EventDetail extends Component {
         {/* Image */}
         <Card.Img
           variant="top"
-          src={data.files.find((x) => x.category === "cover_image").path} /*{image} TODO Fix me*/
+          src={data.files.find((x) => x.category === "cover_image").path}
           alt="" /*{title}*/
           style={{ height: '400px', objectFit: 'cover', borderRadius: '0.5rem 0.5rem 0 0' }}
         />

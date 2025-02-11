@@ -11,7 +11,7 @@ const EventCard = ({ id, title, start_date, end_date, address, category, price, 
         {/* Image */}
         <Card.Img
           variant="top"
-          src={files.find((x) => x.category === "profile_image").path} /*{image}*/
+          src={files.find((x) => x.category === "profile_image").path}
           alt={title}
           style={{ height: '100%', objectFit: 'cover', borderRadius: '0.5rem 0.5rem 0 0' }}
         />

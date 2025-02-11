@@ -35,7 +35,7 @@ class DiscoverDetail extends Component {
         {/* Image */}
         <Card.Img
           variant="top"
-          src="https://cdn.shopify.com/s/files/1/0640/6704/3388/files/350108700_263112186224533_8746143785201406498_n.jpg?v=1734832072" /*{image}*/
+          src={data.files.find((x) => x.category === "cover_image").path}
           alt="" /*{title}*/
           style={{ height: '400px', objectFit: 'cover', borderRadius: '0.5rem 0.5rem 0 0' }}
         />

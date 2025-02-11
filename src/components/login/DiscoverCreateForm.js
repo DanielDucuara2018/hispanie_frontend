@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Form, Button, Container, Row, Col, Card, ListGroup  } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Card, ListGroup, Badge  } from "react-bootstrap";
 import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from "react-router-dom";
+import imageCategoryMapping from "../../hooks/imageCategoryMapping";
 import axios from "axios";
 import Api from "../../Api";
 
@@ -36,9 +37,6 @@ class DiscoverCreateForm extends Component {
       category: "",
       is_public: false,
       description: null,
-      // price: 0,
-      // start_date: "",
-      // end_date: "",
       tags: [],
       urls: [],
       suggestions: [],
@@ -49,6 +47,9 @@ class DiscoverCreateForm extends Component {
       coverImagePreview: "",
       message: "", // Success/Error message
       messageType: "", // "success" or "error"
+      tagValue: "",
+      filteredSuggestions: [],
+      files : []
     };
   }
 
@@ -59,17 +60,58 @@ class DiscoverCreateForm extends Component {
     });
   };
 
-  handleFileChange = (e) => {
+  // TODO handle file upload
+  handleFileChange = async (e) => {
     const { name } = e.target;
     const file = e.target.files[0];
 
     if (file) {
-      this.setState({
-        [name]: file,
-        [`${name}Preview`]: URL.createObjectURL(file),
-      });
+      try {
+        // 1. Solicitar una URL prefirmada al backend to upload file
+        const upload_response = await Api.get("/files/private/generate-upload-presigned-url", { 
+          params: { 
+            filename: file.name, 
+            content_type: file.type 
+          },
+          withCredentials: true
+        });
+
+        const upload_url = upload_response.data.url;
+
+        // 2. Subir el archivo a la URL prefirmada
+        await axios.put(upload_url, file, {
+          headers: { "Content-Type": file.type },
+        });
+
+        // 3. Solicitar una URL prefirmada al backend to download file
+        const download_url = "https://d3skpo6i31hl4s.cloudfront.net/" + file.name
+
+        // 4. Guardar la URL pública de la imagen
+        this.setState((prevState) => ({
+          [name]: download_url,
+          [`${name}Preview`]: URL.createObjectURL(file),
+          files: [
+            ...(prevState.files || []), // Keep previous files
+            {
+              filename: file.name,
+              content_type: file.type,
+              category: imageCategoryMapping[name] || "other",
+              path: download_url,
+              description: name,
+            },
+          ],
+        }));
+
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        this.setState({
+          message: "Error uploading image. Please try again.",
+          messageType: "error",
+        });
+      }
     }
   };
+
 
   handleAddressChange = async (e) => {
     const address = e.target.value;
@@ -100,18 +142,42 @@ class DiscoverCreateForm extends Component {
 
   // 🏠 Select an address from suggestions
   handleSelectAddress = (place) => {
-      this.setState({
-        address: place.display_name,
-        latitude: place.lat,
-        longitude: place.lon,
-        country: place.address.country,
-        city: place.address.city,
-        municipality: place.address.municipality,
-        postcode: place.address.postcode,
-        region: place.address.state,
-        suggestions: [],
-      });
-    };
+    this.setState({
+      address: place.display_name,
+      latitude: place.lat,
+      longitude: place.lon,
+      country: place.address.country,
+      city: place.address.city,
+      municipality: place.address.municipality,
+      postcode: place.address.postcode,
+      region: place.address.state,
+      suggestions: [],
+    });
+  };
+
+  // handle tags
+  handleTagInputChange = (e) => {
+    const tagValue = e.target.value;
+    const filteredSuggestions = this.props.tags.filter(
+      (tag) => tag.name.toLowerCase().includes(tagValue.toLowerCase())
+    );
+
+    this.setState({ tagValue, filteredSuggestions });
+  };
+
+  handleTagSelect = (tag) => {
+    this.setState((prevState) => ({
+      tags: [...prevState.tags, tag],
+      tagValue: "",
+      filteredSuggestions: [],
+    }));
+  };
+
+  handleTagRemove = (tagId) => {
+    this.setState((prevState) => ({
+      tags: prevState.tags.filter((tag) => tag.id !== tagId),
+    }));
+  };
 
   handleSubmit = async (e) => {
     e.preventDefault();
@@ -148,7 +214,6 @@ class DiscoverCreateForm extends Component {
 
     return (
       <Container className="my-4">
-
         {/* Event Form */}
         <Card className="shadow-lg p-5 rounded-4 border-0 bg-light">
         <h3 className="fw-bold text-center mb-4 text-dark">Create Business</h3>
@@ -243,7 +308,6 @@ class DiscoverCreateForm extends Component {
                   <Form.Control type="text" name="region" value={this.state.region} onChange={this.handleChange} placeholder="Ile de France" required readOnly />
                 </Form.Group>
 
-
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-bold">Category</Form.Label>
                   <Form.Select name="category" value={this.state.category} onChange={this.handleChange} required>
@@ -257,16 +321,48 @@ class DiscoverCreateForm extends Component {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Tags (comma-separated)</Form.Label>
-                  <Form.Control type="text" name="tags" value={this.state.tags} onChange={this.handleChange} placeholder="music, food, outdoors (Optional)" />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
                   <Form.Label className="fw-bold">URLs (comma-separated)</Form.Label>
                   <Form.Control type="text" name="urls" value={this.state.urls} onChange={this.handleChange} placeholder="https://example.com, https://event.com (Optional)" />
                 </Form.Group>
               </Col>
             </Row>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Tags</Form.Label>
+              <div className="border p-2 rounded">
+                {this.state.tags.map((tag) => (
+                  <Badge
+                    key={tag.id}
+                    pill
+                    bg="secondary"
+                    className="me-2 mb-2 px-3 py-2 fs-6"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => this.handleTagRemove(tag.id)}
+                  >
+                    {tag.name} ✖
+                  </Badge>
+                ))}
+                <Form.Control
+                  type="text"
+                  value={this.state.tagValue}
+                  onChange={this.handleTagInputChange}
+                  placeholder="Type to search tags..."
+                />
+              </div>
+              {this.state.filteredSuggestions.length > 0 && (
+                <ListGroup className="mt-1">
+                  {this.state.filteredSuggestions.map((tag) => (
+                    <ListGroup.Item
+                      key={tag.id}
+                      action
+                      onClick={() => this.handleTagSelect(tag)}
+                    >
+                      {tag.name}
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </Form.Group>
          
             <Form.Group className="mb-3" controlId="formDescription">
               <Form.Label className="fw-bold">Description</Form.Label>
@@ -298,6 +394,16 @@ class DiscoverCreateForm extends Component {
                 />
                 <button type="button" className="btn btn-dark btn-sm">Upload Cover Image</button>
               </div>
+              {this.state.coverImagePreview && (
+                <div className="d-flex justify-content-center">
+                  <img
+                    src={this.state.coverImagePreview}
+                    alt="Cover Preview"
+                    className="img-fluid mt-2"
+                    style={{ maxHeight: "150px" }}
+                  />
+                </div>
+              )}
             </Form.Group> 
 
             {/* Profile Image Upload */}
@@ -318,6 +424,16 @@ class DiscoverCreateForm extends Component {
                 />
                 <button type="button" className="btn btn-dark btn-sm">Upload Profile Image</button>
               </div>
+              {this.state.profileImagePreview && (
+                <div className="d-flex justify-content-center">
+                  <img
+                    src={this.state.profileImagePreview}
+                    alt="Profile Preview"
+                    className="img-fluid mt-2"
+                    style={{ maxHeight: "150px" }}
+                  />
+                </div>
+              )}
             </Form.Group> 
 
             <div className="text-center">
