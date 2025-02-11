@@ -93,14 +93,7 @@ class EventCreateForm extends Component {
         });
 
         // 3. Solicitar una URL prefirmada al backend to download file
-        const download_response = await Api.get("/files/private/generate-download-presigned-url", { 
-          params: { 
-            filename: file.name, 
-          },
-          withCredentials: true
-        });
-        
-        const download_url = download_response.data.url;
+        const download_url = "https://d3skpo6i31hl4s.cloudfront.net/" + file.name
 
         // 4. Guardar la URL pública de la imagen
         this.setState((prevState) => ({
