@@ -181,7 +181,7 @@ class DiscoverCreateForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await Api.post("/businesses/private/create",
+      await Api.post("/businesses/private/create",
       this.state,
       {
         headers: { 
@@ -189,7 +189,6 @@ class DiscoverCreateForm extends Component {
         },
         withCredentials: true
       });
-      console.log("Form submitted successfully:", response.data);
       // Show success message
       this.setState({
         message: "Business created successfully!",

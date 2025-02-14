@@ -115,7 +115,7 @@ class EventDetail extends Component {
 
                   {/* Description Section */}
                   <Card className="p-3 shadow" >
-                    <h5 className="mb-3">Description:</h5>
+                  <h4 className="fw-bold">Description:</h4>
                     <p>
                       {data.description}
                     </p>
@@ -125,7 +125,7 @@ class EventDetail extends Component {
                 {/* Location Section */}
                 <Col md={4}>
                   <Card className="p-3 shadow">
-                    <h5 className="mb-3">Location:</h5>
+                    <h5 className="fw-bold">Location:</h5>
                     <MapContainer
                       center={[data.latitude, data.longitude]}
                       zoom={13}

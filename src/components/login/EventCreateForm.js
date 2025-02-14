@@ -134,7 +134,6 @@ class EventCreateForm extends Component {
             },
           }
         );
-        console.log(response.data)
         this.setState({ addressSuggestions: response.data, isLoading: false });
       } catch (error) {
         console.error("Error fetching address:", error);
@@ -188,7 +187,7 @@ class EventCreateForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await Api.post("/events/private/create",
+      await Api.post("/events/private/create",
       this.state,
       {
         headers: { 
@@ -196,7 +195,6 @@ class EventCreateForm extends Component {
         },
         withCredentials: true
       });
-      console.log("Form submitted successfully:", response.data);
       // Show success message
       this.setState({
         message: "Event created successfully!",

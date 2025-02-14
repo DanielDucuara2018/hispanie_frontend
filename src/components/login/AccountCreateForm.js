@@ -41,7 +41,7 @@ class AccountCreationForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await Api.post("/accounts/private/create", 
+      await Api.post("/accounts/private/create", 
         this.state, 
         {
           headers: { "Content-Type": "application/json" },
@@ -52,7 +52,6 @@ class AccountCreationForm extends Component {
         message: "Account created successfully!",
         messageType: "success",
       });
-      console.log(response.data);
     } catch (error) {
       console.error("Error submitting form:", error);
       this.setState({

@@ -27,7 +27,7 @@ class TagCreateForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await Api.post("/tags/private/create",
+      await Api.post("/tags/private/create",
       this.state,
       {
         headers: { 
@@ -35,7 +35,6 @@ class TagCreateForm extends Component {
         },
         withCredentials: true
       });
-      console.log("Form submitted successfully:", response.data);
       // Show success message
       this.setState({
         message: "Business created successfully!",

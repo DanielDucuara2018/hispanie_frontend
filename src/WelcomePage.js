@@ -14,8 +14,8 @@ class WelcomePage extends Component {
         month: "short",
         year: "numeric",
       }),
-      startIndex: 0, // Tracks the first visible artist
-      visibleCount: 6, // Number of artists shown at a time
+      startIndex: 0, 
+      visibleCount: 4, // Adjusted for better responsiveness
     };
   }
   
@@ -26,7 +26,7 @@ class WelcomePage extends Component {
 
   handleNext = () => {
     this.setState((prevState) => ({
-      startIndex: Math.min(prevState.startIndex + 1, prevState.artists.length - prevState.visibleCount),
+      startIndex: Math.min(prevState.startIndex + 1, this.props.businesses.length - prevState.visibleCount),
     }));
   };
 
@@ -37,38 +37,31 @@ class WelcomePage extends Component {
   };
 
   render() {
-    const { businesses } = this.props
+    const { businesses } = this.props;
     const { startIndex, visibleCount } = this.state;
     const visibleBusinesses = businesses.slice(startIndex, startIndex + visibleCount);
     
     return (
       <div className="bg-light min-vh-100">
         {/* HEADER SECTION */}
-        <div 
-          className="container-fluid isolate py-5"
-          style={{ background: "linear-gradient(145deg, #fff 0, #f5f1f7 20%, #f0f5ff 50%, #fff 100%)" }}
-        >
-          <div className="row justify-content-center">
-            <div className="col-md-8 text-left">
-              <p className="text-muted small fw-bold">{this.state.currentDate}.</p>
+        <Container fluid className="py-5 text-center text-md-start">
+          <Row className="justify-content-center">
+            <Col md={8}>
+              <p className="text-muted small fw-bold">{this.state.currentDate}</p>
               <h1 className="fw-bold animate__animated animate__slideInDown">
-                Yo traigo alegría, pa' tu corazón{" "}
-                <span role="img" aria-label="heart">❤️‍🔥</span>, pa' los corazones{" "}
-                <span role="img" aria-label="smile">😌</span>.
+                Yo traigo alegría, pa' tu corazón ❤️‍🔥, pa' los corazones 😌.
               </h1>
               <p className="text-secondary animate__animated animate__fadeIn">
-                I bring joy, for your heart{" "}
-                <span role="img" aria-label="heart">❤️‍🔥</span>, for the hearts{" "}
-                <span role="img" aria-label="smile">😌</span>.
+                I bring joy, for your heart ❤️‍🔥, for the hearts 😌.
               </p>
-            </div>
-          </div>
-        </div>
+            </Col>
+          </Row>
+        </Container>
 
         {/* DISCOVER EVENTS SECTION */}
         <Container className="mt-5">
           <Row>
-            <Col>
+            <Col className="text-center text-md-start">
               <h4 className="fw-bold">Discover local events:</h4>
               <Button variant="outline-dark" className="rounded-pill px-4 mt-2">
                 France 🇫🇷
@@ -112,7 +105,7 @@ class WelcomePage extends Component {
           {/* ARTISTS SCROLLER */}
           <Row className="align-items-center mt-3">
             {/* Left Button */}
-            <Col xs="auto">
+            <Col xs="auto" className="d-none d-md-block">
               <Button
                 variant="light"
                 className="rounded-circle shadow-sm"
@@ -125,41 +118,36 @@ class WelcomePage extends Component {
 
             {/* Artists Display */}
             <Col>
-              <Row className="d-flex justify-content-center g-12 mt-6">
-              {visibleBusinesses.map((business) => (
-                  <Col
-                  key={business.id}
-                  xs={6}
-                  sm={4}
-                  md={3}
-                  lg={2}
-                  className="text-center px-3"
-                  >
+              <Row className="d-flex justify-content-center g-3">
+                {visibleBusinesses.map((business) => (
+                  <Col key={business.id} xs={6} sm={4} md={3} lg={2} className="text-center px-3">
                     <Link 
                       to={`/discover/business/${business.id}`} 
                       className="text-decoration-none text-dark"
                       onClick={() => this.handleCategoryChange("discover", "/discover/artists")}
                     >
                       <Image 
-                          src={business.files.find((x) => x.category === "profile_image").path}
-                          roundedCircle
-                          className="mb-3 shadow-sm"
-                          style={{
-                            width: "180px",
-                            height: "180px",
-                            objectFit: "cover", // Ensures the image fills the space properly
-                            border: "2px solid rgba(0, 0, 0, 0.1)"
-                          }}
-                      /> {/* TODO this images redirect to Discover Details */}
-                        <p className="small fw-bold">{business.name}</p>
+                        src={business.files.find((x) => x.category === "profile_image").path}
+                        roundedCircle
+                        className="mb-3 shadow-sm"
+                        style={{
+                          width: "100%",
+                          maxWidth: "165px",
+                          height: "165px",
+                          maxHeight: "100%",
+                          objectFit: "cover", 
+                          border: "2px solid rgba(0, 0, 0, 0.1)"
+                        }}
+                      />
+                      <p className="small fw-bold">{business.name}</p>
                     </Link>
                   </Col>
-              ))}
+                ))}
               </Row>
             </Col>
 
             {/* Right Button */}
-            <Col xs="auto">
+            <Col xs="auto" className="d-none d-md-block">
               <Button
                 variant="light"
                 className="rounded-circle shadow-sm"

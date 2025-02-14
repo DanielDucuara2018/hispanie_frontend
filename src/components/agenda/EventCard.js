@@ -3,8 +3,6 @@ import { Card, Badge, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 const EventCard = ({ id, title, start_date, end_date, address, category, price, tags, files }) => {
-  // const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
-  console.log(tags)
   return (
     <Link to={`/agenda/event/${id}`} className="text-decoration-none text-dark">
       <Card className="mb-4 shadow-sm border-0 h-100">
