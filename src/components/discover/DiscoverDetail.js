@@ -33,8 +33,8 @@ class DiscoverDetail extends Component {
                   src={data.files.find((x) => x.category === "profile_image").path} 
                   roundedCircle
                   className="mb-3 shadow-sm"
-                  width={100} 
-                  height={100} 
+                  width={150} 
+                  height={150} 
                 />
               </Col>
               {/* Name & Association */}
