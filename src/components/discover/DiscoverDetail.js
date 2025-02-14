@@ -1,28 +1,12 @@
 import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Button, Badge, Row, Col, Container, Tabs, Tab, ListGroup } from 'react-bootstrap';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import CATEGORY_EMOJIS from '../../hooks/categoryEmojis';
-import L from "leaflet";
+import { Card, Button, Badge, Row, Col, Container, Tabs, Tab, Image } from 'react-bootstrap';
+import { LuShare } from "react-icons/lu";
 
 const DiscoverDetailWithParams = (props) => <DiscoverDetail {...props} params={useParams()} />;
 
 // TODO merged DiscoverDetail and EventDetail, they have almost the same structure
 class DiscoverDetail extends Component {
-
-  // Custom marker icons using Leaflet TODO centralize this is dupicated code
-  createIcon = (emoji) =>
-  new L.DivIcon({
-    className: "custom-icon",
-    html: `
-      <div class="d-flex justify-content-center align-items-center bg-white border rounded-circle shadow"
-            style="width: 40px; height: 40px; border: 2px solid #ccc;">
-        <span style="font-size: 20px;">${emoji}</span>
-      </div>`,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40],
-  });
 
   render() {
     const { businesses , params } = this.props;
@@ -36,104 +20,83 @@ class DiscoverDetail extends Component {
         <Card.Img
           variant="top"
           src={data.files.find((x) => x.category === "cover_image").path}
-          alt="" /*{title}*/
           style={{ height: '400px', objectFit: 'cover', borderRadius: '0.5rem 0.5rem 0 0' }}
         />
     
         <Container className="my-5">
-          {/* Bussiness Header */}
-          <div className="mb-4">
-            <h5 className="text-muted mb-2">{data.category}</h5>
-            <h1 className="fw-bold mb-1">{data.name}</h1>
-            <p className="text-muted">{data.location}</p>
-            <div className="d-flex flex-wrap gap-2 mb-3">
-              <Badge bg="light" text="dark">Bachata</Badge>
-              <Badge bg="light" text="dark">Latino</Badge>
-              <Badge bg="light" text="dark">Modern Bachata</Badge>
-            </div>
-            <Button variant="dark" className="me-2">Save</Button>
-            <Button variant="outline-dark">Share</Button>
-          </div>
+          {/* Header */}
+          <Card className="p-4 border-0">
+            <Row className="align-items-center">
+              {/* Profile Image */}
+              <Col xs={2} className="text-center">
+                <Image 
+                  src={data.files.find((x) => x.category === "profile_image").path} 
+                  roundedCircle
+                  className="mb-3 shadow-sm"
+                  width={100} 
+                  height={100} 
+                />
+              </Col>
+              {/* Name & Association */}
+              <Col xs={6}>
+                <h2 className="fw-bold">{data.name}</h2>
+                <h5 className="text-muted">Association</h5>
+                <Badge bg="light" text="dark" className="me-2">France 🇫🇷</Badge>
+                <Badge bg="light" text="dark">Cuba 🇨🇺</Badge>
+              </Col>
+              {/* Save & Share Buttons */}
+              <Col xs={4} className="text-end">
+                <Button variant="dark" className="me-2">Save</Button>
+                <Button variant="outline-dark"><LuShare /></Button>
+              </Col>
+            </Row>
+          </Card>
 
-          <Tabs defaultActiveKey="info" id="event-detail-tabs" className="mb-4">
-            <Tab eventKey="info" title="Information">
-              <Row>
-                {/* Tickets Section */}
-                <Col md={8}>
-                  <Card className="p-3 mb-4">
-                    <h5 className="mb-3">Tickets:</h5>
-                    <ListGroup>
-                      <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                        <span>1 course (with 1 drink included)</span>
-                        <strong>€8.00</strong>
-                        <Button variant="dark" size="sm">Buy</Button>
-                      </ListGroup.Item>
-                      <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                        <span>2 courses (with 2 drinks included)</span>
-                        <strong>€14.00</strong>
-                        <Button variant="dark" size="sm">Buy</Button>
-                      </ListGroup.Item>
-                    </ListGroup>
+          <Row className="mt-4">
+            {/* Left Section - Tabs */}
+            <Col md={16}>
+              <Tabs defaultActiveKey="info" className="mb-3">
+                <Tab eventKey="info" title="Information">
+                  <Row className="g-3">
+                    {/* Description, Contact, and Follow at the same level */}
+                    <Col md={8}>
+                      <Card className="p-4 shadow">
+                        <h4 className="fw-bold">Description:</h4>
+                        <p>{data.description}</p>
+                      </Card>
+                    </Col>
+                    <Col md={4} className="d-flex flex-column gap-3">
+                      {/* Contact */}
+                      <Card className="p-4 shadow flex-grow-1">
+                        <h5 className="fw-bold">Contact:</h5>
+                        <p>📧 {data.email}</p>
+                        <p>📞 {data.phone}</p>
+                        <p>🌐 {data.website}</p>
+                      </Card>
+                      {/* Follow */}
+                      <Card className="p-4 shadow flex-grow-1">
+                        <h5 className="fw-bold">Follow:</h5>
+                        <Button variant="outline-dark" className="w-100 mb-2">Follow on Facebook</Button>
+                        <Button variant="outline-dark" className="w-100">Follow on Instagram</Button>
+                      </Card>
+                    </Col>
+                  </Row>
+                </Tab>
+                <Tab eventKey="events" title="Events">
+                  <Card className="p-4 shadow mt-3">
+                    <h4 className="fw-bold">Upcoming Events:</h4>
+                    <p>No events available</p>
                   </Card>
-
-                  {/* Lineup Section */}
-                  <Card className="p-3 mb-4">
-                    <h5 className="mb-3">Lineup:</h5>
-                    <ListGroup>
-                      <ListGroup.Item>20:00 - Bachata Beginner</ListGroup.Item>
-                      <ListGroup.Item>21:00 - Bachata Intermediate</ListGroup.Item>
-                      <ListGroup.Item>22:00 - Mix Bachata</ListGroup.Item>
-                    </ListGroup>
+                </Tab>
+                <Tab eventKey="course" title="Course">
+                  <Card className="p-4 shadow mt-3">
+                    <h4 className="fw-bold">Courses Offered:</h4>
+                    <p>No courses available</p>
                   </Card>
-
-                  {/* Description Section */}
-                  <Card className="p-3">
-                    <h5 className="mb-3">Description:</h5>
-                    <p>
-                      {data.description}
-                      {/* <strong>🎉 Bachatero SAO 🎉</strong>
-                      <br />
-                      Join us every Wednesday at SAO for an evening full of rhythm and dance! 🕺💃
-                      <ul>
-                        <li>20:00 - Bachata Beginner: Learn the basics and feel the energy of bachata!</li>
-                        <li>21:00 - Bachata Intermediate: Perfect your movements and learn more complex figures.</li>
-                        <li>22:00 - Mix Bachata: Dance freely with something for everyone!</li>
-                      </ul>
-                      Come to have fun, learn, and improve in a festive and friendly atmosphere! 🎶 */}
-                    </p>
-                  </Card>
-                </Col>
-
-                {/* Location Section */}
-                <Col md={4}>
-                  <Card className="p-3">
-                    <h5 className="mb-3">Location:</h5>
-                    <MapContainer
-                      center={[data.latitude, data.longitude]}
-                      zoom={13}
-                      style={{ height: '200px', width: '100%' }}
-                    >
-                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                      <Marker position={[data.latitude, data.longitude]} icon={this.createIcon(CATEGORY_EMOJIS[data.category])}>
-                        <Popup>{data.location}</Popup>
-                      </Marker>
-                    </MapContainer>
-                    <p className="text-muted mt-2">{data.location}</p>
-                  </Card>
-                </Col>
-              </Row>
-            </Tab>
-            <Tab bussinessKey="similar" title="Similar bussinesses">
-              <p>No similar bussiness found at this time.</p>
-            </Tab>
-          </Tabs>
-
-          {/* Tags Section */}
-          <div className="d-flex gap-2 mt-4">
-            <Badge bg="light" text="dark">Bachata</Badge>
-            <Badge bg="light" text="dark">Latino</Badge>
-            <Badge bg="light" text="dark">Modern Bachata</Badge>
-          </div>
+                </Tab>
+              </Tabs>
+            </Col>
+          </Row>
         </Container>
       </>
     );

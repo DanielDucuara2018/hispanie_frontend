@@ -12,10 +12,13 @@ class DiscoverCard extends Component {
           alt={title}
           roundedCircle
           fluid
-          width={180}
-          height={180}
-          style={{ border: "2px solid rgba(0, 0, 0, 0.1)" }}
           className="mb-3 shadow-sm"
+          style={{
+            width: "180px",
+            height: "180px",
+            objectFit: "cover", // Ensures the image fills the space properly
+            border: "2px solid rgba(0, 0, 0, 0.1)"
+          }}
         />
         <p className="mt-2">{title}</p>
       </Link>

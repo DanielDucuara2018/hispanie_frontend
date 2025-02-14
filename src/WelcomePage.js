@@ -141,12 +141,15 @@ class WelcomePage extends Component {
                       onClick={() => this.handleCategoryChange("discover", "/discover/artists")}
                     >
                       <Image 
-                          src="https://hispanie.com/cdn/shop/collections/326983212_720382779483957_8328956269607356202_n.jpg?v=1734408523&width=750"
+                          src={business.files.find((x) => x.category === "profile_image").path}
                           roundedCircle
-                          width={180}
-                          height={180}
-                          style={{ border: "2px solid rgba(0, 0, 0, 0.1)" }}
                           className="mb-3 shadow-sm"
+                          style={{
+                            width: "180px",
+                            height: "180px",
+                            objectFit: "cover", // Ensures the image fills the space properly
+                            border: "2px solid rgba(0, 0, 0, 0.1)"
+                          }}
                       /> {/* TODO this images redirect to Discover Details */}
                         <p className="small fw-bold">{business.name}</p>
                     </Link>

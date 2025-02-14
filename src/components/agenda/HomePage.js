@@ -29,14 +29,13 @@ class HomePage extends Component {
       return acc;
     }, {});
 
-    console.log(groupedEvents)
     return (
       <>
         {/* <Filters /> */}
         <div className="container my-4">
           {Object.keys(groupedEvents).map(date => (
             <div key={date} className="mb-4">
-              <h2 className="fw-bold mb-3">{date}</h2> {/* Section Header for the date */}
+              <h5 className="fw-bold mb-3">{date}</h5> {/* Section Header for the date */}
               <div className="row g-4">
                 {groupedEvents[date].map(event => (
                   <div key={event.id} className="col-md-4">

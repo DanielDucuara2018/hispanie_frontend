@@ -89,7 +89,7 @@ class App extends Component {
     const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
     return (
       <Router>
-        <div className="container-fluid p-0 d-flex flex-column min-vh-100" style={custom_style}>
+        <div  style={custom_style} className="container-fluid p-0 d-flex flex-column min-vh-100">
           <Header />
           <main className="flex-grow-1">
             <Routes>

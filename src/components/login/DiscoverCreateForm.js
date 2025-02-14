@@ -14,7 +14,7 @@ const DISCOVER_CATEGORIES = [
   { label: "Restaurant", value: "restaurant" },
   { label: "Cafe", value: "cafe" },
   { label: "Boutique", value: "boutique" },
-  { label: "Expositions", value: "expositions" },
+  { label: "Exposition", value: "exposition" },
   { label: "Association", value: "association" },
   { label: "Academy", value: "academy" },
 ];
@@ -60,7 +60,6 @@ class DiscoverCreateForm extends Component {
     });
   };
 
-  // TODO handle file upload
   handleFileChange = async (e) => {
     const { name } = e.target;
     const file = e.target.files[0];

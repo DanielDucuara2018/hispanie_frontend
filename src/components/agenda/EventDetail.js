@@ -44,11 +44,15 @@ class EventDetail extends Component {
     
         <Container className="my-5">
           {/* Event Header */}
-          <div className="mb-4">
-            <div className="d-flex justify-content-between align-items-center">
-              <div>
-                <Badge bg="light" text="dark" className="me-2">{data.category}</Badge>
-                <span className="text-muted">{data.start_date} - {data.start_date}</span>
+          <Card className="p-4 border-0">
+            <Row className="align-items-center">
+              <Col>
+                <Badge bg="light" text="dark" className="me-2">
+                  {data.category}
+                </Badge>
+                <span className="text-muted">
+                  {data.start_date} - {data.end_date}
+                </span>
 
                 <h1 className="fw-bold mt-2">{data.name}</h1>
                 <p className="text-muted">{data.address}</p>
@@ -60,23 +64,25 @@ class EventDetail extends Component {
                       bg="light"
                       text="dark"
                       className="py-1 px-2"
-                      style={{ fontSize: '0.9rem' }}
+                      style={{ fontSize: "0.9rem" }}
                     >
                       {tag.name}
                     </Badge>
                   ))}
                 </div>
-              </div>
+              </Col>
 
               {/* Buttons aligned to the right */}
-              <div className="d-flex gap-2">
-                <Button variant="dark w-100">Save</Button>
-                <Button variant="outline-dark"><LuShare /></Button>
-              </div>
-            </div>
-          </div>
+              <Col xs="auto" className="d-flex gap-2">
+                <Button variant="dark">Save</Button>
+                <Button variant="outline-dark">
+                  <LuShare />
+                </Button>
+              </Col>
+            </Row>
+          </Card>
 
-          <Tabs defaultActiveKey="info" id="event-detail-tabs" className="mb-4">
+          <Tabs defaultActiveKey="info" id="event-detail-tabs" className="my-4">
             <Tab eventKey="info" title="Information">
               <Row>
                 {/* Tickets Section */}
@@ -108,7 +114,7 @@ class EventDetail extends Component {
                   </Card> */}
 
                   {/* Description Section */}
-                  <Card className="p-3">
+                  <Card className="p-3 shadow" >
                     <h5 className="mb-3">Description:</h5>
                     <p>
                       {data.description}
@@ -118,7 +124,7 @@ class EventDetail extends Component {
 
                 {/* Location Section */}
                 <Col md={4}>
-                  <Card className="p-3">
+                  <Card className="p-3 shadow">
                     <h5 className="mb-3">Location:</h5>
                     <MapContainer
                       center={[data.latitude, data.longitude]}
@@ -136,7 +142,10 @@ class EventDetail extends Component {
               </Row>
             </Tab>
             <Tab eventKey="similar" title="Similar events">
-              <p>No similar events found at this time.</p>
+              <Card className="p-4 shadow mt-3">
+                <h4 className="fw-bold">Upcoming Events:</h4>
+                <p>No events available</p>
+              </Card>
             </Tab>
           </Tabs>
         </Container>
