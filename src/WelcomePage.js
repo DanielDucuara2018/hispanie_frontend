@@ -68,7 +68,7 @@ class WelcomePage extends Component {
               </Button>
               <div className="d-flex align-items-center mt-4">
                 <Image
-                  src="https://hispanie.com/cdn/shop/files/AdobeStock_299134759_Photo_elephant_sansombre-scaled.jpg?v=1733974335&width=100"
+                  src="https://d3skpo6i31hl4s.cloudfront.net/AdobeStock_299134759_Photo_elephant_sansombre-scaled.webp"
                   roundedCircle
                   className="me-3"
                   width={75}

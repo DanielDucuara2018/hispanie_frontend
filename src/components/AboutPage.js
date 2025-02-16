@@ -6,22 +6,22 @@ const founders = [
   {
     name: "Geovanny Cipriani",
     role: "Co-founder of Hispanie and Chief Strategy Officer",
-    img: "https://hispanie.com/cdn/shop/files/JOSE_GEOVANNY_CIPRIANI_MELO.jpg?v=1734326339&width=400",
+    img: "https://d3skpo6i31hl4s.cloudfront.net/JOSE_GEOVANNY_CIPRIANI_MELO.webp",
   },
   {
     name: "Daniel Ducuara",
     role: "Co-founder of Hispanie and Chief Technical Officer",
-    img: "https://hispanie.com/cdn/shop/files/1696181704504.jpg?v=1734326184&width=400",
+    img: "https://d3skpo6i31hl4s.cloudfront.net/daniel_ducuara.webp",
   },
   {
     name: "Jhonatan Mcniven Cagua Herrera",
     role: "Co-founder of Hispanie and Chief Information Officer",
-    img: "https://hispanie.com/cdn/shop/files/Jhonatan_Mcniven_Cagua_Herrera.jpg?v=1734326446&width=400",
+    img: "https://d3skpo6i31hl4s.cloudfront.net/Jhonatan_Mcniven_Cagua_Herrera.webp",
   },
   {
     name: "Marlee Lorena Orozco Ponciano",
     role: "Co-founder of Hispanie and Chief Operating Officer",
-    img: "https://hispanie.com/cdn/shop/files/Marlee_Lorena_OROZCO_PONCIANO.jpg?v=1734326554&width=400",
+    img: "https://d3skpo6i31hl4s.cloudfront.net/Marlee_Lorena_OROZCO_PONCIANO.jpg",
   },
 ];
 
@@ -31,7 +31,7 @@ const news = [
     date: "January 7, 2025 by Geovanny Cipriani",
     description:
       "El 2025 comienza con un cambio trascendental para Hispanie. Después de un mes de conversaciones con nuestros usuarios actuales y futuros, hemos llegado a un descubrimiento clave: la verdadera necesidad...",
-    img: "https://hispanie.com/cdn/shop/articles/Frame_268.jpg?v=1736214955&width=1500",
+    img: "https://d3skpo6i31hl4s.cloudfront.net/Frame_268.webp",
     articleUrl: "/news/hispanie-2025-new-focus",
   },
   {
@@ -39,7 +39,7 @@ const news = [
     date: "November 1, 2024 by Geovanny Cipriani",
     description:
       "At Hispanie, we are excited to share news that marks a before and after in our journey as promoters of Hispanic culture and talent. Our project, known for its...",
-    img: "https://hispanie.com/cdn/shop/articles/1729829257187.jpg?v=1732288466&width=1500",
+    img: "https://d3skpo6i31hl4s.cloudfront.net/1729829257187.webp",
     articleUrl: "/news/hispanie-emprelatam",
   },
 ];
@@ -61,8 +61,8 @@ const AboutPage = () => {
       <Container className="px-0" style={{ maxWidth: "2000px" }}>
         <Carousel interval={3000} controls indicators>
           {[
-            "https://hispanie.com/cdn/shop/files/438034831_439161225288054_294823861381885919_n.jpg?v=1732771621&width=2000",
-            "https://hispanie.com/cdn/shop/files/A4_-_1.jpg?v=1734321995&width=2000",
+            "https://d3skpo6i31hl4s.cloudfront.net/438034831_439161225288054_294823861381885919_n.webp",
+            "https://d3skpo6i31hl4s.cloudfront.net/A4_-_1.webp",
           ].map((src, index) => (
             <Carousel.Item key={index}>
               <img className="d-block w-100" src={src} alt={`Slide ${index + 1}`} />
@@ -96,10 +96,10 @@ const AboutPage = () => {
       <Container fluid className="px-0" style={{ maxWidth: "2000px" }}>
         <Row className="g-0">
           <Col md={6}>
-            <Image src="https://hispanie.com/cdn/shop/files/339102017_691932599367059_694060988015042085_n.png?v=1732912974&width=1100" alt="Empanadas" className="w-100 h-100 object-fit-cover" />
+            <Image src="https://d3skpo6i31hl4s.cloudfront.net/339102017_691932599367059_694060988015042085_n.webp" alt="Empanadas" className="w-100 h-100 object-fit-cover" />
           </Col>
           <Col md={6}>
-            <Image src="https://hispanie.com/cdn/shop/files/385695194_713524004149958_9119451599706317295_n.jpg?v=1732771622&width=1100" alt="Mexican Flag Performance" className="w-100 h-100 object-fit-cover" />
+            <Image src="https://d3skpo6i31hl4s.cloudfront.net/385695194_713524004149958_9119451599706317295_n.webp" alt="Mexican Flag Performance" className="w-100 h-100 object-fit-cover" />
           </Col>
         </Row>
 
@@ -115,7 +115,7 @@ const AboutPage = () => {
         <Row className="text-center g-0">
           <Col>
             <video controls className="w-100 rounded-3 shadow">
-              <source src="https://hispanie.com/cdn/shop/videos/c/vp/c6707df9daa445fa8151ba10525ef52c/c6707df9daa445fa8151ba10525ef52c.HD-720p-3.0Mbps-38867015.mp4?v=0" type="video/mp4" />
+              <source src="https://d3skpo6i31hl4s.cloudfront.net/c6707df9daa445fa8151ba10525ef52c.HD-720p-3.0Mbps-38867015.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </Col>

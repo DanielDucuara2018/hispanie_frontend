@@ -10,7 +10,7 @@ class BlogPage extends Component {
       description:
         "In September 2023, a small platform called 'Nantes Habla Español' was created, dedicated to Hispanic culture. On their Instagram page, you can find the latest Latin American cultural news in Nantes.",
       imageUrl:
-        "https://hispanie.com/cdn/shop/articles/Frame_268.jpg?v=1736214955&width=1500",
+        "https://d3skpo6i31hl4s.cloudfront.net/Frame_268.webp",
       articleUrl: "/news/nhe-latin-american-community-nantes",
     };
 
@@ -22,7 +22,7 @@ class BlogPage extends Component {
         description:
           "2025 begins with a significant change for Hispanie. After a month of conversations with our current and future users, we have reached a key discovery: the true need...",
         imageUrl:
-          "https://hispanie.com/cdn/shop/articles/Frame_268.jpg?v=1736214955&width=1500",
+          "https://d3skpo6i31hl4s.cloudfront.net/Frame_268.webp",
         articleUrl: "/news/hispanie-2025-new-focus",
       },
       {
@@ -32,7 +32,7 @@ class BlogPage extends Component {
         description:
           "At Hispanie, we are excited to share news that marks a before and after in our journey as promoters of Hispanic culture and talent. Our project, known for its...",
         imageUrl:
-          "https://hispanie.com/cdn/shop/articles/1729829257187.jpg?v=1732288466&width=1500",
+          "https://d3skpo6i31hl4s.cloudfront.net/1729829257187.webp",
         articleUrl: "/news/hispanie-emprelatam",
       },
     ];
