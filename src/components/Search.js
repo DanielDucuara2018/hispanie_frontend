@@ -5,11 +5,19 @@ import { Row, Col, Form, InputGroup, FormControl, Button, Dropdown, Container } 
 import { FaSearch, FaFilter, FaSort } from "react-icons/fa";
 import DiscoverCard from './discover/DiscoverCard';
 
-const SearchlWithParams = (props) => <Search {...props} params={useParams()} />;
+const SearchWithParams = (props) => <Search {...props} params={useParams()} />;
 
 class Search extends Component {
   state = {
     searchQuery: "",
+    selectedCity: "",
+  };
+
+  // Inside your Search component
+  componentDidMount() {
+    const queryParams = new URLSearchParams(window.location.search);
+    const searchQuery = queryParams.get('q') || '';
+    this.setState({ searchQuery });
   }
 
   handleSearchChange = (e) => {
@@ -18,102 +26,113 @@ class Search extends Component {
 
   handleSearchSubmit = (e) => {
     e.preventDefault();
-    console.log("Searching for:", this.state.searchQuery);
+  };
+
+  handleCityFilter = (city) => {
+    this.setState({ selectedCity: city });
+  };
+
+  applyFilters = (data, query, city) => {
+    return data
+      .filter(item =>
+        item.name.toLowerCase().includes(query.toLowerCase()) ||
+        item.city.toLowerCase().includes(query.toLowerCase()) ||
+        item.description.toLowerCase().includes(query.toLowerCase())
+      )
+      .filter(item => !city || item.city.toLowerCase() === city.toLowerCase());
   };
 
   render() {
-    const { events , businesses, params } = this.props;
-    const { searchQuery } = this.state;
-    const data = events.find(x => x.id === String(params.id));
+    const { events, businesses } = this.props;
+    const { searchQuery, selectedCity } = this.state;
 
-    console.log(events)
-    console.log(params)
-    console.log(data)
+    // Apply filters in order
+    const filteredEvents = this.applyFilters(events, searchQuery, selectedCity);
+    const filteredBusinesses = this.applyFilters(businesses, searchQuery, selectedCity);
 
     return (
-    <Container className="mt-4">
-      {/* Search Bar */}
-      <h2 className="text-center mb-3">Search results</h2>
-      <Row className="justify-content-center mb-4">
-        <Col md={6}>
-          <Form onSubmit={this.handleSearchSubmit}>
-            <InputGroup>
-              <FormControl
-                type="text"
-                placeholder="Search"
-                value={searchQuery}
-                onChange={this.handleSearchChange}
-              />
-              <Button variant="outline-secondary" type="submit">
-                <FaSearch />
-              </Button>
-            </InputGroup>
-          </Form>
-        </Col>
-      </Row>
+      <Container className="mt-4">
+        {/* Centered Title, Search Bar, and Filters */}
+        <Row className="justify-content-center text-center">
+          <Col md={8} lg={6}>
+            <h2 className="mb-3">Search Results</h2>
 
-      {/* Filters */}
-      <Row className="justify-content-center mb-4">
-        <Col xs={6} md={3}>
-          <Dropdown>
-            <Dropdown.Toggle variant="outline-dark">
-              City <FaFilter />
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item>Nantes</Dropdown.Item>
-              <Dropdown.Item>Paris</Dropdown.Item>
-              <Dropdown.Item>Marseille</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Col>
-        <Col xs={6} md={3}>
-          <Dropdown>
-            <Dropdown.Toggle variant="outline-dark">
-              Sort by: Relevance <FaSort />
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item>Price: Low to High</Dropdown.Item>
-              <Dropdown.Item>Price: High to Low</Dropdown.Item>
-              <Dropdown.Item>Newest</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Col>
-      </Row>
-      
-      {/* Events Section */}
-      <Row className="my-4">
-        {events.map(event => (
-          <div key={event.id} className="col-md-4">
-            <EventCard
-              id={event.id}
-              title={event.name}
-              start_date={event.start_date}
-              end_date={event.end_date}
-              address={event.address}
-              category={event.category}
-              price={event.price}
-              tags={event.tags}
-              files={event.files}
-            />
-          </div>
-        ))}
-      </Row>
+            {/* Search Bar */}
+            <Form onSubmit={this.handleSearchSubmit} className="mb-3">
+              <InputGroup>
+                <FormControl
+                  type="text"
+                  placeholder="Search"
+                  value={searchQuery}
+                  onChange={this.handleSearchChange}
+                />
+                <Button variant="outline-secondary" type="submit">
+                  <FaSearch />
+                </Button>
+              </InputGroup>
+            </Form>
 
-      {/* Business Section */}
-      <Row className="my-4">
-        {businesses.map((business) => (
-          <Col xs={6} sm={4} md={3} lg={2} key={business.id} className="mb-4">
-            <DiscoverCard 
-              id={business.id}
-              title={business.name}
-              files={business.files}
-            />
+            {/* Filters */}
+            <Row className="justify-content-center">
+              <Col xs={6} md={4} className="mb-2">
+                <Dropdown onSelect={this.handleCityFilter}>
+                  <Dropdown.Toggle variant="outline-dark">
+                    {selectedCity || "City"} <FaFilter />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item eventKey="">All Cities</Dropdown.Item>
+                    <Dropdown.Item eventKey="Nantes">Nantes</Dropdown.Item>
+                    <Dropdown.Item eventKey="Paris">Paris</Dropdown.Item>
+                    <Dropdown.Item eventKey="Marseille">Marseille</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+              <Col xs={6} md={4}>
+                <Dropdown>
+                  <Dropdown.Toggle variant="outline-dark">
+                    Sort by: Relevance <FaSort />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item>Price: Low to High</Dropdown.Item>
+                    <Dropdown.Item>Price: High to Low</Dropdown.Item>
+                    <Dropdown.Item>Newest</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+            </Row>
           </Col>
-        ))}
-      </Row>
-    </Container>
+        </Row>
+
+        {/* Events Section */}
+        <h3 className="mt-4">Events</h3>
+        <Row className="mb-4">
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map(event => (
+              <Col xs={12} sm={6} md={4} key={event.id}>
+                <EventCard {...event} />
+              </Col>
+            ))
+          ) : (
+            <p className="text-center">No events found.</p>
+          )}
+        </Row>
+
+        {/* Business Section */}
+        <h3 className="mt-4">Businesses</h3>
+        <Row>
+          {filteredBusinesses.length > 0 ? (
+            filteredBusinesses.map(business => (
+              <Col xs={6} sm={4} md={3} lg={2} key={business.id} className="mb-4">
+                <DiscoverCard {...business} />
+              </Col>
+            ))
+          ) : (
+            <p className="text-center">No businesses found.</p>
+          )}
+        </Row>
+      </Container>
     );
   }
 }
 
-export default SearchlWithParams;
+export default SearchWithParams;

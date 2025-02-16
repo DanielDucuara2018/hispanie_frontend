@@ -39,6 +39,9 @@ class MapView extends Component {
 
   render() {
     const { events, businesses } = this.props
+    const { selectedEvent } = this.state
+
+    console.log(selectedEvent)
 
     return (
       <div className="map-container">
@@ -65,21 +68,27 @@ class MapView extends Component {
           <Offcanvas.Header closeButton>
             <Offcanvas.Title>Event Details</Offcanvas.Title>
           </Offcanvas.Header>
-          {this.state.selectedEvent && (
+          {selectedEvent && (
             <Offcanvas.Body>
               <Card>
-                <Card.Img variant="top" src={this.state.selectedEvent.image} />
-                <Card.Body>
-                  <Card.Title>{this.state.selectedEvent.name}</Card.Title>
-                  <Card.Text>{this.state.selectedEvent.description}</Card.Text>
+                  <Card.Img
+                    variant="top"
+                    src={selectedEvent.files.find((x) => x.category === "profile_image").path}
+                    className="img-fluid"
+                    style={{ height: '200px', objectFit: 'cover' }}
+                    alt={selectedEvent.name} // Always include an alt attribute for accessibility
+                  />              
+                  <Card.Body>
+                  <Card.Title>{selectedEvent.name}</Card.Title>
+                  <Card.Text>{selectedEvent.description}</Card.Text>
                   <div className="mb-2">
-                    {this.state.selectedEvent.tags.map((tag, index) => (
+                    {selectedEvent.tags.map((tag, index) => (
                       <Badge key={index} bg="secondary" className="me-1">
-                        {tag}
+                        {tag.name}
                       </Badge>
                     ))}
                   </div>
-                  {/* <p className="fw-bold">💰 Adhesion: {this.state.selectedEvent.price}</p> */}
+                  {/* <p className="fw-bold">💰 Adhesion: {selectedEvent.price}</p> */}
                   <Button variant="dark" className="w-100">See More</Button>
                 </Card.Body>
               </Card>
