@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import Filters from './Filters';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row, Container } from 'react-bootstrap';
 import DiscoverCard from './DiscoverCard';
 
 class HomePage extends Component {
@@ -9,7 +9,7 @@ class HomePage extends Component {
     return (
       <>
         {/* <Filters /> */}
-          <div className="container my-4">
+        <Container className="my-4">
           <Row className="text-center">
             {businesses.map((business) => (
               <Col xs={6} sm={4} md={3} lg={2} key={business.id} className="mb-4">
@@ -21,7 +21,7 @@ class HomePage extends Component {
               </Col>
             ))}
           </Row>
-        </div>
+        </Container>
       </>
     );
   }

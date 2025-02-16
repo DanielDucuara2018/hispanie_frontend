@@ -11,6 +11,7 @@ class Header extends Component {
   state = {
     showSidebar: false,
     showSearch: false, // Controls offcanvas visibility
+    searchQuery: "",
   };
 
   handleShowSearch = () => {
@@ -40,7 +41,7 @@ class Header extends Component {
   };
 
   render() {
-    const { showSidebar, showSearch } = this.state;
+    const { showSidebar, showSearch, searchQuery } = this.state;
     const category = this.props.activeCategoryHeader;
     const agenda_path = this.props.activeCategoryAgenda || "/agenda";
     const discover_path = this.props.activeCategoryDiscover || "/discover";
@@ -58,6 +59,8 @@ class Header extends Component {
       ...noCollapsedNavItems
     ];
 
+    console.log(searchQuery)
+
     return (
       <>
         {/* Top Navbar */}
@@ -73,9 +76,22 @@ class Header extends Component {
               <Image src="https://d3skpo6i31hl4s.cloudfront.net/hispanie.avif" width={95} height={25} alt="Logo" />
             </Navbar.Brand>
 
-            {/* Search Input */}
-            <Form className="d-flex align-items-center ms-3 d-none d-md-block">
-              <FormControl type="search" placeholder="Search" className="me-2" />
+            {/* Search Input for Large Screens */}
+            <Form 
+              onSubmit={(e) => {
+                e.preventDefault(); // Prevent page reload
+                window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+              }} 
+              className="d-flex align-items-center ms-3 d-none d-md-block"
+            >
+              <InputGroup>
+                <FormControl
+                  type="search"
+                  placeholder="Search"
+                  value={searchQuery}
+                  onChange={(e) => this.setState({ searchQuery: e.target.value })}
+                />
+              </InputGroup>
             </Form>
 
             {/* Navigation Items (aligned left) */}
@@ -170,10 +186,19 @@ class Header extends Component {
             <Offcanvas.Title>Search</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            <Form className="w-100">
+            <Form 
+              action={`/search?q=${encodeURIComponent(searchQuery)}`} 
+              method="GET"
+              className="w-100 px-3"
+            >
               <InputGroup>
-                <FormControl type="text" placeholder="Search..." autoFocus />
-                <Button variant="dark">Go</Button>
+                <FormControl
+                  type="search"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => this.setState({ searchQuery: e.target.value })}
+                  autoFocus
+                />
               </InputGroup>
             </Form>
           </Offcanvas.Body>

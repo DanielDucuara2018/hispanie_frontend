@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 // import Filters from './Filters';
+import { Container, Row } from "react-bootstrap";
 import EventCard from './EventCard';
 
 class HomePage extends Component {
@@ -32,11 +33,11 @@ class HomePage extends Component {
     return (
       <>
         {/* <Filters /> */}
-        <div className="container my-4">
+        <Container className="my-4">
           {Object.keys(groupedEvents).map(date => (
             <div key={date} className="mb-4">
               <h5 className="fw-bold mb-3">{date}</h5> {/* Section Header for the date */}
-              <div className="row g-4">
+              <Row className="row g-4">
                 {groupedEvents[date].map(event => (
                   <div key={event.id} className="col-md-4">
                     <EventCard
@@ -52,10 +53,10 @@ class HomePage extends Component {
                     />
                   </div>
                 ))}
-              </div>
+              </Row>
             </div>
           ))}
-        </div>
+        </Container>
       </>
     );
   }

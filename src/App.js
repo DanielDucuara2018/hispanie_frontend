@@ -21,6 +21,7 @@ import { connect } from "react-redux";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "leaflet/dist/leaflet.css";
 import AccountCreationForm from './components/login/AccountCreateForm';
+import Search from './components/Search';
 
 class App extends Component {
   constructor(props) {
@@ -85,6 +86,7 @@ class App extends Component {
       { path: '/login', element: <Login />},
       { path: '/about', element: <AboutPage />},
       { path: '/blog', element: <BlogPage />},
+      { path: '/search', element: <Search events={events} businesses={businesses} />},
     ];
     const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
     return (
