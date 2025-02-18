@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { Form, Button, Container, Card, Alert } from "react-bootstrap";
+import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
+import { Navigate } from "react-router-dom";
+import { connect } from "react-redux";
 import Api from "../../Api";
 
 class AccountCreationForm extends Component {
@@ -62,6 +65,11 @@ class AccountCreationForm extends Component {
   };
 
   render() {
+    if (!this.props.isLoggedIn) {
+      this.props.setActiveCategoryHeader("agenda");
+      return <Navigate to={this.props.activeCategoryAgenda} replace />;
+    }
+
     return (
       <Container className="my-4">
         <Card className="shadow-lg p-5 rounded-4 border-0 bg-light">
@@ -178,7 +186,7 @@ class AccountCreationForm extends Component {
                   onChange={this.handleFileChange}
                   className="d-none"
                 />
-                <button type="button" className="btn btn-dark btn-sm">Upload Cover Image</button>
+                <Button className="btn btn-dark btn-sm">Upload Cover Image</Button>
               </div>
             </Form.Group> 
 
@@ -198,7 +206,7 @@ class AccountCreationForm extends Component {
                   onChange={this.handleFileChange}
                   className="d-none"
                 />
-                <button type="button" className="btn btn-dark btn-sm">Upload Profile Image</button>
+                <Button className="btn btn-dark btn-sm">Upload Profile Image</Button>
               </div>
             </Form.Group> 
 
@@ -214,4 +222,14 @@ class AccountCreationForm extends Component {
   }
 }
 
-export default AccountCreationForm;
+const mapStateToProps = (state) => ({
+  isLoggedIn: state.appRootReducer.isLoggedIn,
+  activeCategoryAgenda: state.appRootReducer.activeCategoryAgenda,
+});
+
+const mapDispatchToProps = {
+  setIsLoggedIn,
+  setActiveCategoryHeader,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountCreationForm);

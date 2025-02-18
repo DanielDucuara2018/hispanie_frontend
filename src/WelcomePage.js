@@ -44,7 +44,11 @@ class WelcomePage extends Component {
     return (
       <div className="bg-light min-vh-100">
         {/* HEADER SECTION */}
-        <Container fluid className="py-5 text-center text-md-start">
+        <Container 
+          fluid 
+          className="py-5 text-center text-md-start"
+          style={{ background: "linear-gradient(145deg, #fff 0, #f5f1f7 20%, #f0f5ff 50%, #fff 100%)" }}
+        >
           <Row className="justify-content-center">
             <Col md={8}>
               <p className="text-muted small fw-bold">{this.state.currentDate}</p>

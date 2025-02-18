@@ -424,7 +424,7 @@ class EventCreateForm extends Component {
                   onChange={this.handleFileChange}
                   className="d-none"
                 />
-                <button type="button" className="btn btn-dark btn-sm">Upload Cover Image</button>
+                <Button className="btn btn-dark btn-sm">Upload Cover Image</Button>
               </div>
               {this.state.coverImagePreview && (
                 <div className="d-flex justify-content-center">
@@ -454,7 +454,7 @@ class EventCreateForm extends Component {
                   onChange={this.handleFileChange}
                   className="d-none"
                 />
-                <button type="button" className="btn btn-dark btn-sm">Upload Profile Image</button>
+                <Button className="btn btn-dark btn-sm">Upload Profile Image</Button>
               </div>
               {this.state.profileImagePreview && (
                 <div className="d-flex justify-content-center">

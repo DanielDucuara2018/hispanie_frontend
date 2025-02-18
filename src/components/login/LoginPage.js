@@ -3,6 +3,8 @@ import Api from '../../Api';
 import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from 'react-router-dom';
+import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 class Login extends Component {
   constructor(props) {
@@ -53,55 +55,56 @@ class Login extends Component {
     }
 
     return (
-      <div className="container min-vh-100 d-flex flex-column justify-content-center">
-        <div className="row justify-content-center">
-          <div className="col-md-4">
-            <div className="card">
-              <div className="card-body">
-                <h3 className="card-title text-center">Login</h3>
+      <Container className="min-vh-100 d-flex flex-column justify-content-center">
+        <Row className="row justify-content-center">
+          <Col className="col-md-4">
+            <Card className="card">
+              <Card.Body className="card-body">
+                <Card.Title className="text-center fw-bold">Login</Card.Title>
                 {this.state.errorMessage && (
                   <div className="alert alert-danger" role="alert">
                     {this.state.errorMessage}
                   </div>
                 )}
-                <form onSubmit={(e) => this.handleSubmit(e)}>
-                  <div className="mb-3">
-                    <label htmlFor="username" className="form-label">
+                <Form onSubmit={(e) => this.handleSubmit(e)}>
+                  <Form.Group className="mb-3">
+                    <Form.Label className="fw-bold">
                       Username
-                    </label>
-                    <input
+                    </Form.Label>
+                    <Form.Control
                       type="text"
-                      className="form-control"
                       id="username"
                       name="username"
                       value={this.state.username}
                       onChange={this.handleChange}
                       required
                     />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="password" className="form-label">
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label className="fw-bold">
                       Password
-                    </label>
-                    <input
+                    </Form.Label>
+                    <Form.Control
                       type="password"
-                      className="form-control"
                       id="password"
                       name="password"
                       value={this.state.password}
                       onChange={this.handleChange}
                       required
                     />
-                  </div>
-                  <button type="submit" className="btn btn-dark w-100">
+                  </Form.Group>
+                  <Button type="submit" className="btn btn-dark w-100">
                     Login
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>    
+                  </Button>
+                </Form>
+                <div className="text-center mt-3">
+                  <Link to="/forgot_password" >Forgot Password?</Link>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>    
     );
   }
 }

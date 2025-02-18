@@ -22,6 +22,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "leaflet/dist/leaflet.css";
 import AccountCreationForm from './components/login/AccountCreateForm';
 import Search from './components/Search';
+import ForgotPassword from './components/login/ForgotPassword';
 
 class App extends Component {
   constructor(props) {
@@ -87,6 +88,7 @@ class App extends Component {
       { path: '/about', element: <AboutPage />},
       { path: '/blog', element: <BlogPage />},
       { path: '/search', element: <Search events={events} businesses={businesses} />},
+      { path: '/forgot_password', element: <ForgotPassword />},
     ];
     const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
     return (

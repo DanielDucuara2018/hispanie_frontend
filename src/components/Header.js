@@ -10,7 +10,7 @@ import Api from "../Api";
 class Header extends Component {
   state = {
     showSidebar: false,
-    showSearch: false, // Controls offcanvas visibility
+    showSearch: false,
     searchQuery: "",
   };
 
