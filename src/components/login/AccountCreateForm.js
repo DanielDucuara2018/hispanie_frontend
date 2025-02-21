@@ -61,6 +61,9 @@ class AccountCreationForm extends Component {
         message: "Error creating account. Please try again.",
         messageType: "error",
       });
+      if (error.response.status === 401) {
+        this.props.setIsLoggedIn(false);
+      }
     }
   };
 

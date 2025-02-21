@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Badge, Row, Col, Container, Tabs, Tab } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { LuShare } from "react-icons/lu";
-import CATEGORY_EMOJIS from '../../hooks/categoryEmojis';
+import CATEGORY_EMOJIS from '../../hooks/CategoryEmojis';
+import ShareButton from '../../hooks/ShareButton';
+import SaveButton from '../../hooks/SaveButton';
 import L from "leaflet";
 
 
@@ -74,10 +75,8 @@ class EventDetail extends Component {
 
               {/* Buttons aligned to the right */}
               <Col xs="auto" className="d-flex gap-2">
-                <Button variant="dark">Save</Button>
-                <Button variant="outline-dark">
-                  <LuShare />
-                </Button>
+                <SaveButton />
+                <ShareButton />
               </Col>
             </Row>
           </Card>

@@ -36,7 +36,9 @@ class Header extends Component {
       this.handleCategoryChange("");
       this.props.setIsLoggedIn(!this.props.isLoggedIn);
     } catch (error) {
-      console.error("Error during logout:", error);
+      if (error.response.status === 401) {
+        this.props.setIsLoggedIn(false);
+      }
     }
   };
 

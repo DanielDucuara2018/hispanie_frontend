@@ -1,21 +1,44 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
-import { FaMapMarkerAlt, FaCalendarAlt, FaFilter } from 'react-icons/fa';
+import { FaFilter, FaSort } from 'react-icons/fa';
+import { Row, Col, Dropdown } from "react-bootstrap";
 
 class Filters extends Component {
+  state = {
+    searchQuery: "",
+    selectedCity: "",
+  };
+
   render() {
+    const { selectedCity } = this.state;
+
     return (
-      <div className="d-flex justify-content-center gap-2 my-3">
-        <Button variant="outline-secondary" className="d-flex align-items-center">
-          <FaMapMarkerAlt className="me-2" /> Nantes
-        </Button>
-        <Button variant="outline-secondary" className="d-flex align-items-center">
-          <FaCalendarAlt className="me-2" /> Cualquier fecha
-        </Button>
-        <Button variant="outline-secondary" className="d-flex align-items-center">
-          <FaFilter className="me-2" /> Filtrar
-        </Button>
-      </div>
+      <Row className="justify-content-center">
+        <Col xs={6} md={4} className="mb-2">
+          <Dropdown onSelect={this.handleCityFilter}>
+            <Dropdown.Toggle variant="outline-dark">
+              {selectedCity || "City"} <FaFilter />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item eventKey="">All Cities</Dropdown.Item>
+              <Dropdown.Item eventKey="Nantes">Nantes</Dropdown.Item>
+              <Dropdown.Item eventKey="Paris">Paris</Dropdown.Item>
+              <Dropdown.Item eventKey="Marseille">Marseille</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </Col>
+        <Col xs={6} md={4}>
+          <Dropdown>
+            <Dropdown.Toggle variant="outline-dark">
+              Sort by: Relevance <FaSort />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item>Price: Low to High</Dropdown.Item>
+              <Dropdown.Item>Price: High to Low</Dropdown.Item>
+              <Dropdown.Item>Newest</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </Col>
+      </Row>
     );
   }
 }

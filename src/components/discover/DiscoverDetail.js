@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Badge, Row, Col, Container, Tabs, Tab, Image } from 'react-bootstrap';
-import { LuShare } from "react-icons/lu";
+import ShareButton from '../../hooks/ShareButton';
+
 
 const DiscoverDetailWithParams = (props) => <DiscoverDetail {...props} params={useParams()} />;
 
@@ -40,14 +41,23 @@ class DiscoverDetail extends Component {
               {/* Name & Association */}
               <Col xs={6}>
                 <h2 className="fw-bold">{data.name}</h2>
-                <h5 className="text-muted">Association</h5>
-                <Badge bg="light" text="dark" className="me-2">France 🇫🇷</Badge>
-                <Badge bg="light" text="dark">Cuba 🇨🇺</Badge>
+                <h5 className="text-muted">{data.category.charAt(0).toUpperCase() + data.category.slice(1)}</h5>
+                {data.tags.map((tag, index) => (
+                  <Badge
+                    key={index}
+                    bg="light"
+                    text="dark"
+                    className="me-2"
+                    style={{ fontSize: "0.9rem" }}
+                  >
+                    {tag.name}
+                  </Badge>
+                ))}
               </Col>
               {/* Save & Share Buttons */}
               <Col xs={4} className="text-end">
                 <Button variant="dark" className="me-2">Save</Button>
-                <Button variant="outline-dark"><LuShare /></Button>
+                <ShareButton></ShareButton> 
               </Col>
             </Row>
           </Card>

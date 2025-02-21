@@ -41,12 +41,14 @@ class TagCreateForm extends Component {
         messageType: "success",
       });
     } catch (error) {
-      console.error("Error submitting form:", error);
       // Show error message
       this.setState({
         message: "Error creating business. Please try again.",
         messageType: "error",
       });
+      if (error.response.status === 401) {
+        this.props.setIsLoggedIn(false);
+      }
     }
   };
 

@@ -44,6 +44,9 @@ class Login extends Component {
         errorMessage: "Invalid username or password",
         // isloggingin: false,
       });
+      if (error.response.status === 401) {
+        this.props.setIsLoggedIn(false);
+      }
     });
   };
 

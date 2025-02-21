@@ -11,10 +11,12 @@ class Categories extends Component {
     this.categories = [
       { label: 'All', path: '/discover/all' },
       { label: "Artists", path: "/discover/artists" },
-      { label: "Clubs", path: "/discover/clubs" },
-      { label: "Dancers", path: "/discover/dancers" },
-      { label: "Directors", path: "/discover/directors" },
       { label: "Restaurants", path: "/discover/restaurants" },
+      { label: "Cafes", path: "/discover/cafes" },
+      { label: "Boutiques", path: "/discover/boutiques" },
+      { label: "Expositions", path: "/discover/expositions" },
+      { label: "Associations", path: "/discover/associations" },
+      { label: "academies", path: "/discover/academies" },
     ];
   }
 

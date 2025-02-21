@@ -31,8 +31,8 @@ const EventCard = ({ id, title, start_date, end_date, address, category, price, 
                 key={index}
                 bg="light"
                 text="dark"
-                className="py-1 px-2"
-                style={{ fontSize: '0.9rem' }}
+                className="me-2"
+                // style={{ fontSize: '0.9rem' }}
               >
                 {tag.name}
               </Badge>

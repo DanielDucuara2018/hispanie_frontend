@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { Offcanvas, Card, Button, Badge } from "react-bootstrap";
-import CATEGORY_EMOJIS from "../../hooks/categoryEmojis";
+import CATEGORY_EMOJIS from "../../hooks/CategoryEmojis";
 
 import L from "leaflet";
 

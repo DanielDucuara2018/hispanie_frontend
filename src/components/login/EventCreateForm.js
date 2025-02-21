@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Form, Button, Container, Row, Col, Card, ListGroup, Badge } from "react-bootstrap";
+import { Form, Button, Container, Card, ListGroup, Badge, Col, Row } from "react-bootstrap";
 import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from "react-router-dom";
-import imageCategoryMapping from "../../hooks/imageCategoryMapping";
+import ImageCategoryMapping from "../../hooks/ImageCategoryMapping";
 import axios from "axios";
 import Api from "../../Api";
 
@@ -37,7 +37,7 @@ class EventCreateForm extends Component {
       latitude: "",
       longitude: "",
       category: "",
-      is_public: false,
+      is_public: true,
       description: null,
       price: 0,
       start_date: "",
@@ -54,7 +54,8 @@ class EventCreateForm extends Component {
       messageType: "", // "success" or "error"
       tagValue: "",
       filteredSuggestions: [],
-      files : []
+      files : [],
+      selectedAddress: false,
     };
   }
 
@@ -91,6 +92,7 @@ class EventCreateForm extends Component {
         const download_url = "https://d3skpo6i31hl4s.cloudfront.net/" + file.name
 
         // 4. Guardar la URL pública de la imagen
+        const hash = await this.calculateFileHash(file);
         this.setState((prevState) => ({
           [name]: download_url,
           [`${name}Preview`]: URL.createObjectURL(file),
@@ -99,8 +101,9 @@ class EventCreateForm extends Component {
             {
               filename: file.name,
               content_type: file.type,
-              category: imageCategoryMapping[name] || "other",
+              category: ImageCategoryMapping[name] || "other",
               path: download_url,
+              hash: hash,
               description: name,
             },
           ],
@@ -115,6 +118,14 @@ class EventCreateForm extends Component {
       }
     }
   };
+
+  calculateFileHash = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+  }
 
   // handle addresses
   handleAddressChange = async (e) => {
@@ -156,6 +167,7 @@ class EventCreateForm extends Component {
       postcode: place.address.postcode,
       region: place.address.state,
       addressSuggestions: [],
+      selectedAddress: true,
     });
   };
 
@@ -207,6 +219,9 @@ class EventCreateForm extends Component {
         message: "Error creating Event. Please try again.",
         messageType: "error",
       });
+      if (error.response.status === 401) {
+        this.props.setIsLoggedIn(false);
+      }
     }
   };
 
@@ -230,106 +245,50 @@ class EventCreateForm extends Component {
           )}
 
           <Form onSubmit={this.handleSubmit}>
+            <Form.Group className="mb-3" controlId="formIsPublic">
+              <Form.Check
+                type="checkbox"
+                name="is_public"
+                checked={this.state.is_public}
+                onChange={this.handleChange}
+                label="Is Public"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Name</Form.Label>
+              <Form.Control type="text" name="name" value={this.state.name} onChange={this.handleChange} placeholder="Event Name" required />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Email</Form.Label>
+              <Form.Control type="email" name="email" value={this.state.email} onChange={this.handleChange} placeholder="example@email.com (Optional)" />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Phone</Form.Label>
+              <Form.Control type="tel" name="phone" value={this.state.phone} onChange={this.handleChange} placeholder="+1 234 567 890 (Optional)" />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Category</Form.Label>
+              <Form.Select name="category" value={this.state.category} onChange={this.handleChange} required>
+                <option value="">Select Category</option>
+                {EVENT_CATEGORIES.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Price</Form.Label>
+              <Form.Control type="number" name="price"value={this.state.price} onChange={this.handleChange}  placeholder="Enter price" required />
+            </Form.Group>
+            
             <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Name</Form.Label>
-                  <Form.Control type="text" name="name" value={this.state.name} onChange={this.handleChange} placeholder="Event Name" required />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Email</Form.Label>
-                  <Form.Control type="email" name="email" value={this.state.email} onChange={this.handleChange} placeholder="example@email.com (Optional)" />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Phone</Form.Label>
-                  <Form.Control type="tel" name="phone" value={this.state.phone} onChange={this.handleChange} placeholder="+1 234 567 890 (Optional)" />
-                </Form.Group>
-
-                {/* Address Input with Autocomplete */}
-                <Form.Group className="mb-3" controlId="formAddress">
-                  <Form.Label className="fw-bold">Address</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={this.state.address}
-                    onChange={this.handleAddressChange}
-                    placeholder="Start typing an address..."
-                  />
-                  {this.state.isLoading && <small>Loading...</small>}
-                  
-                  {/* Suggestions Dropdown */}
-                  {this.state.addressSuggestions.length > 0 && (
-                    <ListGroup className="mt-1">
-                      {this.state.addressSuggestions.map((place, index) => (
-                        <ListGroup.Item
-                          key={index}
-                          action
-                          onClick={() => this.handleSelectAddress(place)}
-                        >
-                          {place.display_name}
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                  )}
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Country</Form.Label>
-                  <Form.Control type="text" name="country" value={this.state.country} onChange={this.handleChange} placeholder="France" required readOnly />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">City</Form.Label>
-                  <Form.Control type="text" name="city" value={this.state.city} onChange={this.handleChange} placeholder="Issy-les-Moulineaux" required readOnly />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Municipality</Form.Label>
-                  <Form.Control type="text" name="municipality" value={this.state.municipality} onChange={this.handleChange} placeholder="Issy-les-Moulineaux" required readOnly />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formIsPublic">
-                  <Form.Check
-                    type="checkbox"
-                    name="is_public"
-                    checked={this.state.is_public}
-                    onChange={this.handleChange}
-                    label="Is Public"
-                  />
-                </Form.Group>
-
-              </Col>
-
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Postcode</Form.Label>
-                  <Form.Control type="text" name="postcode" value={this.state.postcode} onChange={this.handleChange} placeholder="92130" required readOnly />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Region</Form.Label>
-                  <Form.Control type="text" name="region" value={this.state.region} onChange={this.handleChange} placeholder="Ile de France" required readOnly />
-                </Form.Group>
-
-
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Category</Form.Label>
-                  <Form.Select name="category" value={this.state.category} onChange={this.handleChange} required>
-                    <option value="">Select Category</option>
-                    {EVENT_CATEGORIES.map((cat) => (
-                      <option key={cat.value} value={cat.value}>
-                        {cat.label}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Price</Form.Label>
-                  <Form.Control type="number" name="price"value={this.state.price} onChange={this.handleChange}  placeholder="Enter price" required />
-                </Form.Group>
-
+              <Col>
                 <Form.Group className="mb-3" controlId="formStartDate">
                   <Form.Label className="fw-bold">Start Date</Form.Label>
                   <Form.Control
@@ -340,7 +299,9 @@ class EventCreateForm extends Component {
                     required
                   />
                 </Form.Group>
-
+              </Col>
+              
+              <Col>
                 <Form.Group className="mb-3" controlId="formEndDate">
                   <Form.Label className="fw-bold">End Date</Form.Label>
                   <Form.Control
@@ -351,13 +312,59 @@ class EventCreateForm extends Component {
                     required
                   />
                 </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">URLs (comma-separated)</Form.Label>
-                  <Form.Control type="text" name="urls" value={this.state.urls} onChange={this.handleChange} placeholder="https://example.com, https://event.com (Optional)" />
-                </Form.Group>
               </Col>
             </Row>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">URLs (comma-separated)</Form.Label>
+              <Form.Control type="text" name="urls" value={this.state.urls} onChange={this.handleChange} placeholder="https://example.com, https://event.com (Optional)" />
+            </Form.Group>
+
+            {/* Address Input with Autocomplete */}
+            <Form.Group className="mb-3" controlId="formAddress">
+              <Form.Label className="fw-bold">Address</Form.Label>
+              <Form.Control
+                type="text"
+                value={this.state.address}
+                onChange={this.handleAddressChange}
+                placeholder="Start typing an address..."
+                required
+              />
+              {this.state.isLoading && <small>Loading...</small>}
+              
+              {/* Suggestions Dropdown */}
+              {this.state.addressSuggestions.length > 0 && (
+                <ListGroup className="mt-1">
+                  {this.state.addressSuggestions.map((place, index) => (
+                    <ListGroup.Item
+                      key={index}
+                      action
+                      onClick={() => this.handleSelectAddress(place)}
+                    >
+                      {place.display_name}
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </Form.Group>
+
+            {this.state.selectedAddress && (
+              <Card className="mb-3">
+                <Card.Body>
+                  <Card.Title>Selected Address Details</Card.Title>
+                  <Card.Text>
+                    <strong>Address:</strong> {this.state.address} <br />
+                    <strong>Country:</strong> {this.state.country} <br />
+                    <strong>City:</strong> {this.state.city} <br />
+                    <strong>Municipality:</strong> {this.state.municipality} <br />
+                    <strong>Postcode:</strong> {this.state.postcode} <br />
+                    <strong>Region:</strong> {this.state.region} <br />
+                    <strong>Latitude:</strong> {this.state.latitude} <br />
+                    <strong>Longitude:</strong> {this.state.longitude} <br />
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            )}
 
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Tags</Form.Label>

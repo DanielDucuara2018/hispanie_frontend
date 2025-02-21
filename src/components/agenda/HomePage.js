@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import Filters from './Filters';
+import Filters from './Filters';
 import { Container, Row } from "react-bootstrap";
 import EventCard from './EventCard';
 
@@ -32,7 +32,7 @@ class HomePage extends Component {
 
     return (
       <>
-        {/* <Filters /> */}
+        <Filters />
         <Container className="my-4">
           {Object.keys(groupedEvents).map(date => (
             <div key={date} className="mb-4">

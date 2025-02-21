@@ -31,6 +31,9 @@ class ResetPassword extends Component {
       this.setState({ message: 'Password has been reset successfully.', error: '', redirect: true });
     } catch (error) {
       this.setState({ error: 'Error resetting password. Please try again.', message: '' });
+      if (error.response.status === 401) {
+        this.props.setIsLoggedIn(false);
+      }
     }
   };
 

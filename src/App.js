@@ -17,8 +17,9 @@ import TagCreateForm from './components/login/TagCreateForm';
 import AboutPage from './components/AboutPage';
 import BlogPage from './components/BlogPage';
 import { connect } from "react-redux";
+import { setIsLoggedIn } from "./actions/appActions";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import "leaflet/dist/leaflet.css";
 import AccountCreationForm from './components/login/AccountCreateForm';
 import Search from './components/Search';
@@ -52,7 +53,9 @@ class App extends Component {
         });
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      if (error.response.status === 401) {
+        this.props.setIsLoggedIn(false);
+      }
     }
   }
 
@@ -60,25 +63,28 @@ class App extends Component {
     const { events, businesses, tags } = this.state;
     const agenda = "/agenda"
     const discover = "/discover"
+    console.log(businesses)
     // Define your routes in an array
     const routes = [
       { path: `/`, element: <WelcomePage businesses={businesses}/> },
       { path: `/profile`, element: <ProfilePage/> },
       { path: `${agenda}`, element: <AgendaPage events={events} /> },
       { path: `${agenda}/all`, element: <AgendaPage events={events} /> },
-      { path: `${agenda}/cinemas`, element: <AgendaPage events={[]} /> },
-      { path: `${agenda}/courses`, element: <AgendaPage events={[]} /> },
-      { path: `${agenda}/concerts`, element: <AgendaPage events={[]} /> },
-      { path: `${agenda}/parties`, element: <AgendaPage events={[]} /> },
+      { path: `${agenda}/cinemas`, element: <AgendaPage events={events.filter(x => x.category === "cinema")} /> },
+      { path: `${agenda}/courses`, element: <AgendaPage events={events.filter((x) => x.category === "course")} /> },
+      { path: `${agenda}/concerts`, element: <AgendaPage events={events.filter((x) => x.category === "concert")} /> },
+      { path: `${agenda}/parties`, element: <AgendaPage events={events.filter((x) => x.category === "party")} /> },
       { path: `${agenda}/event/:id`, element: <EventDetail events={events} /> },
       { path: `/event/create`, element: <EventCreateForm tags={tags} />},
       { path: `${discover}`, element: <DiscoverPage businesses={businesses} /> },
       { path: `${discover}/all`, element: <DiscoverPage businesses={businesses} /> },
-      { path: `${discover}/artists`, element: <DiscoverPage businesses={businesses} /> },
-      { path: `${discover}/clubs`, element: <DiscoverPage businesses={[]} /> },
-      { path: `${discover}/dancers`, element: <DiscoverPage businesses={[]} /> },
-      { path: `${discover}/directors`, element: <DiscoverPage businesses={[]} /> },
-      { path: `${discover}/restaurants`, element: <DiscoverPage businesses={[]} /> },
+      { path: `${discover}/artists`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "artist")} /> },
+      { path: `${discover}/restaurants`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "restaurant")} /> },
+      { path: `${discover}/cafes`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "cafe")} /> },
+      { path: `${discover}/boutiques`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "boutique")} /> },
+      { path: `${discover}/expositions`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "exposition")} /> },
+      { path: `${discover}/associations`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "association")} /> },
+      { path: `${discover}/academies`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "academy")} /> },
       { path: `${discover}/business/:id`, element: <DiscoverDetail businesses={businesses} /> },
       { path: `/business/create`, element: <DiscoverCreateForm tags={tags} />},
       { path: `/tag/create`, element: <TagCreateForm />},
@@ -113,6 +119,8 @@ const mapStateToProps = (state) => ({
   isLoggedIn: state.appRootReducer.isLoggedIn,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  setIsLoggedIn,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

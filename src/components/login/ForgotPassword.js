@@ -16,14 +16,19 @@ class ForgotPassword extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await Api.post('/accounts/public/forgot-password', { email: this.state.email });
+      await Api.post('/accounts/public/forgot_password', { email: this.state.email });
       this.setState({ message: 'Password reset link sent. Please check your email.', error: '' });
     } catch (error) {
       this.setState({ error: 'Error sending password reset link. Please try again.', message: '' });
-    }
+      if (error.response.status === 401) {
+        this.props.setIsLoggedIn(false);
+      }
+}
   };
 
   render() {
+    const { email, message, error } = this.state
+
     return (
       <Container className="min-vh-100 d-flex flex-column justify-content-center">
         <Row className="justify-content-center">
@@ -31,15 +36,15 @@ class ForgotPassword extends Component {
             <Card>
               <Card.Body>
                 <Card.Title className="text-center fw-bold">Forgot Password</Card.Title>
-                {this.state.message && <Alert variant="success">{this.state.message}</Alert>}
-                {this.state.error && <Alert variant="danger">{this.state.error}</Alert>}
+                {message && <Alert variant="success">{message}</Alert>}
+                {error && <Alert variant="danger">{error}</Alert>}
                 <Form onSubmit={this.handleSubmit}>
                   <Form.Group controlId="formBasicEmail">
                     <Form.Label className="fw-bold">Email address</Form.Label>
                     <Form.Control
                       type="email"
                       placeholder="Enter email"
-                      value={this.state.email}
+                      value={email}
                       onChange={this.handleChange}
                       required
                     />
