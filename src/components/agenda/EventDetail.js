@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Button, Badge, Row, Col, Container, Tabs, Tab } from 'react-bootstrap';
+import { Card, Badge, Row, Col, Container, Tabs, Tab } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import CATEGORY_EMOJIS from '../../hooks/CategoryEmojis';
 import ShareButton from '../../hooks/ShareButton';

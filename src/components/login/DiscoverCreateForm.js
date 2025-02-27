@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Button, Container, Row, Col, Card, ListGroup, Badge  } from "react-bootstrap";
+import { Form, Button, Container, Card, ListGroup, Badge  } from "react-bootstrap";
 import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from "react-router-dom";

@@ -24,6 +24,7 @@ import "leaflet/dist/leaflet.css";
 import AccountCreationForm from './components/login/AccountCreateForm';
 import Search from './components/Search';
 import ForgotPassword from './components/login/ForgotPassword';
+import ResetPassword from './components/login/ResetPassword';
 
 class App extends Component {
   constructor(props) {
@@ -95,6 +96,7 @@ class App extends Component {
       { path: '/blog', element: <BlogPage />},
       { path: '/search', element: <Search events={events} businesses={businesses} />},
       { path: '/forgot_password', element: <ForgotPassword />},
+      { path: '/reset_password', element: <ResetPassword />},
     ];
     const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
     return (

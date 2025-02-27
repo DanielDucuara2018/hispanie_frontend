@@ -43,6 +43,13 @@ class AccountCreationForm extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
+    const { password, confirmPassword } = this.state;
+
+    if (password !== confirmPassword) {
+      this.setState({ message: "Passwords do not match.", messageType: "error" });
+      return;
+    }
+
     try {
       await Api.post("/accounts/private/create", 
         this.state, 
