@@ -33,13 +33,16 @@ class Search extends Component {
   };
 
   applyFilters = (data, query, city) => {
+    const normalizedQuery = query?.toLowerCase() || '';
+  
     return data
-      .filter(item =>
-        item.name.toLowerCase().includes(query.toLowerCase()) ||
-        item.city.toLowerCase().includes(query.toLowerCase()) ||
-        item.description.toLowerCase().includes(query.toLowerCase())
-      )
-      .filter(item => !city || item.city.toLowerCase() === city.toLowerCase());
+      .filter(item => {
+        const nameMatches = item.name?.toLowerCase().includes(normalizedQuery);
+        const cityMatches = item.city?.toLowerCase().includes(normalizedQuery);
+        const descriptionMatches = item.description?.toLowerCase().includes(normalizedQuery);
+        return nameMatches || cityMatches || descriptionMatches;
+      })
+      .filter(item => !city || item.city?.toLowerCase() === city.toLowerCase());
   };
 
   render() {

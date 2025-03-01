@@ -14,7 +14,7 @@ import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 
 const SharePopover = (
   <Popover id="share-popover">
-    <Popover.Body className="d-flex justify-content-around">
+    <Popover.Body className="d-flex justify-content-around d-flex gap-2" >
       <FacebookShareButton url={window.location.href}>
         <FacebookIcon size={32} round />
       </FacebookShareButton>

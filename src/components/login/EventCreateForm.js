@@ -26,8 +26,6 @@ class EventCreateForm extends Component {
     super(props);
     this.state = {
       name: "",
-      email: null,
-      phone: null,
       city: "",
       address: "",
       country: "",
@@ -43,7 +41,6 @@ class EventCreateForm extends Component {
       start_date: "",
       end_date: "",
       tags: [],
-      urls: [],
       addressSuggestions: [],
       isLoading: false,
       profileImage: null,
@@ -256,21 +253,6 @@ class EventCreateForm extends Component {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">Name</Form.Label>
-              <Form.Control type="text" name="name" value={this.state.name} onChange={this.handleChange} placeholder="Event Name" required />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">Email</Form.Label>
-              <Form.Control type="email" name="email" value={this.state.email} onChange={this.handleChange} placeholder="example@email.com (Optional)" />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">Phone</Form.Label>
-              <Form.Control type="tel" name="phone" value={this.state.phone} onChange={this.handleChange} placeholder="+1 234 567 890 (Optional)" />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Category</Form.Label>
               <Form.Select name="category" value={this.state.category} onChange={this.handleChange} required>
                 <option value="">Select Category</option>
@@ -280,6 +262,11 @@ class EventCreateForm extends Component {
                   </option>
                 ))}
               </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Name</Form.Label>
+              <Form.Control type="text" name="name" value={this.state.name} onChange={this.handleChange} placeholder="Event Name" required />
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -314,11 +301,6 @@ class EventCreateForm extends Component {
                 </Form.Group>
               </Col>
             </Row>
-
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">URLs (comma-separated)</Form.Label>
-              <Form.Control type="text" name="urls" value={this.state.urls} onChange={this.handleChange} placeholder="https://example.com, https://event.com (Optional)" />
-            </Form.Group>
 
             {/* Address Input with Autocomplete */}
             <Form.Group className="mb-3" controlId="formAddress">

@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Badge, Row, Col, Container, Tabs, Tab, Image } from 'react-bootstrap';
+import { FaInstagram, FaFacebook  } from 'react-icons/fa';
+import { BsTelephone } from "react-icons/bs";
+import { MdOutlineMail } from "react-icons/md";
+import { TbWorld } from "react-icons/tb";
 import ShareButton from '../../hooks/ShareButton';
-
+import SaveButton from '../../hooks/SaveButton';
 
 const DiscoverDetailWithParams = (props) => <DiscoverDetail {...props} params={useParams()} />;
 
@@ -14,6 +18,8 @@ class DiscoverDetail extends Component {
     const data = businesses.find(x => x.id === String(params.id));
 
     if (!data) return <p>Business not found</p>;
+
+    console.log(data.social_networks)
 
     return (
       <>
@@ -55,9 +61,9 @@ class DiscoverDetail extends Component {
                 ))}
               </Col>
               {/* Save & Share Buttons */}
-              <Col xs={4} className="text-end">
-                <Button variant="dark" className="me-2">Save</Button>
-                <ShareButton></ShareButton> 
+              <Col xs="auto" className="d-flex gap-2">
+                <SaveButton />
+                <ShareButton /> 
               </Col>
             </Row>
           </Card>
@@ -79,15 +85,49 @@ class DiscoverDetail extends Component {
                       {/* Contact */}
                       <Card className="p-4 shadow flex-grow-1">
                         <h5 className="fw-bold">Contact:</h5>
-                        <p>📧 {data.email}</p>
-                        <p>📞 {data.phone}</p>
-                        <p>🌐 {data.website}</p>
+                        <h6 className="my-3">
+                          <a href={`mailto:${data.email}`} className="text-decoration-none text-dark">
+                            <MdOutlineMail size={24} className="me-3" />
+                            {data.email}
+                          </a>
+                        </h6>
+                        <h6 className="my-3">
+                          <a href={`tel:${data.phone}`} className="text-decoration-none text-dark">
+                            <BsTelephone size={24} className="me-3" />
+                            {data.phone}
+                          </a>
+                        </h6>
+                        <h6 className="my-3">
+                          <a
+                            href={data.social_networks.find((x) => x.category === 'web').url}
+                            className="text-decoration-none text-dark"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <TbWorld size={24} className="me-3" />
+                            Visit our web site
+                          </a>
+                        </h6>
                       </Card>
                       {/* Follow */}
                       <Card className="p-4 shadow flex-grow-1">
                         <h5 className="fw-bold">Follow:</h5>
-                        <Button variant="outline-dark" className="w-100 mb-2">Follow on Facebook</Button>
-                        <Button variant="outline-dark" className="w-100">Follow on Instagram</Button>
+                        <Button
+                          variant="outline-dark"
+                          className="w-100 mb-2"
+                          href={data.social_networks.find((x) => x.category === "facebook").url}
+                          target="_blank"
+                        >
+                          <FaFacebook size={24} className="me-3" /> Follow on Facebook
+                        </Button>
+                        <Button
+                          variant="outline-dark"
+                          className="w-100"
+                          href={data.social_networks.find((x) => x.category === "instagram").url}
+                          target="_blank"
+                        >
+                          <FaInstagram size={24} className="me-3" /> Follow on Instagram
+                        </Button>
                       </Card>
                     </Col>
                   </Row>

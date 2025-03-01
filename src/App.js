@@ -90,7 +90,7 @@ class App extends Component {
       { path: `/business/create`, element: <DiscoverCreateForm tags={tags} />},
       { path: `/tag/create`, element: <TagCreateForm />},
       { path: `/account/create`, element: <AccountCreationForm />},
-      { path: '/maps', element: <MapView events={events} businesses={businesses}/> },
+      { path: '/maps', element: <MapView events={events} businesses={businesses.filter(x => x.address !== null)}/> },
       { path: '/login', element: <Login />},
       { path: '/about', element: <AboutPage />},
       { path: '/blog', element: <BlogPage />},

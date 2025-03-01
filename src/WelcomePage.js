@@ -91,7 +91,7 @@ class WelcomePage extends Component {
         <Container className="mt-5">
           <Row className="d-flex justify-content-between align-items-center">
             <Col>
-              <h4 className="fw-bold">Artistas de la semana</h4>
+              <h4 className="fw-bold">Artists of the week</h4>
             </Col>
             <Col xs="auto">
               <Link to="/discover">

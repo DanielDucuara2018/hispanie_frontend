@@ -1,11 +1,21 @@
 import React, { Component } from "react";
-import { Form, Button, Container, Card, ListGroup, Badge  } from "react-bootstrap";
+import { Form, Button, Container, Card, ListGroup, Badge, InputGroup } from "react-bootstrap";
 import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from "react-router-dom";
 import ImageCategoryMapping from "../../hooks/ImageCategoryMapping";
 import axios from "axios";
 import Api from "../../Api";
+
+
+// Enum for Social Network Categories
+const SocialNetworkCategory = {
+  FACEBOOK: "facebook",
+  INSTAGRAM: "instagram",
+  TIKTOK: "tiktok",
+  TWITTER: "twitter",
+  WEB: "web",
+};
 
 // TODO Merged DiscoverCreateForn and EventCreateForm both are similar
 // TODO CATEGOTIES change and this form don't have price, start_date and end_date 
@@ -24,21 +34,20 @@ class DiscoverCreateForm extends Component {
     super(props);
     this.state = {
       name: "",
-      email: null,
-      phone: null,
-      city: "",
-      address: "",
-      country: "",
-      municipality: "",
-      postcode: "",
-      region: "",
-      latitude: "",
-      longitude: "",
+      email: "",
+      phone: "",
+      city: null,
+      address: null,
+      country: null,
+      municipality: null,
+      postcode: null,
+      region: null,
+      latitude: null,
+      longitude: null,
       category: "",
       is_public: true,
       description: null,
       tags: [],
-      urls: [],
       suggestions: [],
       isLoading: false,
       profileImage: null,
@@ -51,6 +60,8 @@ class DiscoverCreateForm extends Component {
       filteredSuggestions: [],
       files : [],
       selectedAddress: false,
+      currentUrl: "",
+      social_networks: [], // Array to hold { url: "", category: "" }
     };
   }
 
@@ -87,6 +98,7 @@ class DiscoverCreateForm extends Component {
         const download_url = "https://d3skpo6i31hl4s.cloudfront.net/" + file.name
 
         // 4. Guardar la URL pública de la imagen
+        const hash = await this.calculateFileHash(file);
         this.setState((prevState) => ({
           [name]: download_url,
           [`${name}Preview`]: URL.createObjectURL(file),
@@ -97,6 +109,7 @@ class DiscoverCreateForm extends Component {
               content_type: file.type,
               category: ImageCategoryMapping[name] || "other",
               path: download_url,
+              hash: hash,
               description: name,
             },
           ],
@@ -112,6 +125,13 @@ class DiscoverCreateForm extends Component {
     }
   };
 
+  calculateFileHash = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+  }
 
   handleAddressChange = async (e) => {
     const address = e.target.value;
@@ -180,6 +200,41 @@ class DiscoverCreateForm extends Component {
     }));
   };
 
+
+  // Handle URL input change
+  handleUrlChange = (e) => {
+    this.setState({ currentUrl: e.target.value });
+  };
+
+  // Determine the category of the URL
+  categorizeUrl = (url) => {
+    if (url.includes("facebook.com")) return SocialNetworkCategory.FACEBOOK;
+    if (url.includes("instagram.com")) return SocialNetworkCategory.INSTAGRAM;
+    if (url.includes("tiktok.com")) return SocialNetworkCategory.TIKTOK;
+    if (url.includes("twitter.com")) return SocialNetworkCategory.TWITTER;
+    return SocialNetworkCategory.WEB;
+  };
+
+  // Add URL to the list
+  addUrl = () => {
+    const { currentUrl, social_networks } = this.state;
+    if (currentUrl.trim() === "") return;
+
+    const category = this.categorizeUrl(currentUrl);
+    this.setState({
+      social_networks: [...social_networks, { url: currentUrl, category }],
+      currentUrl: "", // Clear input after adding
+    });
+  };
+  
+    // Remove URL from the list
+    removeUrl = (index) => {
+      this.setState((prevState) => ({
+        social_networks: prevState.social_networks.filter((_, i) => i !== index),
+      }));
+    };
+  
+
   handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -239,18 +294,30 @@ class DiscoverCreateForm extends Component {
             </Form.Group>
 
             <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Category</Form.Label>
+              <Form.Select name="category" value={this.state.category} onChange={this.handleChange} required>
+                <option value="">Select Category</option>
+                {DISCOVER_CATEGORIES.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Name</Form.Label>
-              <Form.Control type="text" name="name" value={this.state.name} onChange={this.handleChange} placeholder="Event Name" required />
+              <Form.Control type="text" name="name" value={this.state.name} onChange={this.handleChange} placeholder="Business Name" required />
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Email</Form.Label>
-              <Form.Control type="email" name="email" value={this.state.email} onChange={this.handleChange} placeholder="example@email.com (Optional)" />
+              <Form.Control type="email" name="email" value={this.state.email} onChange={this.handleChange} placeholder="example@email.com" required/>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Phone</Form.Label>
-              <Form.Control type="tel" name="phone" value={this.state.phone} onChange={this.handleChange} placeholder="+1 234 567 890 (Optional)" />
+              <Form.Control type="tel" name="phone" value={this.state.phone} onChange={this.handleChange} placeholder="+1 234 567 890" required/>
             </Form.Group>
 
             {/* Address Input with Autocomplete */}
@@ -298,22 +365,42 @@ class DiscoverCreateForm extends Component {
               </Card>
             )}
 
+            {/* URL Input */}
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">Category</Form.Label>
-              <Form.Select name="category" value={this.state.category} onChange={this.handleChange} required>
-                <option value="">Select Category</option>
-                {DISCOVER_CATEGORIES.map((cat) => (
-                  <option key={cat.value} value={cat.value}>
-                    {cat.label}
-                  </option>
-                ))}
-              </Form.Select>
+              <Form.Label className="fw-bold">Add Social Network or Website URL</Form.Label>
+              <InputGroup>
+                <Form.Control
+                  type="text"
+                  value={this.state.currentUrl}
+                  onChange={this.handleUrlChange}
+                  placeholder="https://example.com"
+                />
+                <Button variant="dark" onClick={this.addUrl}>
+                  Add URL
+                </Button>
+              </InputGroup>
             </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">URLs (comma-separated)</Form.Label>
-              <Form.Control type="text" name="urls" value={this.state.urls} onChange={this.handleChange} placeholder="https://example.com, https://event.com (Optional)" />
-            </Form.Group>
+            {/* Display Added URLs */}
+            {this.state.social_networks.length > 0 && (
+              <ListGroup className="mb-3">
+                {this.state.social_networks.map((item, index) => (
+                  <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
+                    <div>
+                      <a href={item.url} target="_blank" rel="noopener noreferrer">
+                        {item.url}
+                      </a>
+                      <Badge bg="secondary" className="ms-2">
+                        {item.category}
+                      </Badge>
+                    </div>
+                    <Button variant="danger" size="sm" onClick={() => this.removeUrl(index)}>
+                      Remove
+                    </Button>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            )}
 
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Tags</Form.Label>

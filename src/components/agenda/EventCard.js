@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card, Badge, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import FormattedDateRangeWrapper from '../../hooks/FormattedDateRangeWrapper';
+import FormattedAddressWrapper from '../../hooks/FormattedAddressWrapper';
 
 const EventCard = ({ id, title, start_date, end_date, address, category, price, tags, files }) => {
   return (
@@ -18,11 +20,19 @@ const EventCard = ({ id, title, start_date, end_date, address, category, price, 
           <Row className="mb-2">
             <Col>
               <Badge bg="secondary" className="me-2">{category}</Badge>
-              <small className="text-muted">{start_date} - {end_date}</small>
+              <FormattedDateRangeWrapper startDate={start_date} endDate={end_date}>
+                {(formattedDateRange) => (
+                  <small className="text-muted">
+                  {formattedDateRange}
+                  </small>
+                )}
+              </FormattedDateRangeWrapper>
             </Col>
           </Row>
           <Card.Title className="fs-5 fw-bold">{title}</Card.Title>
-          <Card.Text className="text-muted small">{address}</Card.Text>
+          <Card.Text className="text-muted small">
+            <FormattedAddressWrapper address={address} />
+          </Card.Text>
           <Card.Text className="fw-bold"> From €{price} EUR</Card.Text>
           {/* Tags */}
           <div className="d-flex flex-wrap gap-2">

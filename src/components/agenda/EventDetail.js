@@ -5,6 +5,8 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import CATEGORY_EMOJIS from '../../hooks/CategoryEmojis';
 import ShareButton from '../../hooks/ShareButton';
 import SaveButton from '../../hooks/SaveButton';
+import FormattedDateRangeWrapper from '../../hooks/FormattedDateRangeWrapper';
+import FormattedAddressWrapper from '../../hooks/FormattedAddressWrapper';
 import L from "leaflet";
 
 
@@ -32,6 +34,8 @@ class EventDetail extends Component {
     const data = events.find((x) => x.id === String(params.id));
 
     if (!data) return <p>Event not found</p>;
+
+    const formattedAddress = <FormattedAddressWrapper address={data.address} />
     
     return (
       <>
@@ -51,12 +55,17 @@ class EventDetail extends Component {
                 <Badge bg="light" text="dark" className="me-2">
                   {data.category}
                 </Badge>
-                <span className="text-muted">
-                  {data.start_date} - {data.end_date}
-                </span>
+                <FormattedDateRangeWrapper startDate={data.start_date} endDate={data.end_date}>
+                  {(formattedDateRange) => (
+                    <span className="text-muted">
+                    {formattedDateRange}
+                    </span>
+                  )}
+                </FormattedDateRangeWrapper>
+
 
                 <h1 className="fw-bold mt-2">{data.name}</h1>
-                <p className="text-muted">{data.address}</p>
+                <p className="text-muted">{formattedAddress}</p>
 
                 <div className="d-flex flex-wrap gap-2 mb-3">
                   {data.tags.map((tag, index) => (
@@ -132,7 +141,7 @@ class EventDetail extends Component {
                     >
                       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                       <Marker position={[data.latitude, data.longitude]} icon={this.createIcon(CATEGORY_EMOJIS[data.category])}> 
-                        <Popup>{data.address}</Popup>
+                        <Popup>{formattedAddress}</Popup>
                       </Marker>
                     </MapContainer>
                     <p className="text-muted mt-2">{data.location}</p>
