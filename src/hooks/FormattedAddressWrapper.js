@@ -8,8 +8,6 @@ import { useMemo } from 'react';
 function useFormattedAddress(address) {
   return useMemo(() => {
     if (!address) return '';
-    console.log(address)
-
     // Split the address into components
     const components = address.split(',').map(component => component.trim());
 

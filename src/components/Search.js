@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { useParams } from 'react-router-dom';
 import EventCard from './agenda/EventCard';
 import { Row, Col, Form, InputGroup, FormControl, Button, Dropdown, Container } from "react-bootstrap";
 import { FaSearch, FaFilter, FaSort } from "react-icons/fa";
 import DiscoverCard from './discover/DiscoverCard';
-
-const SearchWithParams = (props) => <Search {...props} params={useParams()} />;
 
 class Search extends Component {
   state = {
@@ -138,4 +135,4 @@ class Search extends Component {
   }
 }
 
-export default SearchWithParams;
+export default Search;

@@ -41,8 +41,6 @@ class MapView extends Component {
     const { events, businesses } = this.props
     const { selectedEvent } = this.state
 
-    console.log(selectedEvent)
-
     return (
       <div className="map-container">
         <MapContainer center={[47.2184, -1.5536]} zoom={13} style={{ height: "100vh", width: "100%" }}>

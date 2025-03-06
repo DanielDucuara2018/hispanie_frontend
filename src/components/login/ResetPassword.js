@@ -34,7 +34,6 @@ class ResetPassword extends Component {
     try {
       // Call backend to validate the token
       const response = await Api.post("/accounts/public/validate_reset_token", { token });
-      console.log(response.data)
       this.setState({ isTokenValid: response.data });
     } catch (error) {
       this.setState({ isTokenValid: true });

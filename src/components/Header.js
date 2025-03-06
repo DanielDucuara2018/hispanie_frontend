@@ -61,8 +61,6 @@ class Header extends Component {
       ...noCollapsedNavItems
     ];
 
-    console.log(searchQuery)
-
     return (
       <>
         {/* Top Navbar */}

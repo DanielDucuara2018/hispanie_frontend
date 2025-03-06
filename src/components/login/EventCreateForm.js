@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { useParams } from "react-router-dom";
 import { Form, Button, Container, Card, ListGroup, Badge, Col, Row } from "react-bootstrap";
 import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
@@ -6,6 +7,8 @@ import { Navigate } from "react-router-dom";
 import ImageCategoryMapping from "../../hooks/ImageCategoryMapping";
 import axios from "axios";
 import Api from "../../Api";
+
+const EventCreateFormWithParams = (props) => <EventCreateForm {...props} params={useParams()} />;
 
 // TODO Merged DiscoverCreateForn and EventCreateForm both are similar
 // TODO CATEGOTIES change
@@ -21,40 +24,50 @@ const EVENT_CATEGORIES = [
   { label: "Dance", value: "dance" },
 ];
 
+
 class EventCreateForm extends Component {
+  defaultState = {
+    eventData: null,
+    name: "",
+    city: "",
+    address: "",
+    country: "",
+    municipality: "",
+    postcode: "",
+    region: "",
+    latitude: "",
+    longitude: "",
+    category: "",
+    is_public: true,
+    description: null,
+    price: 0,
+    start_date: "",
+    end_date: "",
+    tags: [],
+    addressSuggestions: [],
+    isLoading: false,
+    profileImage: null,
+    coverImage: null,
+    profileImagePreview: "",
+    coverImagePreview: "",
+    message: "", // Success/Error message
+    messageType: "", // "success" or "error"
+    tagValue: "",
+    filteredSuggestions: [],
+    files : [],
+    selectedAddress: false,
+    mode: null,
+  };
+
   constructor(props) {
     super(props);
-    this.state = {
-      name: "",
-      city: "",
-      address: "",
-      country: "",
-      municipality: "",
-      postcode: "",
-      region: "",
-      latitude: "",
-      longitude: "",
-      category: "",
-      is_public: true,
-      description: null,
-      price: 0,
-      start_date: "",
-      end_date: "",
-      tags: [],
-      addressSuggestions: [],
-      isLoading: false,
-      profileImage: null,
-      coverImage: null,
-      profileImagePreview: "",
-      coverImagePreview: "",
-      message: "", // Success/Error message
-      messageType: "", // "success" or "error"
-      tagValue: "",
-      filteredSuggestions: [],
-      files : [],
-      selectedAddress: false,
-    };
+    this.state = this.defaultState;
   }
+
+  resetState = () => {
+    this.setState(this.defaultState);
+  };
+
 
   handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -118,9 +131,9 @@ class EventCreateForm extends Component {
 
   calculateFileHash = async (file) => {
     const arrayBuffer = await file.arrayBuffer();
-    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
     return hashHex;
   }
 
@@ -222,22 +235,45 @@ class EventCreateForm extends Component {
     }
   };
 
-  render() {
-    if (!this.props.isLoggedIn) {
+  render() {  
+
+    const { isLoggedIn, activeCategoryAgenda, params, formMode } = this.props;
+    const { message, messageType, isLoading, addressSuggestions, 
+      is_public, name, category, price, start_date, end_date, selectedAddress,
+      address, country, city, municipality, postcode, region, latitude, longitude,
+      tags, tagValue, filteredSuggestions, description, coverImagePreview, 
+      profileImagePreview, mode } = this.state;
+
+    if (!isLoggedIn) {
       this.props.setActiveCategoryHeader("agenda");
-      return <Navigate to={this.props.activeCategoryAgenda} replace />;
+      return <Navigate to={activeCategoryAgenda} replace />;
+    }
+
+    const { id } = params;
+    if (id) {
+      const eventData = this.props.events.find(event => event.id === id);
+      if (eventData && formMode === "update" && mode !== "update") {
+        this.setState({ ...eventData, 
+          profileImagePreview: eventData.files.find((x) => x.category === "profile_image").path , 
+          coverImagePreview: eventData.files.find((x) => x.category === "cover_image").path, 
+          mode: formMode });
+      }
+    }
+    else if(formMode === "create" && mode !== "create") {
+      this.resetState()
+      this.setState({mode: formMode, description: ""})
     }
 
     return (
       <Container className="my-4">
         {/* Event Form */}
         <Card className="shadow-lg p-5 rounded-4 border-0 bg-light">
-          <h3 className="fw-bold text-center mb-4 text-dark">Create Event</h3>
+          <h3 className="fw-bold text-center mb-4 text-dark">{(formMode === "update" ? "Update" : "Create")} Event</h3>
 
           {/* Success/Error Message */}
-          {this.state.message && (
-            <div className={`alert ${this.state.messageType === "success" ? "alert-success" : "alert-danger"}`} role="alert">
-              {this.state.message}
+          {message && (
+            <div className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`} role="alert">
+              {message}
             </div>
           )}
 
@@ -246,15 +282,20 @@ class EventCreateForm extends Component {
               <Form.Check
                 type="checkbox"
                 name="is_public"
-                checked={this.state.is_public}
-                onChange={this.handleChange}
+                checked={ is_public }
+                onChange={this.handleChange} 
                 label="Is Public"
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Category</Form.Label>
-              <Form.Select name="category" value={this.state.category} onChange={this.handleChange} required>
+              <Form.Select 
+                name="category" 
+                value={ category } 
+                onChange={this.handleChange} 
+                required
+              >
                 <option value="">Select Category</option>
                 {EVENT_CATEGORIES.map((cat) => (
                   <option key={cat.value} value={cat.value}>
@@ -266,12 +307,26 @@ class EventCreateForm extends Component {
 
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Name</Form.Label>
-              <Form.Control type="text" name="name" value={this.state.name} onChange={this.handleChange} placeholder="Event Name" required />
+              <Form.Control 
+                type="text" 
+                name="name" 
+                value={name} 
+                onChange={this.handleChange} 
+                placeholder="Event Name" 
+                required 
+              />
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Price</Form.Label>
-              <Form.Control type="number" name="price"value={this.state.price} onChange={this.handleChange}  placeholder="Enter price" required />
+              <Form.Control 
+                type="number" 
+                name="price"
+                value={price} 
+                onChange={this.handleChange}  
+                placeholder="Enter price" 
+                required
+              />
             </Form.Group>
             
             <Row>
@@ -281,7 +336,7 @@ class EventCreateForm extends Component {
                   <Form.Control
                     type="datetime-local"
                     name="start_date"
-                    value={this.state.start_date}
+                    value={start_date}
                     onChange={this.handleChange}
                     required
                   />
@@ -294,7 +349,7 @@ class EventCreateForm extends Component {
                   <Form.Control
                     type="datetime-local"
                     name="end_date"
-                    value={this.state.end_date}
+                    value={end_date}
                     onChange={this.handleChange}
                     required
                   />
@@ -307,17 +362,17 @@ class EventCreateForm extends Component {
               <Form.Label className="fw-bold">Address</Form.Label>
               <Form.Control
                 type="text"
-                value={this.state.address}
+                value={address}
                 onChange={this.handleAddressChange}
                 placeholder="Start typing an address..."
                 required
               />
-              {this.state.isLoading && <small>Loading...</small>}
+              {isLoading && <small>Loading...</small>}
               
               {/* Suggestions Dropdown */}
-              {this.state.addressSuggestions.length > 0 && (
+              {addressSuggestions.length > 0 && (
                 <ListGroup className="mt-1">
-                  {this.state.addressSuggestions.map((place, index) => (
+                  {addressSuggestions.map((place, index) => (
                     <ListGroup.Item
                       key={index}
                       action
@@ -330,19 +385,19 @@ class EventCreateForm extends Component {
               )}
             </Form.Group>
 
-            {this.state.selectedAddress && (
+            {selectedAddress && (
               <Card className="mb-3">
                 <Card.Body>
                   <Card.Title>Selected Address Details</Card.Title>
                   <Card.Text>
-                    <strong>Address:</strong> {this.state.address} <br />
-                    <strong>Country:</strong> {this.state.country} <br />
-                    <strong>City:</strong> {this.state.city} <br />
-                    <strong>Municipality:</strong> {this.state.municipality} <br />
-                    <strong>Postcode:</strong> {this.state.postcode} <br />
-                    <strong>Region:</strong> {this.state.region} <br />
-                    <strong>Latitude:</strong> {this.state.latitude} <br />
-                    <strong>Longitude:</strong> {this.state.longitude} <br />
+                    <strong>Address:</strong> {address} <br />
+                    <strong>Country:</strong> {country} <br />
+                    <strong>City:</strong> {city} <br />
+                    <strong>Municipality:</strong> {municipality} <br />
+                    <strong>Postcode:</strong> {postcode} <br />
+                    <strong>Region:</strong> {region} <br />
+                    <strong>Latitude:</strong> {latitude} <br />
+                    <strong>Longitude:</strong> {longitude} <br />
                   </Card.Text>
                 </Card.Body>
               </Card>
@@ -351,7 +406,7 @@ class EventCreateForm extends Component {
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Tags</Form.Label>
               <div className="border p-2 rounded">
-                {this.state.tags.map((tag) => (
+                {tags.map((tag) => (
                   <Badge
                     key={tag.id}
                     pill
@@ -365,14 +420,14 @@ class EventCreateForm extends Component {
                 ))}
                 <Form.Control
                   type="text"
-                  value={this.state.tagValue}
+                  value={tagValue}
                   onChange={this.handleTagInputChange}
                   placeholder="Type to search tags..."
                 />
               </div>
-              {this.state.filteredSuggestions.length > 0 && (
+              {filteredSuggestions.length > 0 && (
                 <ListGroup className="mt-1">
-                  {this.state.filteredSuggestions.map((tag) => (
+                  {filteredSuggestions.map((tag) => (
                     <ListGroup.Item
                       key={tag.id}
                       action
@@ -390,7 +445,7 @@ class EventCreateForm extends Component {
               <Form.Control
                 as="textarea"
                 name="description"
-                value={this.state.description}
+                value={description}
                 onChange={this.handleChange}
                 maxLength={500}
                 placeholder="Enter description (optional)"
@@ -415,10 +470,10 @@ class EventCreateForm extends Component {
                 />
                 <Button className="btn btn-dark btn-sm">Upload Cover Image</Button>
               </div>
-              {this.state.coverImagePreview && (
+              {coverImagePreview && (
                 <div className="d-flex justify-content-center">
                   <img
-                    src={this.state.coverImagePreview}
+                    src={coverImagePreview}
                     alt="Cover Preview"
                     className="img-fluid mt-2"
                     style={{ maxHeight: "150px" }}
@@ -445,10 +500,10 @@ class EventCreateForm extends Component {
                 />
                 <Button className="btn btn-dark btn-sm">Upload Profile Image</Button>
               </div>
-              {this.state.profileImagePreview && (
+              {profileImagePreview && (
                 <div className="d-flex justify-content-center">
                   <img
-                    src={this.state.profileImagePreview}
+                    src={profileImagePreview}
                     alt="Profile Preview"
                     className="img-fluid mt-2"
                     style={{ maxHeight: "150px" }}
@@ -477,4 +532,4 @@ const mapDispatchToProps = {
   setActiveCategoryHeader,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EventCreateForm);
+export default connect(mapStateToProps, mapDispatchToProps)(EventCreateFormWithParams);

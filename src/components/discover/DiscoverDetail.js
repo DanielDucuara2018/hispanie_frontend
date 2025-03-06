@@ -19,8 +19,6 @@ class DiscoverDetail extends Component {
 
     if (!data) return <p>Business not found</p>;
 
-    console.log(data.social_networks)
-
     return (
       <>
         {/* Image */}

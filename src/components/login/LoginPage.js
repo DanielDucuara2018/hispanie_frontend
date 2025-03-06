@@ -36,13 +36,10 @@ class Login extends Component {
     )
     .then((res) => {
       this.props.setIsLoggedIn(!this.props.isLoggedIn)
-      // this.props.setToken(acces_token);
-      // this.setState({ isloggingin: false });
     })
     .catch((error) => {
       this.setState({
         errorMessage: "Invalid username or password",
-        // isloggingin: false,
       });
       if (error.response.status === 401) {
         this.props.setIsLoggedIn(false);
