@@ -87,7 +87,9 @@ class MapView extends Component {
                     ))}
                   </div>
                   {/* <p className="fw-bold">💰 Adhesion: {selectedEvent.price}</p> */}
-                  <Button variant="dark" className="w-100">See More</Button>
+                  <a href={`/agenda/event/${selectedEvent.id}`} style={{ textDecoration: 'none' }}>
+                    <Button variant="dark" className="w-100">See More</Button>
+                  </a>
                 </Card.Body>
               </Card>
             </Offcanvas.Body>

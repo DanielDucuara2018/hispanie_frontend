@@ -2,11 +2,8 @@ import React, { Component } from "react";
 import { Form, Button, Container, Row, Col, Alert, Card } from "react-bootstrap";
 import Api from "../../Api";
 import { Navigate } from "react-router-dom";
+import sleep from "../../hooks/Sleep";
 
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 class ResetPassword extends Component {
   state = {

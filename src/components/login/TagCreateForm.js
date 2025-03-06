@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from "react-router-dom";
 import Api from "../../Api";
+import sleep from "../../hooks/Sleep";
 
 // TODO Merged with DiscoverCreateForn and EventCreateForm both are similar
 class TagCreateForm extends Component {
@@ -14,6 +15,7 @@ class TagCreateForm extends Component {
       description: null,
       message: "", // Success/Error message
       messageType: "", // "success" or "error"
+      redirect: false
     };
   }
 
@@ -40,6 +42,8 @@ class TagCreateForm extends Component {
         message: "Business created successfully!",
         messageType: "success",
       });
+      await sleep(2000)
+      this.setState({ message: "" });
     } catch (error) {
       // Show error message
       this.setState({
@@ -53,9 +57,16 @@ class TagCreateForm extends Component {
   };
 
   render() {
-    if (!this.props.isLoggedIn) {
+    const { name, description, message, messageType, redirect } = this.state;
+    const { isLoggedIn, activeCategoryAgenda } = this.props;
+
+    if (!isLoggedIn) {
       this.props.setActiveCategoryHeader("agenda");
-      return <Navigate to={this.props.activeCategoryAgenda} replace />;
+      return <Navigate to={activeCategoryAgenda} replace />;
+    }
+
+    if (redirect) {
+      return <Navigate to="/tag/create" />;
     }
 
     return (
@@ -65,16 +76,16 @@ class TagCreateForm extends Component {
           <h3 className="fw-bold text-center mb-4 text-dark">Create Event</h3>
 
           {/* Success/Error Message */}
-          {this.state.message && (
-            <div className={`alert ${this.state.messageType === "success" ? "alert-success" : "alert-danger"}`} role="alert">
-              {this.state.message}
+          {message && (
+            <div className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`} role="alert">
+              {message}
             </div>
           )}
 
           <Form onSubmit={this.handleSubmit}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-bold">Name</Form.Label>
-                <Form.Control type="text" name="name" value={this.state.name} onChange={this.handleChange} placeholder="Tag Name" required />
+                <Form.Control type="text" name="name" value={name} onChange={this.handleChange} placeholder="Tag Name" required />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formDescription">
@@ -82,7 +93,7 @@ class TagCreateForm extends Component {
                 <Form.Control
                   as="textarea"
                   name="description"
-                  value={this.state.description}
+                  value={description}
                   onChange={this.handleChange}
                   maxLength={500}
                   placeholder="Enter description (optional)"

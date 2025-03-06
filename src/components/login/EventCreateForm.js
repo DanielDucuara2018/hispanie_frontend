@@ -56,6 +56,7 @@ class EventCreateForm extends Component {
     filteredSuggestions: [],
     files : [],
     selectedAddress: false,
+    activities: [],
     mode: null,
   };
 
@@ -181,6 +182,28 @@ class EventCreateForm extends Component {
     });
   };
 
+  // Handle activities change
+  handleLineupChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedLineup = [...this.state.activities];
+    updatedLineup[index][name] = value;
+    this.setState({ activities: updatedLineup });
+  };
+
+  // Add new activities item
+  addLineupItem = () => {
+    this.setState((prevState) => ({
+      activities: [...prevState.activities, { name: "", start_date: "", end_date: "" }],
+    }));
+  };
+
+  // Remove activities item
+  removeLineupItem = (index) => {
+    this.setState((prevState) => ({
+      activities: prevState.activities.filter((_, i) => i !== index),
+    }));
+  };
+
   // handle tags
   handleTagInputChange = (e) => {
     const tagValue = e.target.value;
@@ -242,7 +265,7 @@ class EventCreateForm extends Component {
       is_public, name, category, price, start_date, end_date, selectedAddress,
       address, country, city, municipality, postcode, region, latitude, longitude,
       tags, tagValue, filteredSuggestions, description, coverImagePreview, 
-      profileImagePreview, mode } = this.state;
+      profileImagePreview, activities, mode } = this.state;
 
     if (!isLoggedIn) {
       this.props.setActiveCategoryHeader("agenda");
@@ -402,6 +425,51 @@ class EventCreateForm extends Component {
                 </Card.Body>
               </Card>
             )}
+
+            {/* Lineup Input */}
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Event activities (lineup)</Form.Label>
+              {activities.map((item, index) => (
+                <Row key={index} className="mb-2">
+                  <Col>
+                    <Form.Control
+                      type="text"
+                      name="name"
+                      value={item.name}
+                      onChange={(e) => this.handleLineupChange(index, e)}
+                      placeholder="Activity Name"
+                      required
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Control
+                      type="datetime-local"
+                      name="start_date"
+                      value={item.start_date}
+                      onChange={(e) => this.handleLineupChange(index, e)}
+                      required
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Control
+                      type="datetime-local"
+                      name="end_date"
+                      value={item.end_date}
+                      onChange={(e) => this.handleLineupChange(index, e)}
+                      required
+                    />
+                  </Col>
+                  <Col xs="auto">
+                    <Button variant="danger" onClick={() => this.removeLineupItem(index)}>
+                      ✖
+                    </Button>
+                  </Col>
+                </Row>
+              ))}
+              <Button className="mx-3" variant="dark" onClick={this.addLineupItem}>
+                + Add activities Item
+              </Button>
+            </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Tags</Form.Label>

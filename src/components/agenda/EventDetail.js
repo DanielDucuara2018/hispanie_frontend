@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Badge, Row, Col, Container, Tabs, Tab } from 'react-bootstrap';
+import { Card, Badge, Row, Col, Container, Tabs, Tab, ListGroup } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import CATEGORY_EMOJIS from '../../hooks/CategoryEmojis';
 import ShareButton from '../../hooks/ShareButton';
@@ -36,6 +36,8 @@ class EventDetail extends Component {
     if (!data) return <p>Event not found</p>;
 
     const formattedAddress = <FormattedAddressWrapper address={data.address} />
+
+    console.log(data.activities)
     
     return (
       <>
@@ -51,18 +53,17 @@ class EventDetail extends Component {
           {/* Event Header */}
           <Card className="p-4 border-0">
             <Row className="align-items-center">
-              <Col>
+              <Col xs={12} md={9}>
                 <Badge bg="light" text="dark" className="me-2">
                   {data.category}
                 </Badge>
                 <FormattedDateRangeWrapper startDate={data.start_date} endDate={data.end_date}>
                   {(formattedDateRange) => (
                     <span className="text-muted">
-                    {formattedDateRange}
+                      {formattedDateRange}
                     </span>
                   )}
                 </FormattedDateRangeWrapper>
-
 
                 <h1 className="fw-bold mt-2">{data.name}</h1>
                 <p className="text-muted">{formattedAddress}</p>
@@ -82,8 +83,12 @@ class EventDetail extends Component {
                 </div>
               </Col>
 
-              {/* Buttons aligned to the right */}
-              <Col xs="auto" className="d-flex gap-2">
+              {/* Buttons aligned responsively */}
+              <Col
+                xs={12}
+                md={3}
+                className="d-flex justify-content-center justify-content-md-end mt-3 mt-md-0 gap-2"
+              >
                 <SaveButton />
                 <ShareButton />
               </Col>
@@ -112,47 +117,74 @@ class EventDetail extends Component {
                   </Card> */}
 
                   {/* Lineup Section */}
-                  {/* <Card className="p-3 mb-4">
-                    <h5 className="mb-3">Lineup:</h5>
-                    <ListGroup>
-                      <ListGroup.Item>20:00 - Bachata Beginner</ListGroup.Item>
-                      <ListGroup.Item>21:00 - Bachata Intermediate</ListGroup.Item>
-                      <ListGroup.Item>22:00 - Mix Bachata</ListGroup.Item>
-                    </ListGroup>
-                  </Card> */}
+                  {data.activities && data.activities.length > 0 && (
+                    <Card className="p-3 mb-4 shadow">
+                      <Card.Header as="h5" className="fw-bold bg-white border-0">
+                        Lineup
+                      </Card.Header>
+                      <Card.Body>
+                        <ListGroup variant="flush">
+                          {data.activities.map((activity, index) => (
+                            <ListGroup.Item
+                              key={index}
+                              className="bg-transparent border-0 px-0"
+                            >
+                              <FormattedDateRangeWrapper
+                                startDate={activity.start_date}
+                                endDate={activity.end_date}
+                                showDay={false}
+                              >
+                                {(formattedDateRange) => (
+                                  <span className="text-muted">
+                                    {formattedDateRange} - {activity.name}
+                                  </span>
+                                )}
+                              </FormattedDateRangeWrapper>
+                            </ListGroup.Item>
+                          ))}
+                        </ListGroup>
+                      </Card.Body>
+                    </Card>
+                  )}
 
                   {/* Description Section */}
-                  <Card className="p-3 shadow" >
-                  <h4 className="fw-bold">Description:</h4>
-                    <p>
-                      {data.description}
-                    </p>
+                  <Card className="p-3 mb-4 shadow" >
+                    <Card.Header as="h5" className="fw-bold bg-white border-0">
+                      Description
+                    </Card.Header>
+                    <Card.Body>{data.description}</Card.Body>
                   </Card>
                 </Col>
 
                 {/* Location Section */}
                 <Col md={4}>
                   <Card className="p-3 shadow">
-                    <h5 className="fw-bold">Location:</h5>
-                    <MapContainer
-                      center={[data.latitude, data.longitude]}
-                      zoom={13}
-                      style={{ height: '200px', width: '100%' }}
-                    >
-                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                      <Marker position={[data.latitude, data.longitude]} icon={this.createIcon(CATEGORY_EMOJIS[data.category])}> 
-                        <Popup>{formattedAddress}</Popup>
-                      </Marker>
-                    </MapContainer>
-                    <p className="text-muted mt-2">{data.location}</p>
+                    <Card.Header as="h5" className="fw-bold bg-white border-0">
+                      Location
+                    </Card.Header>
+                    <Card.Body>
+                      <MapContainer
+                        center={[data.latitude, data.longitude]}
+                        zoom={13}
+                        style={{ height: '200px', width: '100%' }}
+                      >
+                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                        <Marker position={[data.latitude, data.longitude]} icon={this.createIcon(CATEGORY_EMOJIS[data.category])}> 
+                          <Popup>{formattedAddress}</Popup>
+                        </Marker>
+                      </MapContainer>
+                      <p className="text-muted mt-2">{data.location}</p>
+                    </Card.Body>
                   </Card>
                 </Col>
               </Row>
             </Tab>
             <Tab eventKey="similar" title="Similar events">
               <Card className="p-4 shadow mt-3">
-                <h4 className="fw-bold">Upcoming Events:</h4>
-                <p>No events available</p>
+                <Card.Header as="h5" className="fw-bold bg-white border-0">
+                  Upcoming Events
+                </Card.Header>
+                <Card.Body>No events available</Card.Body>
               </Card>
             </Tab>
           </Tabs>
