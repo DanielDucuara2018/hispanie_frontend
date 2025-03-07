@@ -36,8 +36,6 @@ class EventDetail extends Component {
     if (!data) return <p>Event not found</p>;
 
     const formattedAddress = <FormattedAddressWrapper address={data.address} />
-
-    console.log(data.activities)
     
     return (
       <>

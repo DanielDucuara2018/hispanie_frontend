@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Filters from './Filters';
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import EventCard from './EventCard';
 
 class HomePage extends Component {
@@ -28,7 +28,7 @@ class HomePage extends Component {
 
   render() {
     const { filteredEvents } = this.state;
-    const { events } = this.props;
+    const { events, cities } = this.props;
     
     const eventsToDisplay  = filteredEvents !== null ? filteredEvents : events;
 
@@ -58,36 +58,31 @@ class HomePage extends Component {
     }, {});
 
     return (
-      <>
-        <Filters
-          cities={['Nantes', 'Paris', 'Marseille']}
-          onFilterChange={this.handleFilterChange}
-        />
-        <Container className="my-4">
-          {Object.keys(groupedEvents).map((date) => (
-            <div key={date} className="mb-4">
-              <h5 className="fw-bold mb-3">{date}</h5> {/* Section Header for the date */}
-              <Row className="row g-4">
-                {groupedEvents[date].map((event) => (
-                  <div key={event.id} className="col-md-4">
-                    <EventCard
-                      id={event.id}
-                      title={event.name}
-                      start_date={event.start_date}
-                      end_date={event.end_date}
-                      address={event.address}
-                      category={event.category}
-                      price={event.price}
-                      tags={event.tags}
-                      files={event.files}
-                    />
-                  </div>
-                ))}
-              </Row>
-            </div>
-          ))}
-        </Container>
-      </>
+      <Container className="my-4">
+        <Filters cities={cities} onFilterChange={this.handleFilterChange} />
+        {Object.keys(groupedEvents).map((date) => (
+          <div key={date} className="mb-4">
+            <h5 className="fw-bold mb-3">{date}</h5> {/* Section Header for the date */}
+            <Row className="row g-4">
+              {groupedEvents[date].map((event) => (
+                <Col key={event.id} md={4}>
+                  <EventCard
+                    id={event.id}
+                    title={event.name}
+                    start_date={event.start_date}
+                    end_date={event.end_date}
+                    address={event.address}
+                    category={event.category}
+                    price={event.price}
+                    tags={event.tags}
+                    files={event.files}
+                  />
+                </Col>
+              ))}
+            </Row>
+          </div>
+        ))}
+      </Container>
     );
   }
 }

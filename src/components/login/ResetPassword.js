@@ -7,7 +7,7 @@ import sleep from "../../hooks/Sleep";
 
 class ResetPassword extends Component {
   state = {
-    old_password: "",
+    // old_password: "",
     new_password: "",
     confirmPassword: "",
     message: "",
@@ -117,7 +117,7 @@ class ResetPassword extends Component {
                 {this.state.message && <Alert variant="success">{this.state.message}</Alert>}
                 {this.state.error && <Alert variant="danger">{this.state.error}</Alert>}
                 <Form onSubmit={this.handleSubmit}>
-                <Form.Group controlId="formBasicOldPassword">
+                  {/* <Form.Group controlId="formBasicOldPassword">
                     <Form.Label className="fw-bold">Old Password</Form.Label>
                     <Form.Control
                       type="password"
@@ -127,7 +127,7 @@ class ResetPassword extends Component {
                       onChange={this.handleChange}
                       required
                     />
-                  </Form.Group>
+                  </Form.Group> */}
                   
                   <Form.Group controlId="formBasicNewPassword" className="mt-3">
                     <Form.Label className="fw-bold">New Password</Form.Label>

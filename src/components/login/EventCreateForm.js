@@ -26,7 +26,7 @@ const EVENT_CATEGORIES = [
 
 
 class EventCreateForm extends Component {
-  defaultState = {
+  initialState = {
     eventData: null,
     name: "",
     city: "",
@@ -39,7 +39,7 @@ class EventCreateForm extends Component {
     longitude: "",
     category: "",
     is_public: true,
-    description: null,
+    description: "",
     price: 0,
     start_date: "",
     end_date: "",
@@ -62,12 +62,64 @@ class EventCreateForm extends Component {
 
   constructor(props) {
     super(props);
-    this.state = this.defaultState;
+    const { id } = this.props.params;
+    const { formMode } = this.props;
+    let initialState = this.initialState
+    if (id && formMode === "update") {
+      const eventData = this.props.events.find(event => event.id === id);
+      if (eventData) {
+        initialState = {
+          ...this.initialState,
+          ...eventData,
+          profileImagePreview: eventData.files.find(x => x.category === "profile_image")?.path || "",
+          coverImagePreview: eventData.files.find(x => x.category === "cover_image")?.path || "",
+          selectedAddress: eventData.address,
+        };
+      }
+    } else if (formMode === "create") {
+      initialState = {
+        ...this.initialState,
+        description: "",
+        // Add other properties that need to be reset for creation
+      };
+    }
+
+    this.state = initialState;
+    
   }
 
-  resetState = () => {
-    this.setState(this.defaultState);
-  };
+  componentDidUpdate(prevProps) {
+    const { id } = this.props.params;
+    const { formMode } = this.props;
+    const { mode } = this.state;
+
+    if (formMode !== mode) {
+      let newState = { mode: formMode };
+      if (id && formMode === "update") {
+        const eventData = this.props.events.find(event => event.id === id);
+        if (eventData) {
+          newState = {
+            ...newState,
+            ...eventData,
+            profileImagePreview: eventData.files.find(x => x.category === "profile_image")?.path || "",
+            coverImagePreview: eventData.files.find(x => x.category === "cover_image")?.path || "",
+            selectedAddress: eventData.address,
+            mode: formMode,
+          };
+        }
+      } else if (formMode === "create") {
+        newState = {
+          ...this.initialState,
+          ...newState,
+          mode: formMode,
+          description: "",
+          // Add other properties that need to be reset for creation
+        };
+      }
+
+      this.setState(newState);
+    }
+  }
 
 
   handleChange = (e) => {
@@ -229,30 +281,46 @@ class EventCreateForm extends Component {
   };
 
   // handle submit form
-  handleSubmit = async (e) => {
+  handleSubmit = async (formMode, id=null, e) => {
     e.preventDefault();
     try {
-      await Api.post("/events/private/create",
-      this.state,
-      {
-        headers: { 
-          "Content-Type": "application/json",
-        },
-        withCredentials: true
-      });
+      if (formMode === "create") {
+        await Api.post(
+          "/events/private/create",
+          this.state,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+      } else {
+        await Api.put(
+          `/events/private/update/${id}`,
+          this.state,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+      }
       // Show success message
       this.setState({
         message: "Event created successfully!",
         messageType: "success",
       });
-    } catch (error) {
+    } 
+    catch (error) {
       console.error("Error submitting form:", error);
       // Show error message
       this.setState({
         message: "Error creating Event. Please try again.",
         messageType: "error",
       });
-      if (error.response.status === 401) {
+      if (error.response && error.response.status === 401) {
         this.props.setIsLoggedIn(false);
       }
     }
@@ -265,27 +333,15 @@ class EventCreateForm extends Component {
       is_public, name, category, price, start_date, end_date, selectedAddress,
       address, country, city, municipality, postcode, region, latitude, longitude,
       tags, tagValue, filteredSuggestions, description, coverImagePreview, 
-      profileImagePreview, activities, mode } = this.state;
+      profileImagePreview, activities } = this.state;
+    const { id } = params;
 
     if (!isLoggedIn) {
       this.props.setActiveCategoryHeader("agenda");
       return <Navigate to={activeCategoryAgenda} replace />;
     }
 
-    const { id } = params;
-    if (id) {
-      const eventData = this.props.events.find(event => event.id === id);
-      if (eventData && formMode === "update" && mode !== "update") {
-        this.setState({ ...eventData, 
-          profileImagePreview: eventData.files.find((x) => x.category === "profile_image").path , 
-          coverImagePreview: eventData.files.find((x) => x.category === "cover_image").path, 
-          mode: formMode });
-      }
-    }
-    else if(formMode === "create" && mode !== "create") {
-      this.resetState()
-      this.setState({mode: formMode, description: ""})
-    }
+    console.log(description)
 
     return (
       <Container className="my-4">
@@ -300,7 +356,7 @@ class EventCreateForm extends Component {
             </div>
           )}
 
-          <Form onSubmit={this.handleSubmit}>
+          <Form onSubmit={(e) => this.handleSubmit(formMode, id, e)}>
             <Form.Group className="mb-3" controlId="formIsPublic">
               <Form.Check
                 type="checkbox"

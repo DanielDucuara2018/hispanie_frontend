@@ -68,7 +68,7 @@ class Filters extends Component {
     const { cities } = this.props;
 
     return (
-      <Row className="justify-content-center">
+      <Row className="justify-content-center text-center">
         {/* City Filter Dropdown */}
         <Col xs={6} md={4} className="mb-2">
           <Dropdown onSelect={this.handleCityFilter}>
@@ -87,7 +87,7 @@ class Filters extends Component {
         </Col>
 
         {/* Date Filter Dropdown */}
-        <Col xs={6} md={4} className="mb-2">
+        <Col xs={6} md={4}>
           <Dropdown onSelect={this.handleDateFilterChange}>
             <Dropdown.Toggle variant="outline-dark">
               {selectedDateFilter} <FaFilter />

@@ -3,9 +3,11 @@ import Categories from './Categories';
 import HomePage from './HomePage';
 
 const AgendaPage = ({ events }) => (
+
+
   <>
     <Categories />
-    <HomePage events={events} />
+    <HomePage events={events} cities={[...new Set(events.map(event => event.city))]} />
   </>
 );
 

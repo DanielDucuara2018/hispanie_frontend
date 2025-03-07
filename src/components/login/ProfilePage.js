@@ -37,6 +37,10 @@ class ProfilePage extends Component {
     });
   };
 
+  handleUpdateaccount= async (id) => {
+    this.setState({ redirectTo: `/account/update/${id}` });
+  };
+
   handleUpdateEvent = async (id) => {
     this.setState({ redirectTo: `/event/update/${id}` });
   };
@@ -75,8 +79,6 @@ class ProfilePage extends Component {
       return <Navigate to={redirectTo} replace />;
     }
 
-
-
     return (
       <Container className="my-4">
         {/* Profile Card */}
@@ -102,7 +104,7 @@ class ProfilePage extends Component {
               />
               <h3 className="mt-3 fw-bold">John Doe</h3>
               <p className="text-muted">🎵 Latin Music | 🌮 Mexican Food Lover</p>
-              <Button variant="dark" className="mt-2">Edit Profile</Button>
+              <Button variant="dark" className="mt-2" onClick={() => this.handleUpdateaccount(account.id)}>Edit Profile</Button>
             </Col>
             <Col md={8}>
               <h5 className="fw-bold">About Me</h5>
