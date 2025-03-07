@@ -82,9 +82,7 @@ class DiscoverDetail extends Component {
                         <Card.Header as="h5" className="fw-bold bg-white border-0">
                           Description
                         </Card.Header>
-                        <Card.Body>
-                          <Card.Text>{data.description}</Card.Text>
-                        </Card.Body>
+                        <Card.Body style={{ whiteSpace: 'pre-line' }}>{data.description}</Card.Body>
                       </Card>
                     </Col>
                     {/* Contact and Follow Sections */}

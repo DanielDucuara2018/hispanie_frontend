@@ -146,11 +146,11 @@ class EventDetail extends Component {
                   )}
 
                   {/* Description Section */}
-                  <Card className="p-3 mb-4 shadow" >
+                  <Card className="p-3 mb-4 shadow">
                     <Card.Header as="h5" className="fw-bold bg-white border-0">
                       Description
                     </Card.Header>
-                    <Card.Body>{data.description}</Card.Body>
+                    <Card.Body style={{ whiteSpace: 'pre-line' }}>{data.description}</Card.Body>
                   </Card>
                 </Col>
 
