@@ -42,6 +42,7 @@ class TagCreateForm extends Component {
         message: "Business created successfully!",
         messageType: "success",
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       await sleep(2000)
       window.location.reload();
     } catch (error) {
@@ -50,6 +51,7 @@ class TagCreateForm extends Component {
         message: "Error creating business. Please try again.",
         messageType: "error",
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       if (error.response.status === 401) {
         this.props.setIsLoggedIn(false);
       }

@@ -316,6 +316,7 @@ class EventCreateForm extends Component {
         message: message,
         messageType: "success",
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       await sleep(2000)
       window.location.reload();
     } 
@@ -325,6 +326,7 @@ class EventCreateForm extends Component {
         message: `Error submitting form. Please try again. Details ${error}`,
         messageType: "error",
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       if (error.response && error.response.status === 401) {
         this.props.setIsLoggedIn(false);
       }

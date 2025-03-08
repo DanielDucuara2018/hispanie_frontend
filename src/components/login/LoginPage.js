@@ -5,6 +5,7 @@ import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions
 import { Navigate } from 'react-router-dom';
 import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import sleep from '../../hooks/Sleep';
 
 class Login extends Component {
   constructor(props) {
@@ -22,29 +23,29 @@ class Login extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    await Api.post('/accounts/public/login', 
-      {
-        username: this.state.username,
-        password: this.state.password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+    try {
+      await Api.post('/accounts/public/login', 
+        {
+          username: this.state.username,
+          password: this.state.password,
         },
-        withCredentials: true
-      },
-    )
-    .then((res) => {
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          withCredentials: true
+        },
+      )
       this.props.setIsLoggedIn(!this.props.isLoggedIn)
-    })
-    .catch((error) => {
+      window.location.reload();
+    } catch (error) {
       this.setState({
         errorMessage: "Invalid username or password",
       });
       if (error.response.status === 401) {
         this.props.setIsLoggedIn(false);
       }
-    });
+    }
   };
 
   render() {

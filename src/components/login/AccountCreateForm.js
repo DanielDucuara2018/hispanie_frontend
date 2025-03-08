@@ -240,6 +240,7 @@ class AccountCreationForm extends Component {
         message: message,
         messageType: "success",
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       await sleep(2000)
       window.location.reload();
     } catch (error) {
@@ -247,6 +248,7 @@ class AccountCreationForm extends Component {
         message: `Error submitting form. Please try again. Details ${error}`,
         messageType: "error",
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       if (error.response.status === 401) {
         this.props.setIsLoggedIn(false);
       }
