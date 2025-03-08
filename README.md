@@ -6,11 +6,11 @@ The **Hispanie Frontend** is a modern, responsive web application built with **R
 
 ## 🚀 Features
 
-* **Responsive Design**: Ensures optimal viewing across various devices.
-* **Modular Architecture**: Facilitates maintainability and scalability.
-* **Dockerized Development Environment**: Simplifies setup and deployment processes.
-* **Integration with Backend API**: Communicates efficiently with the Hispanie Backend for data retrieval and manipulation.
-* **Utilizes Create React App**: Leverages the robust tooling and configurations provided by Create React App.([GitHub][1])
+- **Responsive Design**: Ensures optimal viewing across various devices.
+- **Modular Architecture**: Facilitates maintainability and scalability.
+- **Dockerized Development Environment**: Simplifies setup and deployment processes.
+- **Integration with Backend API**: Communicates efficiently with the Hispanie Backend for data retrieval and manipulation.
+- **Utilizes Create React App**: Leverages the robust tooling and configurations provided by Create React App.([GitHub][1])
 
 ---
 
@@ -20,9 +20,9 @@ The **Hispanie Frontend** is a modern, responsive web application built with **R
 
 Ensure you have the following installed:
 
-* **Node.js** (v14 or above)
-* **npm** (v6 or above)
-* **Docker** (for containerized development)
+- **Node.js** (v14 or above)
+- **npm** (v6 or above)
+- **Docker** (for containerized development)
 
 ### Installation
 
@@ -32,7 +32,7 @@ Ensure you have the following installed:
    git clone https://github.com/DanielDucuara2018/hispanie_frontend.git
    cd hispanie_frontend
    ```
-   
+
 2. **Install Dependencies**
 
    ```bash
@@ -69,10 +69,10 @@ For a containerized development environment:
 
 In the project directory, you can run:
 
-* **`npm start`**: Runs the app in development mode.
-* **`npm test`**: Launches the test runner in interactive watch mode.
-* **`npm run build`**: Builds the app for production to the `build` folder.
-* **`npm run eject`**: Removes the single build dependency from your project. **Note: This is a one-way operation.**([GitHub][1])
+- **`npm start`**: Runs the app in development mode.
+- **`npm test`**: Launches the test runner in interactive watch mode.
+- **`npm run build`**: Builds the app for production to the `build` folder.
+- **`npm run eject`**: Removes the single build dependency from your project. **Note: This is a one-way operation.**([GitHub][1])
 
 ---
 
@@ -105,3 +105,16 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 This project is licensed under the [MIT License](LICENSE).
 
 ---
+
+## Build docker image for production
+
+```bash
+docker build -t hispanie-app:latest .
+docker tag hispanie-app europe-west4-docker.pkg.dev/hispanie/hispanie-docker/hispanie-app:0.1
+```
+
+## Push docker production image
+
+```bash
+docker push europe-west4-docker.pkg.dev/hispanie/hispanie-docker/hispanie-app:0.1
+```
