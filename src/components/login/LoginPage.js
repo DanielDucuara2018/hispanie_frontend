@@ -5,7 +5,6 @@ import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions
 import { Navigate } from 'react-router-dom';
 import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import sleep from '../../hooks/Sleep';
 
 class Login extends Component {
   constructor(props) {
