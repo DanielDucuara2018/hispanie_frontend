@@ -7,6 +7,7 @@ import { Navigate } from "react-router-dom";
 import ImageCategoryMapping from "../../hooks/ImageCategoryMapping";
 import axios from "axios";
 import Api from "../../Api";
+import sleep from "../../hooks/Sleep";
 
 const EventCreateFormWithParams = (props) => <EventCreateForm {...props} params={useParams()} />;
 
@@ -88,7 +89,7 @@ class EventCreateForm extends Component {
     
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() {
     const { id } = this.props.params;
     const { formMode } = this.props;
     const { mode } = this.state;
@@ -170,12 +171,12 @@ class EventCreateForm extends Component {
               description: name,
             },
           ],
+          // coverImagePreview: download_url,
         }));
 
       } catch (error) {
-        console.error("Error uploading file:", error);
         this.setState({
-          message: "Error uploading image. Please try again.",
+          message: `Error submitting form. Please try again. Details ${error}`,
           messageType: "error",
         });
       }
@@ -283,6 +284,7 @@ class EventCreateForm extends Component {
   // handle submit form
   handleSubmit = async (formMode, id=null, e) => {
     e.preventDefault();
+    let message = ""
     try {
       if (formMode === "create") {
         await Api.post(
@@ -295,6 +297,7 @@ class EventCreateForm extends Component {
             withCredentials: true,
           }
         );
+        message = "Event created successfully!"
       } else {
         await Api.put(
           `/events/private/update/${id}`,
@@ -306,18 +309,20 @@ class EventCreateForm extends Component {
             withCredentials: true,
           }
         );
+        message = "Event updated successfully!"
       }
       // Show success message
       this.setState({
-        message: "Event created successfully!",
+        message: message,
         messageType: "success",
       });
+      await sleep(2000)
+      window.location.reload();
     } 
     catch (error) {
-      console.error("Error submitting form:", error);
       // Show error message
       this.setState({
-        message: "Error creating Event. Please try again.",
+        message: `Error submitting form. Please try again. Details ${error}`,
         messageType: "error",
       });
       if (error.response && error.response.status === 401) {
@@ -340,8 +345,6 @@ class EventCreateForm extends Component {
       this.props.setActiveCategoryHeader("agenda");
       return <Navigate to={activeCategoryAgenda} replace />;
     }
-
-    console.log(description)
 
     return (
       <Container className="my-4">

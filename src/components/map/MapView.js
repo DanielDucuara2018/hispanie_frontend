@@ -78,7 +78,7 @@ class MapView extends Component {
                   />              
                   <Card.Body>
                   <Card.Title>{selectedEvent.name}</Card.Title>
-                  <Card.Text>{selectedEvent.description}</Card.Text>
+                  <Card.Text style={{ whiteSpace: 'pre-line' }}>{selectedEvent.description}</Card.Text>
                   <div className="mb-2">
                     {selectedEvent.tags.map((tag, index) => (
                       <Badge key={index} bg="secondary" className="me-1">

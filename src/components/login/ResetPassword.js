@@ -117,18 +117,6 @@ class ResetPassword extends Component {
                 {this.state.message && <Alert variant="success">{this.state.message}</Alert>}
                 {this.state.error && <Alert variant="danger">{this.state.error}</Alert>}
                 <Form onSubmit={this.handleSubmit}>
-                  {/* <Form.Group controlId="formBasicOldPassword">
-                    <Form.Label className="fw-bold">Old Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      placeholder="Enter old password"
-                      name="old_password"
-                      value={this.state.old_password}
-                      onChange={this.handleChange}
-                      required
-                    />
-                  </Form.Group> */}
-                  
                   <Form.Group controlId="formBasicNewPassword" className="mt-3">
                     <Form.Label className="fw-bold">New Password</Form.Label>
                     <Form.Control

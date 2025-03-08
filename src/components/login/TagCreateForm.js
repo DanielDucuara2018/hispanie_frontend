@@ -43,7 +43,7 @@ class TagCreateForm extends Component {
         messageType: "success",
       });
       await sleep(2000)
-      this.setState({ message: "" });
+      window.location.reload();
     } catch (error) {
       // Show error message
       this.setState({

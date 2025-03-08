@@ -4,33 +4,101 @@ import { Form, Button, Container, Card, Alert } from "react-bootstrap";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from "react-router-dom";
 import { connect } from "react-redux";
+import ImageCategoryMapping from "../../hooks/ImageCategoryMapping";
+import axios from "axios";
 import Api from "../../Api";
+import sleep from "../../hooks/Sleep";
 
 const AccountCreationFormWithParams = (props) => <AccountCreationForm {...props} params={useParams()} />;
-
+// TOTO fix this form on update when refreshing
 class AccountCreationForm extends Component {
-  defaultState = {
+  initialState = {
     username: "",
     email: "",
-    password: "",
-    confirmPassword: "",
+    old_password: undefined,
+    password: undefined,
+    confirmPassword: undefined,
     type: "USER",
     description: "",
     profileImage: null,
     coverImage: null,
+    profileImagePreview: "",
+    coverImagePreview: "",
     message: "",
     messageType: "",
+    oldPasswordError: "",
     passwordError: "",
     mode: null,
   }
+
   constructor(props) {
     super(props);
-    this.state = this.defaultState;
+    const { id } = this.props.params;
+    const { formMode } = this.props;
+    let initialState = this.initialState
+    if (id && formMode === "update") {
+      const accountData = this.props.account 
+      if (accountData) {
+        initialState = {
+          ...this.initialState,
+          ...accountData,
+          profileImagePreview: accountData.files.find(x => x.category === "profile_image")?.path || "",
+          coverImagePreview: accountData.files.find(x => x.category === "cover_image")?.path || "",
+        };
+      }
+    } else if (formMode === "create") {
+      initialState = {
+        ...this.initialState,
+        description: "",
+        // Add other properties that need to be reset for creation
+      };
+    }
+
+    this.state = initialState;
+    
   }
 
-  resetState = () => {
-    this.setState(this.defaultState);
-  };
+  componentDidUpdate() {
+    const { id } = this.props.params;
+    const { formMode } = this.props;
+    const { mode } = this.state;
+
+    // console.log(formMode !== mode)
+    // console.log(id)
+    // console.log(formMode)
+    // console.log(id && formMode === "update")
+    // console.log(this.props.account)
+
+    if (formMode !== mode) {
+      let newState = { mode: formMode };
+      console.log("aqui 1")
+      if (id && formMode === "update") {
+        const accountData = this.props.account
+        console.log("aqui 2")
+        console.log(accountData) 
+        if (accountData) {
+          console.log("aqui 3")
+          newState = {
+            ...newState,
+            ...accountData,
+            profileImagePreview: accountData.files.find(x => x.category === "profile_image")?.path || "",
+            coverImagePreview: accountData.files.find(x => x.category === "cover_image")?.path || "",
+            mode: formMode,
+          };
+        }
+      } else if (formMode === "create") {
+        newState = {
+          ...this.initialState,
+          ...newState,
+          mode: formMode,
+          description: "",
+          // Add other properties that need to be reset for creation
+        };
+      }
+
+      this.setState(newState);
+    }
+  }
 
   handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,8 +106,74 @@ class AccountCreationForm extends Component {
       if (name === "password" || name === "confirmPassword") {
         this.validatePasswords();
       }
+
+      if (name === "password" || name === "old_password") {
+        this.validateOldPasswords();
+      }
     });
   };
+
+  handleFileChange = async (e) => {
+    const { name } = e.target;
+    const file = e.target.files[0];
+
+    if (file) {
+      try {
+        // 1. Solicitar una URL prefirmada al backend to upload file
+        const upload_response = await Api.get("/files/private/generate-upload-presigned-url", { 
+          params: {
+            filename: file.name,
+            content_type: file.type
+          },
+          withCredentials: true
+        });
+
+        const upload_url = upload_response.data.url;
+
+        // 2. Subir el archivo a la URL prefirmada
+        await axios.put(upload_url, file, {
+          headers: { "Content-Type": file.type },
+        });
+
+        // 3. Solicitar una URL prefirmada al backend to download file
+        const download_url = "https://d3skpo6i31hl4s.cloudfront.net/" + file.name
+
+        // 4. Guardar la URL pública de la imagen
+        const hash = await this.calculateFileHash(file);
+        this.setState((prevState) => ({
+          [name]: download_url,
+          [`${name}Preview`]: URL.createObjectURL(file),
+          files: [
+            ...(prevState.files || []), // Keep previous files
+            {
+              filename: file.name,
+              content_type: file.type,
+              category: ImageCategoryMapping[name] || "other",
+              path: download_url,
+              hash: hash,
+              description: name,
+            },
+          ],
+          // coverImagePreview: download_url,
+        }));
+
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        this.setState({
+          message: "Error uploading image. Please try again.",
+          messageType: "error",
+        });
+      }
+    }
+  };
+
+  calculateFileHash = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    return hashHex;
+  }
 
   validatePasswords = () => {
     const { password, confirmPassword } = this.state;
@@ -50,31 +184,67 @@ class AccountCreationForm extends Component {
     }
   };
 
-  handleSubmit = async (e) => {
+  validateOldPasswords = () => {
+    const { old_password, password } = this.state;
+    if (password && password === old_password) {
+      this.setState({ oldPasswordError: "New password can't be the same!" });
+    } else {
+      this.setState({ oldPasswordError: "" });
+    }
+  };
+
+  handleSubmit = async (formMode, id=null, e) => {
     e.preventDefault();
-    const { password, confirmPassword } = this.state;
+    const { old_password, password, confirmPassword } = this.state;
+    
+    if (old_password != null && !(password != null && confirmPassword != null)) {
+      this.setState({ message: "Please enter all the fields to change password.", messageType: "error" });
+      return;
+    }
 
     if (password !== confirmPassword) {
       this.setState({ message: "Passwords do not match.", messageType: "error" });
       return;
     }
 
+    if (old_password != null && password != null && old_password === password) {
+      this.setState({ message: "New and old password can be the same", messageType: "error" });
+      return;
+    }
+
+    let message = ""
     try {
-      await Api.post("/accounts/private/create", 
-        this.state, 
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true
-        }
-      );
+      if (formMode === "create") {
+        await Api.post("/accounts/private/create", 
+          this.state, 
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true
+          }
+        );
+        message = "Account created successfully!"
+      }else {
+        await Api.put(
+          "/accounts/private/update",
+          this.state,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        message = "Account updated successfully!"
+      }
       this.setState({
-        message: "Account created successfully!",
+        message: message,
         messageType: "success",
       });
+      await sleep(2000)
+      window.location.reload();
     } catch (error) {
-      console.error("Error submitting form:", error);
       this.setState({
-        message: "Error creating account. Please try again.",
+        message: `Error submitting form. Please try again. Details ${error}`,
         messageType: "error",
       });
       if (error.response.status === 401) {
@@ -85,9 +255,10 @@ class AccountCreationForm extends Component {
 
   render() {
     const { isLoggedIn, activeCategoryAgenda, params, formMode } = this.props;
-    const { message, messageType, username, email, password, confirmPassword, 
-      passwordError, type, description, coverImagePreview, 
-      profileImagePreview, mode } = this.state;
+    const { message, messageType, username, email, old_password, password, confirmPassword, 
+      passwordError, oldPasswordError, type, description, coverImagePreview, 
+      profileImagePreview } = this.state;
+    const { id } = params;
 
 
     if (!isLoggedIn) {
@@ -95,21 +266,7 @@ class AccountCreationForm extends Component {
       return <Navigate to={activeCategoryAgenda} replace />;
     }
 
-    const { id } = params;
-    if (id) {
-      const accountData = this.props.account //.find(event => event.id === id);
-      console.log(accountData)
-      if (accountData && formMode === "update" && mode !== "update") {
-        this.setState({ ...accountData, 
-          profileImagePreview: accountData.files.length > 0 ? accountData.files.length.find((x) => x.category === "profile_image").path:"" , 
-          coverImagePreview: accountData.files.length > 0 ? accountData.files?.find((x) => x.category === "cover_image").path:"", 
-          mode: formMode });
-      }
-    }
-    else if(formMode === "create" && mode !== "create") {
-      this.resetState()
-      this.setState({mode: formMode, description: ""})
-    }
+    
 
     return (
       <Container className="my-4">
@@ -129,7 +286,7 @@ class AccountCreationForm extends Component {
             </div>
           )}
 
-          <Form onSubmit={this.handleSubmit}>
+          <Form onSubmit={(e) => this.handleSubmit(formMode, id, e)}>
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Username</Form.Label>
               <Form.Control
@@ -156,6 +313,22 @@ class AccountCreationForm extends Component {
               />
             </Form.Group>
 
+            {formMode === 'update' ? (
+              <Form.Group className="mb-3">
+                <Form.Label className="fw-bold">Old Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="old_password"
+                  value={old_password}
+                  onChange={this.handleChange}
+                  minLength="6"
+                  maxLength="100"
+                  placeholder="Enter your old password"
+                  required={formMode === "update" ? false:true}
+                />
+              </Form.Group>
+            ) : null}
+
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Password</Form.Label>
               <Form.Control
@@ -166,8 +339,13 @@ class AccountCreationForm extends Component {
                 minLength="6"
                 maxLength="100"
                 placeholder="Enter your password"
-                required
+                required={formMode === "update" ? false:true}
               />
+              {oldPasswordError && (
+                <Alert variant="danger" className="mt-2 p-2">
+                  {oldPasswordError}
+                </Alert>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -178,7 +356,7 @@ class AccountCreationForm extends Component {
                 value={confirmPassword}
                 onChange={this.handleChange}
                 placeholder="Confirm your password"
-                required
+                required={formMode === "update" ? false:true}
               />
               {passwordError && (
                 <Alert variant="danger" className="mt-2 p-2">
@@ -194,8 +372,8 @@ class AccountCreationForm extends Component {
                 value={type}
                 onChange={this.handleChange}
               >
-                <option value="USER">User</option>
-                <option value="ADMIN">Admin</option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
               </Form.Select>
             </Form.Group>
 
@@ -273,7 +451,7 @@ class AccountCreationForm extends Component {
 
             <div className="text-center">
               <Button variant="dark" type="submit">
-                Create Account
+                Submit
               </Button>
             </div>
           </Form>

@@ -36,13 +36,13 @@ class EventDetail extends Component {
     if (!data) return <p>Event not found</p>;
 
     const formattedAddress = <FormattedAddressWrapper address={data.address} />
-    
+
     return (
       <>
         {/* Image */}
         <Card.Img
           variant="top"
-          src={data.files.find((x) => x.category === "cover_image").path}
+          src={data.files.find(x => x.category === "cover_image")?.path || ""}
           alt="" /*{title}*/
           style={{ height: '400px', objectFit: 'cover', borderRadius: '0.5rem 0.5rem 0 0' }}
         />

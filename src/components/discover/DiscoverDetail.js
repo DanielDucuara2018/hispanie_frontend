@@ -19,6 +19,17 @@ class DiscoverDetail extends Component {
 
     if (!data) return <p>Business not found</p>;
 
+    
+    const webSites = data.social_networks.filter((x) => x.category === 'web')
+    const socialNetworks = data.social_networks.filter((x) => x.category !== 'web')
+
+    const SOCIAL_NETWORK_ICONS = {
+      web: <TbWorld size={24} className="me-3" /> ,
+      facebook: <FaFacebook size={24} className="me-3" /> ,
+      instagram: <FaInstagram size={24} className="me-3" /> ,
+    };
+        
+
     return (
       <>
         {/* Image */}
@@ -116,21 +127,21 @@ class DiscoverDetail extends Component {
                                     </h6>
                                   </ListGroup.Item>
                                 )}
-                                {data.social_networks?.find((x) => x.category === 'web')?.url && (
-                                  <ListGroup.Item className="bg-transparent border-0 px-0">
+                                {webSites.map((webSite, index)  => (
+                                  <ListGroup.Item key={index} className="bg-transparent border-0 px-0">
                                     <h6 className="my-1">
                                       <a
-                                        href={data.social_networks.find((x) => x.category === 'web').url}
+                                        href={webSite.url}
                                         className="text-decoration-none text-dark"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                       >
-                                        <TbWorld size={24} className="me-3" />
+                                        {SOCIAL_NETWORK_ICONS[webSite.category]}
                                         Visit our website
                                       </a>
                                     </h6>
                                   </ListGroup.Item>
-                                )}
+                                ))}
                               </ListGroup>
                             </Card.Body>
                           </Card>
@@ -142,26 +153,18 @@ class DiscoverDetail extends Component {
                               Follow
                             </Card.Header>
                             <Card.Body>
-                              {data.social_networks?.find((x) => x.category === 'facebook')?.url && (
+                              {socialNetworks.map((socialNetwork, index)  => (
                                 <Button
+                                  key={index}
                                   variant="outline-dark"
                                   className="w-100 mb-2"
-                                  href={data.social_networks.find((x) => x.category === 'facebook').url}
+                                  href={socialNetwork.url}
                                   target="_blank"
                                 >
-                                  <FaFacebook size={24} className="me-3" /> Follow on Facebook
+                                  {SOCIAL_NETWORK_ICONS[socialNetwork.category]} 
+                                  Follow on {socialNetwork.category.charAt(0).toUpperCase() + socialNetwork.category.slice(1)}
                                 </Button>
-                              )}
-                              {data.social_networks?.find((x) => x.category === 'instagram')?.url && (
-                                <Button
-                                  variant="outline-dark"
-                                  className="w-100"
-                                  href={data.social_networks.find((x) => x.category === 'instagram').url}
-                                  target="_blank"
-                                >
-                                  <FaInstagram size={24} className="me-3" /> Follow on Instagram
-                                </Button>
-                              )}
+                              ))}
                             </Card.Body>
                           </Card>
                         </Col>

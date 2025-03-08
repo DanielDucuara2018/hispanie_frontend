@@ -7,6 +7,7 @@ import { Navigate } from "react-router-dom";
 import ImageCategoryMapping from "../../hooks/ImageCategoryMapping";
 import axios from "axios";
 import Api from "../../Api";
+import sleep from "../../hooks/Sleep";
 
 const DiscoverCreateFormWithParams = (props) => <DiscoverCreateForm {...props} params={useParams()} />;
 
@@ -34,7 +35,7 @@ const DISCOVER_CATEGORIES = [
 
 class DiscoverCreateForm extends Component {
 
-  defaultState = {
+  initialState = {
     name: "",
     email: "",
     phone: "",
@@ -48,7 +49,7 @@ class DiscoverCreateForm extends Component {
     longitude: null,
     category: "",
     is_public: true,
-    description: null,
+    description: "",
     tags: [],
     addressSuggestions: [],
     isLoading: false,
@@ -69,12 +70,64 @@ class DiscoverCreateForm extends Component {
 
   constructor(props) {
     super(props);
-    this.state = this.defaultState;
+    const { id } = this.props.params;
+    const { formMode } = this.props;
+    let initialState = this.initialState
+    if (id && formMode === "update") {
+      const businessData = this.props.businesses.find(event => event.id === id);
+      if (businessData) {
+        initialState = {
+          ...this.initialState,
+          ...businessData,
+          profileImagePreview: businessData.files.find(x => x.category === "profile_image")?.path || "",
+          coverImagePreview: businessData.files.find(x => x.category === "cover_image")?.path || "",
+          selectedAddress: businessData.address,
+        };
+      }
+    } else if (formMode === "create") {
+      initialState = {
+        ...this.initialState,
+        description: "",
+        // Add other properties that need to be reset for creation
+      };
+    }
+
+    this.state = initialState;
   }
 
-  resetState = () => {
-    this.setState(this.defaultState);
-  };
+
+  componentDidUpdate() {
+    const { id } = this.props.params;
+    const { formMode } = this.props;
+    const { mode } = this.state;
+
+    if (formMode !== mode) {
+      let newState = { mode: formMode };
+      if (id && formMode === "update") {
+        const businessData = this.props.businesses.find(event => event.id === id);
+        if (businessData) {
+          newState = {
+            ...newState,
+            ...businessData,
+            profileImagePreview: businessData.files.find(x => x.category === "profile_image")?.path || "",
+            coverImagePreview: businessData.files.find(x => x.category === "cover_image")?.path || "",
+            selectedAddress: businessData.address,
+            mode: formMode,
+          };
+        }
+      } else if (formMode === "create") {
+        newState = {
+          ...this.initialState,
+          ...newState,
+          mode: formMode,
+          description: "",
+          // Add other properties that need to be reset for creation
+        };
+      }
+
+      this.setState(newState);
+    }
+  }
 
   handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -246,29 +299,51 @@ class DiscoverCreateForm extends Component {
     };
   
 
-  handleSubmit = async (e) => {
+  // handle submit form
+  handleSubmit = async (formMode, id=null, e) => {
     e.preventDefault();
+    let message = ""
     try {
-      await Api.post("/businesses/private/create",
-      this.state,
-      {
-        headers: { 
-          "Content-Type": "application/json",
-        },
-        withCredentials: true
-      });
+      if (formMode === "create") {
+        await Api.post(
+          "/businesses/private/create",
+          this.state,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        message = "Event created successfully!"
+      } else {
+        await Api.put(
+          `/businesses/private/update/${id}`,
+          this.state,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        message = "Event updated successfully!"
+      }
       // Show success message
       this.setState({
-        message: "Business created successfully!",
+        message: message,
         messageType: "success",
       });
-    } catch (error) {
+      await sleep(2000)
+      window.location.reload();
+    } 
+    catch (error) {
       // Show error message
       this.setState({
-        message: "Error creating business. Please try again.",
+        message: `Error submitting form. Please try again. Details ${error}`,
         messageType: "error",
       });
-      if (error.response.status === 401) {
+      if (error.response && error.response.status === 401) {
         this.props.setIsLoggedIn(false);
       }
     }
@@ -280,26 +355,12 @@ class DiscoverCreateForm extends Component {
       is_public, name, category, email, phone, selectedAddress,
       address, country, city, municipality, postcode, region, latitude, longitude,
       currentUrl, tags, tagValue, filteredSuggestions, description, coverImagePreview, 
-      profileImagePreview, mode } = this.state;
+      profileImagePreview } = this.state;
+    const { id } = params;
 
     if (!isLoggedIn) {
       this.props.setActiveCategoryHeader("agenda");
       return <Navigate to={activeCategoryAgenda} replace />;
-    }
-
-    const { id } = params;
-    if (id) {
-      const businessData = this.props.businesses.find(business => business.id === id);
-      if (businessData && formMode === "update" && mode !== "update") {
-        this.setState({ ...businessData, 
-          profileImagePreview: businessData.files.find((x) => x.category === "profile_image").path , 
-          coverImagePreview: businessData.files.find((x) => x.category === "cover_image").path, 
-          mode: formMode });
-      }
-    }
-    else if(formMode === "create" && mode !== "create") {
-      this.resetState()
-      this.setState({mode: formMode, description: ""})
     }
 
     return (
@@ -315,7 +376,7 @@ class DiscoverCreateForm extends Component {
             </div>
           )}
 
-          <Form onSubmit={this.handleSubmit}>
+          <Form onSubmit={(e) => this.handleSubmit(formMode, id, e)}>
             <Form.Group className="mb-3" controlId="formIsPublic">
               <Form.Check
                 type="checkbox"
@@ -479,7 +540,7 @@ class DiscoverCreateForm extends Component {
                 name="description"
                 value={description}
                 onChange={this.handleChange}
-                maxLength={500}
+                maxLength={1000}
                 placeholder="Enter description (optional)"
               />
             </Form.Group>

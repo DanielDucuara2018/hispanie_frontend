@@ -33,7 +33,7 @@ class App extends Component {
       events: [],
       businesses: [],
       tags: [],
-      account: ""
+      account: null
     };
   }
 
@@ -68,7 +68,7 @@ class App extends Component {
     const discover = "/discover"
     // Define your routes in an array
     const routes = [
-      { path: `/`, element: <WelcomePage businesses={businesses}/> },
+      { path: `/`, element: <WelcomePage events={events} businesses={businesses}/> },
       { path: `/profile`, element: <ProfilePage account={account}  events={events} businesses={businesses} /> },
       { path: `${agenda}`, element: <AgendaPage events={events} /> },
       { path: `${agenda}/all`, element: <AgendaPage events={events} /> },
@@ -93,7 +93,7 @@ class App extends Component {
       { path: `/business/update/:id`, element: <DiscoverCreateForm tags={tags} businesses={businesses} formMode="update" />},
       { path: `/tag/create`, element: <TagCreateForm />},
       { path: `/account/create`, element: <AccountCreationForm formMode="create" />},
-      { path: `/account/update/:id`, element: <AccountCreationForm formMode="update" account={account} />},
+      { path: `/account/update/:id`, element: <AccountCreationForm account={account} formMode="update"  />},
       { path: '/maps', element: <MapView events={events} businesses={businesses.filter(x => x.address !== null)}/> },
       { path: '/login', element: <Login />},
       { path: '/about', element: <AboutPage />},
