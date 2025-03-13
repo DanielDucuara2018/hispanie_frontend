@@ -10,13 +10,13 @@ class Categories extends Component {
     // Define navigation categories
     this.categories = [
       { label: 'All', path: '/discover/all' },
-      { label: "Artists", path: "/discover/artists" },
-      { label: "Restaurants", path: "/discover/restaurants" },
-      { label: "Cafes", path: "/discover/cafes" },
-      { label: "Boutiques", path: "/discover/boutiques" },
-      { label: "Expositions", path: "/discover/expositions" },
-      { label: "Associations", path: "/discover/associations" },
-      { label: "academies", path: "/discover/academies" },
+      { label: "Artist", path: "/discover/artists" },
+      { label: "Restaurant", path: "/discover/restaurants" },
+      { label: "Cafe", path: "/discover/cafes" },
+      { label: "Boutique", path: "/discover/boutiques" },
+      { label: "Exposition", path: "/discover/expositions" },
+      { label: "Association", path: "/discover/associations" },
+      { label: "Academy", path: "/discover/academies" },
     ];
   }
 
@@ -28,7 +28,7 @@ class Categories extends Component {
     const activeCategory = this.props.activeCategoryDiscover;
 
     return (
-      <Nav className="justify-content-center mb-3">
+      <Nav className="justify-content-center my-3">
         {this.categories.map((data, index) => (
           <Nav.Item key={index}>
             <Nav.Link

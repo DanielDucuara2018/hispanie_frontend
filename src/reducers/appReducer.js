@@ -4,7 +4,7 @@ const initialState = {
   isLoggedIn: false,
   activeCategoryHeader: "agenda",
   activeCategoryAgenda: "/agenda/all",
-  activeCategoryDiscover: "/discover/artistas",
+  activeCategoryDiscover: "/discover/all",
 };
 
 const appReducer = (state = initialState, action) => {

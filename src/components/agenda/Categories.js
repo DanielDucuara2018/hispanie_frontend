@@ -11,10 +11,13 @@ class Categories extends Component {
     this.categories = [
       { path: '/agenda/all', label: 'All' },
       { path: '/agenda/cinemas', label: 'Cinema' },
-      { path: '/agenda/courses', label: 'Courses' },
-      { path: '/agenda/concerts', label: 'Concerts' },
-      { path: '/agenda/parties', label: 'Parties' },
-      // { path: '/agenda/expositions', label: 'Expositions' },
+      { path: '/agenda/courses', label: 'Cours' },
+      { path: '/agenda/concerts', label: 'Concert' },
+      { path: '/agenda/parties', label: 'Party' },
+      { path: '/agenda/expositions', label: 'Exposition' },
+      { path: '/agenda/language_exchanges', label: 'Language Exchange' },
+      { path: '/agenda/theaters', label: 'Theater' },
+      { path: '/agenda/gastronomies', label: 'Gastronomy' },
     ];
   }
 
