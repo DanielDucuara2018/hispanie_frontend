@@ -66,10 +66,8 @@ class WelcomePage extends Component {
     const visibleBusinesses = businesses.slice(startIndex, startIndex + visibleCount);
     const visibleEvents = this.filterEventsForCurrentWeek(events)
 
-    console.log(visibleEvents)
-
     return (
-      <div className="bg-light min-vh-100">
+      <div className="d-flex flex-column bg-light">
         {/* HEADER SECTION */}
         <Container
           fluid
@@ -90,7 +88,7 @@ class WelcomePage extends Component {
         </Container>
 
         {/* DISCOVER EVENTS SECTION */}
-        <Container className="mt-5">
+        <Container className="py-5">
           <Row>
             <Col xs={12} className="text-center text-md-start">
               <h4 className="fw-bold">Discover local events:</h4>
@@ -107,7 +105,7 @@ class WelcomePage extends Component {
                 />
                 <div>
                   <h5 className="fw-bold mb-0">Nantes ❤️</h5>
-                  <p className="text-muted">15 Events</p>
+                  <p className="text-muted">{events.filter(x => x.city === "Nantes").length} Events</p>
                 </div>
               </div>
             </Col>
@@ -116,7 +114,7 @@ class WelcomePage extends Component {
 
         {/* DISCOVER ARTISTS SECTION */}
         {visibleBusinesses.length > 0 && (
-          <Container className="mt-5">
+          <Container className="py-5">
             <Row className="d-flex justify-content-between align-items-center">
               <Col>
                 <h4 className="fw-bold">Popular Artists</h4>

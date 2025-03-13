@@ -26,6 +26,24 @@ const EVENT_CATEGORIES = [
 ];
 
 
+const EVENT_FRECUENCIES = [
+  { label: "None", value: "none" },
+  { label: "Daily", value: "daily" },
+  { label: "Weekly", value: "weekly" },
+  { label: "Monthly", value: "monthly" },
+];
+
+const TICKET_CURRENCIES = [
+  { label: "UAE Dirham (AED)", value: "AED" },
+  { label: "Colombian Peso (COP)", value: "COP" },
+  { label: "Euro (€)", value: "EUR" },
+  { label: "British Pound (£)", value: "GBP" },
+  { label: "Japanese Yen (¥)", value: "JPY" },
+  { label: "Peruvian Sol (PEN)", value: "PEN" },
+  { label: "Qatari Riyal (QAR)", value: "QAR" },
+  { label: "US Dollar ($)", value: "USD" },
+];
+
 class EventCreateForm extends Component {
   initialState = {
     eventData: null,
@@ -39,9 +57,9 @@ class EventCreateForm extends Component {
     latitude: "",
     longitude: "",
     category: "",
+    frequency: "none",
     is_public: true,
     description: "",
-    price: 0,
     start_date: "",
     end_date: "",
     tags: [],
@@ -58,6 +76,7 @@ class EventCreateForm extends Component {
     files : [],
     selectedAddress: false,
     activities: [],
+    tickets: [],
     mode: null,
   };
 
@@ -84,9 +103,7 @@ class EventCreateForm extends Component {
         // Add other properties that need to be reset for creation
       };
     }
-
     this.state = initialState;
-    
   }
 
   componentDidUpdate() {
@@ -257,6 +274,28 @@ class EventCreateForm extends Component {
     }));
   };
 
+  // Handle tickets change
+  handleTicketsChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedTickets = [...this.state.tickets];
+    updatedTickets[index][name] = value;
+    this.setState({ tickets: updatedTickets });
+  };
+
+  // Add new tickets item
+  addTicketsItem = () => {
+    this.setState((prevState) => ({
+      tickets: [...prevState.tickets, { name: "", cost: 0, currency: "EUR" }],
+    }));
+  };
+
+  // Remove tickets item
+  removeTicketsItem = (index) => {
+    this.setState((prevState) => ({
+      tickets: prevState.tickets.filter((_, i) => i !== index),
+    }));
+  };
+
   // handle tags
   handleTagInputChange = (e) => {
     const tagValue = e.target.value;
@@ -337,10 +376,10 @@ class EventCreateForm extends Component {
 
     const { isLoggedIn, activeCategoryAgenda, params, formMode } = this.props;
     const { message, messageType, isLoading, addressSuggestions, 
-      is_public, name, category, price, start_date, end_date, selectedAddress,
+      is_public, name, category, frequency, start_date, end_date, selectedAddress,
       address, country, city, municipality, postcode, region, latitude, longitude,
       tags, tagValue, filteredSuggestions, description, coverImagePreview, 
-      profileImagePreview, activities } = this.state;
+      profileImagePreview, activities, tickets } = this.state;
     const { id } = params;
 
     if (!isLoggedIn) {
@@ -390,6 +429,23 @@ class EventCreateForm extends Component {
             </Form.Group>
 
             <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">frequency</Form.Label>
+              <Form.Select 
+                name="frequency" 
+                value={ frequency } 
+                onChange={this.handleChange}
+                required
+              >
+                <option value="">Select frequency</option>
+                {EVENT_FRECUENCIES.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Name</Form.Label>
               <Form.Control 
                 type="text" 
@@ -398,18 +454,6 @@ class EventCreateForm extends Component {
                 onChange={this.handleChange} 
                 placeholder="Event Name" 
                 required 
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">Price</Form.Label>
-              <Form.Control 
-                type="number" 
-                name="price"
-                value={price} 
-                onChange={this.handleChange}  
-                placeholder="Enter price" 
-                required
               />
             </Form.Group>
             
@@ -489,7 +533,7 @@ class EventCreateForm extends Component {
 
             {/* Lineup Input */}
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">Event activities (lineup)</Form.Label>
+              <Form.Label className="fw-bold">Event activities</Form.Label>
               {activities.map((item, index) => (
                 <Row key={index} className="mb-2">
                   <Col>
@@ -529,6 +573,61 @@ class EventCreateForm extends Component {
               ))}
               <Button className="mx-3" variant="dark" onClick={this.addLineupItem}>
                 + Add activities Item
+              </Button>
+            </Form.Group>
+
+
+            {/* tickets Input */}
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">Event Tickets</Form.Label>
+              {tickets.map((item, index) => (
+                <Row key={index} className="mb-2">
+                  <Col>
+                    <Form.Control
+                      type="text"
+                      name="name"
+                      value={item.name}
+                      onChange={(e) => this.handleTicketsChange(index, e)}
+                      placeholder="Ticket Name"
+                      required
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Control
+                      type="number"
+                      name="cost"
+                      value={item.cost}
+                      onChange={(e) => this.handleTicketsChange(index, e)}
+                      placeholder="Enter price"
+                      step="0.01" // Allows decimal values
+                      min="0" // Prevents negative values
+                      required
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Select
+                      name="currency"
+                      value={item.currency}
+                      onChange={(e) => this.handleTicketsChange(index, e)}
+                      required
+                    >
+                      <option value="">Select Currency</option>
+                      {TICKET_CURRENCIES.map((currency) => (
+                        <option key={currency.value} value={currency.value}>
+                          {currency.label}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Col>
+                  <Col xs="auto">
+                    <Button variant="danger" onClick={() => this.removeTicketsItem(index)}>
+                      ✖
+                    </Button>
+                  </Col>
+                </Row>
+              ))}
+              <Button className="mx-3" variant="dark" onClick={this.addTicketsItem}>
+                + Add Ticket
               </Button>
             </Form.Group>
 

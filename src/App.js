@@ -18,6 +18,7 @@ import AboutPage from './components/AboutPage';
 import BlogPage from './components/BlogPage';
 import { connect } from "react-redux";
 import { setIsLoggedIn } from "./actions/appActions";
+import { Fade } from "react-awesome-reveal";
 
 import 'bootstrap/dist/css/bootstrap.css';
 import "leaflet/dist/leaflet.css";
@@ -106,15 +107,19 @@ class App extends Component {
     return (
       <Router>
         <div  style={custom_style} className="container-fluid p-0 d-flex flex-column min-vh-100">
-          <Header />
+          <Fade style={{ zIndex: 1050, position: "relative" }}>
+            <Header />
+          </Fade>
           <main className="flex-grow-1">
             <Routes>
               {routes.map((route, index) => (
                 <Route key={index} path={route.path} element={route.element} />
               ))}
-            </Routes>
+              </Routes>
           </main>
-          <Footer />
+          <Fade>
+            <Footer />
+          </Fade>
         </div>
       </Router>
     );

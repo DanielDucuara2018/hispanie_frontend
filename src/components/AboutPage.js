@@ -1,7 +1,9 @@
 import React from 'react';
 import { Container, Row, Col, Card, Carousel, Button, Image } from 'react-bootstrap';
 import { Link } from "react-router-dom"; // Import Link from React Router
+import { Fade } from "react-awesome-reveal";
 
+// TODO move this data do data folder
 const founders = [
   {
     name: "Geovanny Cipriani",
@@ -47,6 +49,7 @@ const news = [
 const AboutPage = () => {
   return (
     <Container className="my-5">
+      <Fade>
       {/* Header Section */}
       <Row className="text-center mb-4">
         <Col lg={8} className="mx-auto">
@@ -174,6 +177,7 @@ const AboutPage = () => {
           </Col>
         ))}
       </Row>
+      </Fade>
     </Container>
   );
 };

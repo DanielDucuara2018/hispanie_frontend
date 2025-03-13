@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom"; // Import Link from React Router
+import { Fade } from "react-awesome-reveal";
 
 class BlogPage extends Component {
   render() {
+    // TODO move this data do data folder
     const featuredArticle = {
       title: "NHE, a medium that promotes the Latin American community in Nantes",
       date: "September 2023",
@@ -39,55 +41,57 @@ class BlogPage extends Component {
 
     return (
       <Container className="my-5">
-        <Row className="mb-4">
-          <Col>
-            <h1 className="fw-bold">Latest News</h1>
-          </Col>
-        </Row>
+        <Fade>
+          <Row className="mb-4">
+            <Col>
+              <h1 className="fw-bold">Latest News</h1>
+            </Col>
+          </Row>
 
-        <Row className="mb-5">
-          <Col>
-            <Card className="h-100">
-              <Link to={featuredArticle.articleUrl} className="text-decoration-none">
-                <Card.Img
-                  variant="top"
-                  src={featuredArticle.imageUrl}
-                  alt={featuredArticle.title}
-                  style={{ height: "400px", objectFit: "cover" }}
-                />
-                <Card.Body>
-                  <Card.Title className="fw-bold text-dark">{featuredArticle.title}</Card.Title>
-                  <Card.Text className="text-muted">{featuredArticle.date}</Card.Text>
-                  <Card.Text className="text-dark">{featuredArticle.description}</Card.Text>
-                </Card.Body>
-              </Link>
-            </Card>
-          </Col>
-        </Row>
-
-        <Row>
-          {recentNews.map((news, index) => (
-            <Col md={6} key={index} className="mb-4">
-              <Link to={news.articleUrl} className="text-decoration-none">
-               <Card className="h-100">
+          <Row className="mb-5">
+            <Col>
+              <Card className="h-100">
+                <Link to={featuredArticle.articleUrl} className="text-decoration-none">
                   <Card.Img
                     variant="top"
-                    src={news.imageUrl}
-                    alt={news.title}
-                    style={{ height: "300px", objectFit: "cover" }}
+                    src={featuredArticle.imageUrl}
+                    alt={featuredArticle.title}
+                    style={{ height: "400px", objectFit: "cover" }}
                   />
                   <Card.Body>
-                    <Card.Title className="text-dark fw-bold fs-5">{news.title}</Card.Title>
-                    <Card.Text className="text-muted">
-                      {news.date} by {news.author}
-                    </Card.Text>
-                    <Card.Text className="text-dark">{news.description}</Card.Text>
+                    <Card.Title className="fw-bold text-dark">{featuredArticle.title}</Card.Title>
+                    <Card.Text className="text-muted">{featuredArticle.date}</Card.Text>
+                    <Card.Text className="text-dark">{featuredArticle.description}</Card.Text>
                   </Card.Body>
-                </Card>
-              </Link>
+                </Link>
+              </Card>
             </Col>
-          ))}
-        </Row>
+          </Row>
+
+          <Row>
+            {recentNews.map((news, index) => (
+              <Col md={6} key={index} className="mb-4">
+                <Link to={news.articleUrl} className="text-decoration-none">
+                <Card className="h-100">
+                    <Card.Img
+                      variant="top"
+                      src={news.imageUrl}
+                      alt={news.title}
+                      style={{ height: "300px", objectFit: "cover" }}
+                    />
+                    <Card.Body>
+                      <Card.Title className="text-dark fw-bold fs-5">{news.title}</Card.Title>
+                      <Card.Text className="text-muted">
+                        {news.date} by {news.author}
+                      </Card.Text>
+                      <Card.Text className="text-dark">{news.description}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Link>
+              </Col>
+            ))}
+          </Row>
+        </Fade>
       </Container>
     );
   }

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Filters from './Filters';
 import { Container, Row, Col } from 'react-bootstrap';
 import EventCard from './EventCard';
+import { Fade } from "react-awesome-reveal";
+
 
 class HomePage extends Component {
   constructor(props) {
@@ -60,28 +62,30 @@ class HomePage extends Component {
     return (
       <Container className="my-4">
         <Filters cities={cities} onFilterChange={this.handleFilterChange} />
-        {Object.keys(groupedEvents).map((date) => (
-          <div key={date} className="mb-4">
-            <h5 className="fw-bold mb-3">{date}</h5> {/* Section Header for the date */}
-            <Row className="row g-4">
-              {groupedEvents[date].map((event) => (
-                <Col key={event.id} md={4}>
-                  <EventCard
-                    id={event.id}
-                    title={event.name}
-                    start_date={event.start_date}
-                    end_date={event.end_date}
-                    address={event.address}
-                    category={event.category}
-                    price={event.price}
-                    tags={event.tags}
-                    files={event.files}
-                  />
-                </Col>
-              ))}
-            </Row>
-          </div>
-        ))}
+        <Fade>
+          {Object.keys(groupedEvents).map((date) => (
+            <div key={date} className="mb-4">
+              <h5 className="fw-bold mb-3">{date}</h5> {/* Section Header for the date */}
+              <Row className="row g-4">
+                {groupedEvents[date].map((event) => (
+                  <Col key={event.id} md={4}>
+                    <EventCard
+                      id={event.id}
+                      title={event.name}
+                      start_date={event.start_date}
+                      end_date={event.end_date}
+                      address={event.address}
+                      category={event.category}
+                      price={event.price}
+                      tags={event.tags}
+                      files={event.files}
+                    />
+                  </Col>
+                ))}
+              </Row>
+            </div>
+          ))}
+        </Fade>
       </Container>
     );
   }

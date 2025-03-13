@@ -63,21 +63,11 @@ class AccountCreationForm extends Component {
     const { formMode } = this.props;
     const { mode } = this.state;
 
-    // console.log(formMode !== mode)
-    // console.log(id)
-    // console.log(formMode)
-    // console.log(id && formMode === "update")
-    // console.log(this.props.account)
-
     if (formMode !== mode) {
       let newState = { mode: formMode };
-      console.log("aqui 1")
       if (id && formMode === "update") {
         const accountData = this.props.account
-        console.log("aqui 2")
-        console.log(accountData) 
         if (accountData) {
-          console.log("aqui 3")
           newState = {
             ...newState,
             ...accountData,
