@@ -119,7 +119,7 @@ class Header extends Component {
                   <Dropdown.Toggle variant="link" className="d-flex align-items-center text-dark text-decoration-none" style={style}>
                     <FaUserCircle size={20} className="me-2" /> <span className="d-none d-lg-flex">Profile</span>
                   </Dropdown.Toggle>
-                  <Dropdown.Menu style={style}>
+                  <Dropdown.Menu style={{ ...style, position: "absolute", zIndex: 1050 }}>
                     <Dropdown.Item as={Link} to="/profile">View Profile</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/account/create">Create Account</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/tag/create">Create Tag</Dropdown.Item>

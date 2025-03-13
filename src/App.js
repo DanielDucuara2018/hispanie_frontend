@@ -111,9 +111,7 @@ class App extends Component {
     return (
       <Router>
         <div  style={custom_style} className="container-fluid p-0 d-flex flex-column min-vh-100">
-          <Fade style={{ zIndex: 1050, position: "relative" }}>
-            <Header />
-          </Fade>
+          <Header />
           <main className="flex-grow-1">
             <Routes>
               {routes.map((route, index) => (
