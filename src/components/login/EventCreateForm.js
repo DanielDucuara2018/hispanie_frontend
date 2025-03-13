@@ -572,7 +572,7 @@ class EventCreateForm extends Component {
                 </Row>
               ))}
               <Button className="mx-3" variant="dark" onClick={this.addLineupItem}>
-                + Add activities Item
+                + Add Item
               </Button>
             </Form.Group>
 
@@ -627,7 +627,7 @@ class EventCreateForm extends Component {
                 </Row>
               ))}
               <Button className="mx-3" variant="dark" onClick={this.addTicketsItem}>
-                + Add Ticket
+                + Add Item
               </Button>
             </Form.Group>
 
