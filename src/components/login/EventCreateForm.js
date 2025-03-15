@@ -22,7 +22,7 @@ const EVENT_CATEGORIES = [
   { label: "Language Exchange", value: "language_exchange" },
   { label: "Theater", value: "theater" },
   { label: "Gastronomy", value: "gastronomy" },
-  // { label: "Dance", value: "dance" },
+  { label: "Dance", value: "dance" },
 ];
 
 

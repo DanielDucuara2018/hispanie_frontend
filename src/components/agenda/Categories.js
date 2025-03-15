@@ -11,7 +11,7 @@ class Categories extends Component {
     this.categories = [
       { path: '/agenda/all', label: 'All' },
       { path: '/agenda/cinemas', label: 'Cinema' },
-      { path: '/agenda/courses', label: 'Cours' },
+      { path: '/agenda/courses', label: 'Course' },
       { path: '/agenda/concerts', label: 'Concert' },
       { path: '/agenda/parties', label: 'Party' },
       { path: '/agenda/expositions', label: 'Exposition' },
