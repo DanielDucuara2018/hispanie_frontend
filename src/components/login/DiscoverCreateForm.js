@@ -542,7 +542,7 @@ class DiscoverCreateForm extends Component {
                 name="description"
                 value={description}
                 onChange={this.handleChange}
-                maxLength={1000}
+                maxLength={2000}
                 placeholder="Enter description (optional)"
               />
             </Form.Group>

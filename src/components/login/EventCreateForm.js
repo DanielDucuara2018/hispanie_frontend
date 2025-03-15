@@ -675,7 +675,7 @@ class EventCreateForm extends Component {
                 name="description"
                 value={description}
                 onChange={this.handleChange}
-                maxLength={500}
+                maxLength={2000}
                 placeholder="Enter description (optional)"
               />
             </Form.Group>
