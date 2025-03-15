@@ -18,6 +18,7 @@ class Categories extends Component {
       { path: '/agenda/language_exchanges', label: 'Language Exchange' },
       { path: '/agenda/theaters', label: 'Theater' },
       { path: '/agenda/gastronomies', label: 'Gastronomy' },
+      { path: '/agenda/dances', label: 'Dance' },
     ];
   }
 

@@ -81,6 +81,7 @@ class App extends Component {
       { path: `${agenda}/language_exchanges`, element: <AgendaPage events={events.filter((x) => x.category === "language_exchange")} /> },
       { path: `${agenda}/theaters`, element: <AgendaPage events={events.filter((x) => x.category === "theater")} /> },
       { path: `${agenda}/gastronomies`, element: <AgendaPage events={events.filter((x) => x.category === "gastronomy")} /> },
+      { path: `${agenda}/dances`, element: <AgendaPage events={events.filter((x) => x.category === "dance")} /> },
       { path: `${agenda}/event/:id`, element: <EventDetail events={events} /> },
       { path: `/event/create`, element: <EventCreateForm tags={tags} formMode="create" />},
       { path: `/event/update/:id`, element: <EventCreateForm tags={tags} events={events} formMode="update" />},
