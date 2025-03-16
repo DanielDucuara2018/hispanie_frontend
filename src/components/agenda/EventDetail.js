@@ -178,14 +178,29 @@ class EventDetail extends Component {
                         style={{ height: '200px', width: '100%' }}
                       >
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                        <Marker position={[data.latitude, data.longitude]} icon={this.createIcon(CATEGORY_EMOJIS[data.category])}> 
+                        <Marker
+                          position={[data.latitude, data.longitude]}
+                          icon={this.createIcon(CATEGORY_EMOJIS[data.category])}
+                        >
                           <Popup>{formattedAddress}</Popup>
                         </Marker>
                       </MapContainer>
+
                       <p className="text-muted mt-2">{data.location}</p>
+
+                      {/* Google Maps Link */}
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${data.latitude},${data.longitude}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-dark w-100 mt-2"
+                      >
+                        Open in Google Maps
+                      </a>
                     </Card.Body>
                   </Card>
                 </Col>
+
               </Row>
             </Tab>
             <Tab eventKey="similar" title="Similar events">
