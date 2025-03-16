@@ -7,6 +7,7 @@ import ShareButton from '../../hooks/ShareButton';
 import SaveButton from '../../hooks/SaveButton';
 import FormattedDateRangeWrapper from '../../hooks/FormattedDateRangeWrapper';
 import FormattedAddressWrapper from '../../hooks/FormattedAddressWrapper';
+import CURRENCY_SYMBOLS from '../../hooks/CurrencySymbolMapping';
 import L from "leaflet";
 
 
@@ -96,23 +97,30 @@ class EventDetail extends Component {
           <Tabs defaultActiveKey="info" id="event-detail-tabs" className="my-4">
             <Tab eventKey="info" title="Information">
               <Row>
-                {/* Tickets Section */}
                 <Col md={8}>
-                  {/* <Card className="p-3 mb-4">
-                    <h5 className="mb-3">Tickets:</h5>
-                    <ListGroup>
-                      <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                        <span>1 course (with 1 drink included)</span>
-                        <strong>€8.00</strong>
-                        <Button variant="dark" size="sm">Buy</Button>
-                      </ListGroup.Item>
-                      <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                        <span>2 courses (with 2 drinks included)</span>
-                        <strong>€14.00</strong>
-                        <Button variant="dark" size="sm">Buy</Button>
-                      </ListGroup.Item>
-                    </ListGroup>
-                  </Card> */}
+                  {/* Tickets Section */}
+                  {data.tickets && data.tickets.length > 0 && (
+                    <Card className="p-3 mb-4 shadow">
+                      <Card.Header as="h5" className="fw-bold bg-white border-0">
+                        Tickets
+                      </Card.Header>
+                      <Card.Body>
+                        <ListGroup variant="flush">
+                          {data.tickets.map((ticket, index) => (
+                            <ListGroup.Item
+                              key={index}
+                              className="bg-transparent border-0 px-0"
+                            >
+                              <div>
+                                <strong>{ticket.name}</strong>
+                              </div>
+                              <div className="text-muted">{CURRENCY_SYMBOLS[ticket.currency]}{parseFloat(ticket.cost).toFixed(2)}</div>
+                            </ListGroup.Item>
+                          ))}
+                        </ListGroup>
+                      </Card.Body>
+                    </Card>
+                  )}
 
                   {/* Lineup Section */}
                   {data.activities && data.activities.length > 0 && (
@@ -134,7 +142,10 @@ class EventDetail extends Component {
                               >
                                 {(formattedDateRange) => (
                                   <span className="text-muted">
-                                    {formattedDateRange} - {activity.name}
+                                    <div>
+                                      <strong>{activity.name}</strong>
+                                    </div>
+                                    <div className="text-muted">{formattedDateRange}</div>
                                   </span>
                                 )}
                               </FormattedDateRangeWrapper>

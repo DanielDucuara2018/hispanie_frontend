@@ -3,8 +3,18 @@ import { Card, Badge, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import FormattedDateRangeWrapper from '../../hooks/FormattedDateRangeWrapper';
 import FormattedAddressWrapper from '../../hooks/FormattedAddressWrapper';
+import CURRENCY_SYMBOLS from '../../hooks/CurrencySymbolMapping';
 
-const EventCard = ({ id, title, start_date, end_date, address, category, price, tags, files }) => {
+const EventCard = ({ id, title, start_date, end_date, address, category, tags, files, tickets }) => {
+  
+  console.log(tickets)
+  // Find the ticket with the minimum cost
+  const cheapestTicket = tickets.length > 0 
+    ? tickets.reduce((minTicket, ticket) => 
+        parseFloat(ticket.cost) < parseFloat(minTicket.cost) ? ticket : minTicket
+      , tickets[0])
+    : null;
+
   return (
     <Link to={`/agenda/event/${id}`} className="text-decoration-none text-dark">
       <Card className="mb-4 shadow-sm border-0 h-100">
@@ -33,7 +43,7 @@ const EventCard = ({ id, title, start_date, end_date, address, category, price, 
           <Card.Text className="text-muted small">
             <FormattedAddressWrapper address={address} />
           </Card.Text>
-          <Card.Text className="fw-bold"> From €{price} EUR</Card.Text>
+          <Card.Text className="fw-bold"> From {CURRENCY_SYMBOLS[cheapestTicket.currency]}{parseFloat(cheapestTicket.cost).toFixed(2)} {cheapestTicket.currency}</Card.Text>
           {/* Tags */}
           <div className="d-flex flex-wrap gap-2">
             {tags.map((tag, index) => (

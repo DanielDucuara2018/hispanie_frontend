@@ -219,7 +219,7 @@ class WelcomePage extends Component {
                   end_date={event.end_date}
                   address={event.address}
                   category={event.category}
-                  price={event.price}
+                  tickets={event.tickets}
                   tags={event.tags}
                   files={event.files}
                 />
