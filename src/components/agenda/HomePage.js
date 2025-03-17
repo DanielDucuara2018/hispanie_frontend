@@ -34,23 +34,8 @@ class HomePage extends Component {
     
     const eventsToDisplay  = filteredEvents !== null ? filteredEvents : events;
 
-    // Sort events by start_date (descending order)
-    const formattedEvents = eventsToDisplay.map((event) => ({
-      ...event,
-      formatted_start_date: new Date(event.start_date).toLocaleDateString('en-FR', {
-        weekday: 'long',
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      }),
-    }));
-
-    const sortedEvents = [...formattedEvents].sort(
-      (a, b) => new Date(a.start_date) - new Date(b.start_date)
-    );
-
     // Group events by start_date
-    const groupedEvents = sortedEvents.reduce((acc, event) => {
+    const groupedEvents = eventsToDisplay.reduce((acc, event) => {
       const date = event.formatted_start_date;
       if (!acc[date]) {
         acc[date] = [];

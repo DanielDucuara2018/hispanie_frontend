@@ -75,7 +75,22 @@ class App extends Component {
     today.setHours(0, 0, 0, 0); // Reset time to midnight
 
     // Filter events where end_date is greater than today
-    const events = availableEvents.filter(event => new Date(event.end_date) > today);
+    const eventsToDisplay = availableEvents.filter(event => new Date(event.end_date) > today);
+
+    // Sort events by start_date (descending order)
+    const formattedEvents = eventsToDisplay.map((event) => ({
+      ...event,
+      formatted_start_date: new Date(event.start_date).toLocaleDateString('en-FR', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      }),
+    }));
+    
+    const events = [...formattedEvents].sort(
+      (a, b) => new Date(a.start_date) - new Date(b.start_date)
+    );
 
     // Define your routes in an array
     const routes = [
