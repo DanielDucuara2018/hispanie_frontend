@@ -41,12 +41,9 @@ class MapView extends Component {
     const { events, businesses } = this.props
     const { selectedItem } = this.state
 
-    const typeItem = selectedItem !== null ? (selectedItem.id.toLowerCase().includes("event") ? "Event": "Business") : null
-    const routeItem = typeItem != null ? ( typeItem === "Event" ? "/agenda/event" : "/discover/business") : null
+    const typeItem = selectedItem?.id?.toLowerCase().includes("event") ? "Event" : "Business";
+    const routeItem = typeItem === "Event" ? "/agenda/event" : "/discover/business";
 
-    console.log(selectedItem)
-    console.log(typeItem)
-    console.log(routeItem)
     return (
       <div className="map-container">
         <MapContainer center={[47.2184, -1.5536]} zoom={13} style={{ height: "100vh", width: "100%" }}>
