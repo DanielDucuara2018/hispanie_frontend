@@ -6,8 +6,6 @@ import FormattedAddressWrapper from '../../hooks/FormattedAddressWrapper';
 import CURRENCY_SYMBOLS from '../../hooks/CurrencySymbolMapping';
 
 const EventCard = ({ id, title, start_date, end_date, address, category, tags, files, tickets }) => {
-  
-  console.log(tickets)
   // Find the ticket with the minimum cost
   const cheapestTicket = tickets.length > 0 
     ? tickets.reduce((minTicket, ticket) => 

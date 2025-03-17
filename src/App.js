@@ -64,9 +64,19 @@ class App extends Component {
   }
 
   render() {
-    const { events, businesses, tags, account } = this.state;
+    const { businesses, tags, account } = this.state;
+    const availableEvents = this.state.events;
     const agenda = "/agenda"
     const discover = "/discover"
+
+    // TODO add some filters to /events/public/read endpoint
+    // Get today's date without time (for accurate comparison)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to midnight
+
+    // Filter events where end_date is greater than today
+    const events = availableEvents.filter(event => new Date(event.end_date) > today);
+
     // Define your routes in an array
     const routes = [
       { path: `/`, element: <WelcomePage events={events} businesses={businesses}/> },

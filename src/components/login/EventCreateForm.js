@@ -533,10 +533,10 @@ class EventCreateForm extends Component {
 
             {/* Lineup Input */}
             <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">Event activities</Form.Label>
+              <Form.Label className="fw-bold">Event Activities</Form.Label>
               {activities.map((item, index) => (
-                <Row key={index} className="mb-2">
-                  <Col>
+                <Row key={index} className="mb-2 g-2">
+                  <Col xs={12} md={4}>
                     <Form.Control
                       type="text"
                       name="name"
@@ -546,7 +546,7 @@ class EventCreateForm extends Component {
                       required
                     />
                   </Col>
-                  <Col>
+                  <Col xs={12} md={3}>
                     <Form.Control
                       type="datetime-local"
                       name="start_date"
@@ -555,7 +555,7 @@ class EventCreateForm extends Component {
                       required
                     />
                   </Col>
-                  <Col>
+                  <Col xs={12} md={3}>
                     <Form.Control
                       type="datetime-local"
                       name="end_date"
@@ -571,18 +571,17 @@ class EventCreateForm extends Component {
                   </Col>
                 </Row>
               ))}
-              <Button className="mx-3" variant="dark" onClick={this.addLineupItem}>
+              <Button className="mt-2" variant="dark" onClick={this.addLineupItem}>
                 + Add Item
               </Button>
             </Form.Group>
 
-
-            {/* tickets Input */}
+            {/* Tickets Input */}
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Event Tickets</Form.Label>
               {tickets.map((item, index) => (
-                <Row key={index} className="mb-2">
-                  <Col>
+                <Row key={index} className="mb-2 g-2">
+                  <Col xs={12} md={4}>
                     <Form.Control
                       type="text"
                       name="name"
@@ -592,19 +591,19 @@ class EventCreateForm extends Component {
                       required
                     />
                   </Col>
-                  <Col>
+                  <Col xs={6} md={3}>
                     <Form.Control
                       type="number"
                       name="cost"
                       value={item.cost}
                       onChange={(e) => this.handleTicketsChange(index, e)}
                       placeholder="Enter price"
-                      step="0.01" // Allows decimal values
-                      min="0" // Prevents negative values
+                      step="0.01"
+                      min="0"
                       required
                     />
                   </Col>
-                  <Col>
+                  <Col xs={6} md={3}>
                     <Form.Select
                       name="currency"
                       value={item.currency}
@@ -626,10 +625,11 @@ class EventCreateForm extends Component {
                   </Col>
                 </Row>
               ))}
-              <Button className="mx-3" variant="dark" onClick={this.addTicketsItem}>
+              <Button className="mt-2" variant="dark" onClick={this.addTicketsItem}>
                 + Add Item
               </Button>
             </Form.Group>
+
 
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Tags</Form.Label>

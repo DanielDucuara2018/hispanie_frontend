@@ -34,17 +34,8 @@ class HomePage extends Component {
     
     const eventsToDisplay  = filteredEvents !== null ? filteredEvents : events;
 
-    // Get today's date without time (for accurate comparison)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to midnight
-
-    console.log(today)
-
-    // Filter events where end_date is greater than today
-    const upcomingEvents = eventsToDisplay.filter(event => new Date(event.end_date) > today);
-
     // Sort events by start_date (descending order)
-    const formattedEvents = upcomingEvents.map((event) => ({
+    const formattedEvents = eventsToDisplay.map((event) => ({
       ...event,
       formatted_start_date: new Date(event.start_date).toLocaleDateString('en-FR', {
         weekday: 'long',
