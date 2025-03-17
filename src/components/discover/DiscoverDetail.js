@@ -1,17 +1,42 @@
 import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Badge, Row, Col, Container, Tabs, Tab, Image, ListGroup } from 'react-bootstrap';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { FaInstagram, FaFacebook  } from 'react-icons/fa';
 import { BsTelephone } from "react-icons/bs";
 import { MdOutlineMail } from "react-icons/md";
 import { TbWorld } from "react-icons/tb";
 import ShareButton from '../../hooks/ShareButton';
 import SaveButton from '../../hooks/SaveButton';
+import FormattedAddressWrapper from '../../hooks/FormattedAddressWrapper';
+import CATEGORY_EMOJIS from '../../hooks/CategoryEmojis';
+import L from "leaflet";
+
 
 const DiscoverDetailWithParams = (props) => <DiscoverDetail {...props} params={useParams()} />;
 
+const SOCIAL_NETWORK_ICONS = {
+  web: <TbWorld size={24} className="me-3" /> ,
+  facebook: <FaFacebook size={24} className="me-3" /> ,
+  instagram: <FaInstagram size={24} className="me-3" /> ,
+};
+
 // TODO merged DiscoverDetail and EventDetail, they have almost the same structure
 class DiscoverDetail extends Component {
+
+  // Custom marker icons using Leaflet TODO centralize this is dupicated code
+  createIcon = (emoji) =>
+  new L.DivIcon({
+    className: "custom-icon",
+    html: `
+      <div class="d-flex justify-content-center align-items-center bg-white border rounded-circle shadow"
+            style="width: 40px; height: 40px; border: 2px solid #ccc;">
+        <span style="font-size: 20px;">${emoji}</span>
+      </div>`,
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+  });
 
   render() {
     const { businesses , params } = this.props;
@@ -23,12 +48,7 @@ class DiscoverDetail extends Component {
     const webSites = data.social_networks.filter((x) => x.category === 'web')
     const socialNetworks = data.social_networks.filter((x) => x.category !== 'web')
 
-    const SOCIAL_NETWORK_ICONS = {
-      web: <TbWorld size={24} className="me-3" /> ,
-      facebook: <FaFacebook size={24} className="me-3" /> ,
-      instagram: <FaInstagram size={24} className="me-3" /> ,
-    };
-        
+    const formattedAddress = data.address !== null ? <FormattedAddressWrapper address={data.address} /> : null
 
     return (
       <>
@@ -59,6 +79,7 @@ class DiscoverDetail extends Component {
                 <h5 className="text-muted">
                   {data.category.charAt(0).toUpperCase() + data.category.slice(1)}
                 </h5>
+                {formattedAddress && <p className="text-muted">{formattedAddress}</p>}
                 <div>
                   {data.tags.map((tag, index) => (
                     <Badge
@@ -168,6 +189,42 @@ class DiscoverDetail extends Component {
                             </Card.Body>
                           </Card>
                         </Col>
+
+                        {/* Location Section */}
+                        {formattedAddress && <Col xs={12}>
+                          <Card className="p-3 shadow">
+                            <Card.Header as="h5" className="fw-bold bg-white border-0">
+                              Location
+                            </Card.Header>
+                            <Card.Body>
+                              <MapContainer
+                                center={[data.latitude, data.longitude]}
+                                zoom={13}
+                                style={{ height: '200px', width: '100%' }}
+                              >
+                                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                <Marker
+                                  position={[data.latitude, data.longitude]}
+                                  icon={this.createIcon(CATEGORY_EMOJIS[data.category])}
+                                >
+                                  <Popup>{formattedAddress}</Popup>
+                                </Marker>
+                              </MapContainer>
+
+                              <p className="text-muted mt-2">{data.location}</p>
+
+                              {/* Google Maps Link */}
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${data.latitude},${data.longitude}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-dark w-100 mt-2"
+                              >
+                                Open in Google Maps
+                              </a>
+                            </Card.Body>
+                          </Card>
+                        </Col>}
                       </Row>
                     </Col>
                   </Row>
