@@ -63,7 +63,7 @@ class WelcomePage extends Component {
   render() {
     const { events, businesses } = this.props;
     const { startIndex, visibleCount } = this.state;
-    const visibleBusinesses = businesses.slice(startIndex, startIndex + visibleCount);
+    const visibleBusinesses = businesses.slice(startIndex, startIndex + visibleCount).filter(x => x.category === "artist");
     const visibleEvents = this.filterEventsForCurrentWeek(events)
 
     return (
