@@ -72,7 +72,6 @@ class App extends Component {
     // TODO add some filters to /events/public/read endpoint
     // Get today's date without time (for accurate comparison)
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to midnight
 
     // Filter events where end_date is greater than today
     const eventsToDisplay = availableEvents.filter(event => new Date(event.end_date) > today);

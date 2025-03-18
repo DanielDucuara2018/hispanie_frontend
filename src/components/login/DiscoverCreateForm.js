@@ -231,7 +231,7 @@ class DiscoverCreateForm extends Component {
       latitude: place.lat,
       longitude: place.lon,
       country: place.address.country,
-      city: place.address.city,
+      city: place.address.city || place.address.municipality,
       municipality: place.address.municipality,
       postcode: place.address.postcode,
       region: place.address.state,
