@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { setActiveCategoryHeader, setActiveCategoryDiscover } from "./actions/appActions";
 import EventCard from "./components/agenda/EventCard";
+import DiscoverCard from "./components/discover/DiscoverCard";
 
 class WelcomePage extends Component {
   constructor(props) {
@@ -150,26 +151,11 @@ class WelcomePage extends Component {
                 <Row className="d-flex justify-content-center g-3">
                   {visibleBusinesses.map((business) => (
                     <Col key={business.id} xs={6} sm={4} md={3} lg={2} className="text-center px-3">
-                      <Link
-                        to={`/discover/business/${business.id}`}
-                        className="text-decoration-none text-dark"
-                        onClick={() => this.handleCategoryChange("discover", "/discover/artists")}
-                      >
-                        <Image
-                          src={business.files.find((x) => x.category === "profile_image").path}
-                          roundedCircle
-                          className="mb-3 shadow-sm"
-                          style={{
-                            width: "100%",
-                            maxWidth: "165px",
-                            height: "165px",
-                            maxHeight: "100%",
-                            objectFit: "cover",
-                            border: "2px solid rgba(0, 0, 0, 0.1)",
-                          }}
-                        />
-                        <p className="small fw-bold">{business.name}</p>
-                      </Link>
+                      <DiscoverCard 
+                        id={business.id}
+                        title={business.name}
+                        files={business.files}
+                      />
                     </Col>
                   ))}
                 </Row>

@@ -21,8 +21,12 @@ const EventCard = ({ id, title, start_date, end_date, address, category, tags, f
           variant="top"
           src={files.find(x => x.category === "profile_image")?.path || ""}
           alt={title}
-          style={{ height: '100%', objectFit: 'cover', borderRadius: '0.5rem 0.5rem 0 0' }}
-        />
+          style={{
+            height: "200px", // Fixed height
+            width: "100%", // Full width
+            objectFit: "cover", // Ensures the image fills the space without distortion
+            borderRadius: "0.5rem 0.5rem 0 0",
+          }}        />
         {/* Card Body */}
         <Card.Body>
           <Row className="mb-2">

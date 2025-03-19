@@ -17,12 +17,11 @@ class DiscoverCard extends Component {
           fluid
           className="mb-3 shadow-sm"
           style={{
-            width: "100%",
-            maxWidth: "165px",
-            height: "165px",
-            maxHeight: "100%",
-            objectFit: "cover", 
-            border: "2px solid rgba(0, 0, 0, 0.1)"
+            width: "165px", // Fixed width
+            height: "165px", // Fixed height to ensure a perfect circle
+            objectFit: "cover",
+            borderRadius: "50%", // Ensures it remains a perfect circle
+            border: "2px solid rgba(0, 0, 0, 0.1)",
           }}
         />
         <p className="mt-2">{title}</p>
