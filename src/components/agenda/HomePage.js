@@ -51,7 +51,7 @@ class HomePage extends Component {
           {Object.keys(groupedEvents).map((date) => (
             <div key={date} className="mb-4">
               <h5 className="fw-bold mb-3">{date}</h5> {/* Section Header for the date */}
-              <Row className="row g-4">
+              <Row className="g-4">
                 {groupedEvents[date].map((event) => (
                   <Col key={event.id} md={4}>
                     <EventCard
