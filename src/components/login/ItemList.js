@@ -60,9 +60,15 @@ class ItemList extends Component {
                     <Image
                       src={item.files.find((x) => x.category === "profile_image")?.path || "default-image-path"}
                       roundedCircle
-                      className="border border-3 shadow-sm img-fluid"
-                      width={75}
-                      height={75}
+                      fluid
+                      className="mb-3 shadow-sm"
+                      style={{
+                        width: "75px", // Fixed width
+                        height: "75px", // Fixed height to ensure a perfect circle
+                        objectFit: "cover",
+                        borderRadius: "50%", // Ensures it remains a perfect circle
+                        border: "2px solid rgba(0, 0, 0, 0.1)",
+                      }}
                     />
                   </Col>
 
