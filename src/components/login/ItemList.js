@@ -49,8 +49,8 @@ class ItemList extends Component {
     const { showModal, selectedItem } = this.state;
 
     return (
-      <div>
-        {items.map((item) => (
+      <div style={{ maxHeight: "500px", overflowY: "auto" }}> {/* Scrollable container */}
+        {items.slice(0, 4).map((item) => (  // Show only 4 items, scroll after
           <Card key={item.id} className="mb-3 shadow-sm">
             <Card.Body>
               <Container fluid>
@@ -67,13 +67,13 @@ class ItemList extends Component {
                   </Col>
 
                   {/* Category Badge and Title Column */}
-                  <Col className="d-flex flex-column flex-grow-1">
-                    <Badge bg="secondary" className="mb-1">{item.category}</Badge>
-                    <Card.Title className="mb-0">{item.name}</Card.Title>
+                  <Col className="d-flex flex-column justify-content-center">
+                    <Badge bg="secondary" className="mb-1 align-self-start">{item.category}</Badge>
+                    <Card.Title className="mb-0 fs-6 fw-bold">{item.name}</Card.Title>
                   </Col>
 
                   {/* Action Buttons Column */}
-                  <Col md="auto" xs={12} className="d-flex justify-content-end gap-2">
+                  <Col md="auto" xs="12" className="d-flex justify-content-end gap-2">
                     <Button variant="dark" size="sm" onClick={() => onUpdate(item.id)}>Update</Button>
                     <Button variant="outline-dark" size="sm" onClick={() => this.handleDeleteClick(item)}>Delete</Button>
                   </Col>
