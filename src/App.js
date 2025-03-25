@@ -64,17 +64,22 @@ class App extends Component {
   }
 
   render() {
-    const { businesses, tags, account } = this.state;
+    const { tags, account } = this.state;
+    const availableBusinesses = this.state.businesses;
     const availableEvents = this.state.events;
     const agenda = "/agenda"
     const discover = "/discover"
+
+    const businesses = availableBusinesses.filter(event => event.is_public === true)
 
     // TODO add some filters to /events/public/read endpoint
     // Get today's date without time (for accurate comparison)
     const today = new Date();
 
     // Filter events where end_date is greater than today
-    const eventsToDisplay = availableEvents.filter(event => new Date(event.end_date) > today);
+    const eventsToDisplay = availableEvents
+    .filter(event => event.is_public === true)
+    .filter(event => new Date(event.end_date) > today);
 
     // Sort events by start_date (descending order)
     const formattedEvents = eventsToDisplay.map((event) => ({
@@ -94,7 +99,7 @@ class App extends Component {
     // Define your routes in an array
     const routes = [
       { path: `/`, element: <WelcomePage events={events} businesses={businesses}/> },
-      { path: `/profile`, element: <ProfilePage account={account}  events={events} businesses={businesses} /> },
+      { path: `/profile`, element: <ProfilePage account={account}  events={availableEvents} businesses={availableBusinesses} /> },
       { path: `${agenda}`, element: <AgendaPage events={events} /> },
       { path: `${agenda}/all`, element: <AgendaPage events={events} /> },
       { path: `${agenda}/cinemas`, element: <AgendaPage events={events.filter(x => x.category === "cinema")} /> },
@@ -108,7 +113,7 @@ class App extends Component {
       { path: `${agenda}/dances`, element: <AgendaPage events={events.filter((x) => x.category === "dance")} /> },
       { path: `${agenda}/event/:id`, element: <EventDetail events={events} /> },
       { path: `/event/create`, element: <EventCreateForm tags={tags} formMode="create" />},
-      { path: `/event/update/:id`, element: <EventCreateForm tags={tags} events={events} formMode="update" />},
+      { path: `/event/update/:id`, element: <EventCreateForm tags={tags} events={availableEvents} formMode="update" />},
       { path: `${discover}`, element: <DiscoverPage businesses={businesses} /> },
       { path: `${discover}/all`, element: <DiscoverPage businesses={businesses} /> },
       { path: `${discover}/artists`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "artist")} /> },
@@ -120,7 +125,7 @@ class App extends Component {
       { path: `${discover}/academies`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "academy")} /> },
       { path: `${discover}/business/:id`, element: <DiscoverDetail businesses={businesses} /> },
       { path: `/business/create`, element: <DiscoverCreateForm tags={tags} formMode="create" />},
-      { path: `/business/update/:id`, element: <DiscoverCreateForm tags={tags} businesses={businesses} formMode="update" />},
+      { path: `/business/update/:id`, element: <DiscoverCreateForm tags={tags} businesses={availableBusinesses} formMode="update" />},
       { path: `/tag/create`, element: <TagCreateForm />},
       { path: `/account/create`, element: <AccountCreationForm formMode="create" />},
       { path: `/account/update/:id`, element: <AccountCreationForm account={account} formMode="update"  />},

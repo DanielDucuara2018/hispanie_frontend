@@ -50,7 +50,7 @@ class ItemList extends Component {
 
     return (
       <div style={{ maxHeight: "500px", overflowY: "auto" }}> {/* Scrollable container */}
-        {items.slice(0, 4).map((item) => (  // Show only 4 items, scroll after
+        {items.map((item) => (
           <Card key={item.id} className="mb-3 shadow-sm">
             <Card.Body>
               <Container fluid>

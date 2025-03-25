@@ -195,7 +195,7 @@ class WelcomePage extends Component {
             </Col>
           </Row>
 
-          <Row className="mt-5 g-4">
+          <Row className="mt-4 g-4">
             {visibleEvents.slice(0, 3).map((event) => (
               <Col key={event.id} xs={12} sm={6} md={4}>
                 <EventCard
