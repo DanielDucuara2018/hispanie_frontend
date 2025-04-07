@@ -9,6 +9,7 @@ import FormattedDateRangeWrapper from '../../hooks/FormattedDateRangeWrapper';
 import FormattedAddressWrapper from '../../hooks/FormattedAddressWrapper';
 import CURRENCY_SYMBOLS from '../../hooks/CurrencySymbolMapping';
 import L from "leaflet";
+import withCurrentUrl from '../../hooks/withCurrentUrl';
 
 
 const EventDetailWithParams = (props) => <EventDetail {...props} params={useParams()} />;
@@ -31,7 +32,7 @@ class EventDetail extends Component {
   });
 
   render() {
-    const { events, params } = this.props;
+    const { events, params, currentUrl } = this.props;
     const data = events.find((x) => x.id === String(params.id));
 
     if (!data) return <p>Event not found</p>;
@@ -89,7 +90,7 @@ class EventDetail extends Component {
                 className="d-flex justify-content-center justify-content-md-end mt-3 mt-md-0 gap-2"
               >
                 <SaveButton />
-                <ShareButton />
+                <ShareButton url={currentUrl} />
               </Col>
             </Row>
           </Card>
@@ -218,4 +219,4 @@ class EventDetail extends Component {
   }
 }
 
-export default EventDetailWithParams;
+export default withCurrentUrl(EventDetailWithParams);

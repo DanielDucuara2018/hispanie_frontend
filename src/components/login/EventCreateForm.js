@@ -76,7 +76,7 @@ class EventCreateForm extends Component {
     files : [],
     selectedAddress: false,
     activities: [],
-    tickets: [],
+    tickets: [{ name: "Free entry", cost: 0, currency: "EUR" }],
     mode: null,
   };
 

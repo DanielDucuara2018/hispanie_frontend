@@ -12,19 +12,20 @@ import {
 import { LuShare } from "react-icons/lu";
 import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 
-const SharePopover = (
+// Function to return the popover with dynamic URL
+const getSharePopover = (url) => (
   <Popover id="share-popover">
-    <Popover.Body className="d-flex justify-content-around d-flex gap-2" >
-      <FacebookShareButton url={window.location.href}>
+    <Popover.Body className="d-flex justify-content-around gap-2">
+      <FacebookShareButton url={url}>
         <FacebookIcon size={32} round />
       </FacebookShareButton>
-      <TwitterShareButton url={window.location.href}>
+      <TwitterShareButton url={url}>
         <TwitterIcon size={32} round />
       </TwitterShareButton>
-      <LinkedinShareButton url={window.location.href}>
+      <LinkedinShareButton url={url}>
         <LinkedinIcon size={32} round />
       </LinkedinShareButton>
-      <WhatsappShareButton url={window.location.href}>
+      <WhatsappShareButton url={url}>
         <WhatsappIcon size={32} round />
       </WhatsappShareButton>
     </Popover.Body>
@@ -33,11 +34,13 @@ const SharePopover = (
 
 class ShareButton extends Component {
   render() {
+    const { url = window.location.href } = this.props; // fallback to current page if not provided
+
     return (
       <OverlayTrigger
         trigger="click"
         placement="bottom"
-        overlay={SharePopover}
+        overlay={getSharePopover(url)}
         rootClose
       >
         <Button variant="outline-dark">

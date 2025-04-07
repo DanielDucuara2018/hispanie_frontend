@@ -11,6 +11,7 @@ import SaveButton from '../../hooks/SaveButton';
 import FormattedAddressWrapper from '../../hooks/FormattedAddressWrapper';
 import CATEGORY_EMOJIS from '../../hooks/CategoryEmojis';
 import L from "leaflet";
+import withCurrentUrl from '../../hooks/withCurrentUrl';
 
 
 const DiscoverDetailWithParams = (props) => <DiscoverDetail {...props} params={useParams()} />;
@@ -39,7 +40,7 @@ class DiscoverDetail extends Component {
   });
 
   render() {
-    const { businesses , params } = this.props;
+    const { businesses , params, currentUrl } = this.props;
     const data = businesses.find(x => x.id === String(params.id));
 
     if (!data) return <p>Business not found</p>;
@@ -97,7 +98,7 @@ class DiscoverDetail extends Component {
               {/* Save & Share Buttons */}
               <Col xs={12} sm={3} className="d-flex justify-content-center justify-content-sm-end mt-3 mt-sm-0 gap-2">
                 <SaveButton />
-                <ShareButton />
+                <ShareButton url={currentUrl} />
               </Col>
             </Row>
           </Card>
@@ -254,4 +255,4 @@ class DiscoverDetail extends Component {
   }
 }
 
-export default DiscoverDetailWithParams;
+export default withCurrentUrl(DiscoverDetailWithParams);
