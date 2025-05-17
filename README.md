@@ -1,78 +1,107 @@
-# Hispanie front-end app
+# 🌐 Hispanie Frontend
 
-## Setup Environnement 
+The **Hispanie Frontend** is a modern, responsive web application built with **React**. It serves as the user interface for the Hispanie platform, providing users with an intuitive and seamless experience. Designed with scalability and performance in mind, this frontend integrates seamlessly with the [Hispanie Backend](https://github.com/DanielDucuara2018/hispanie_backend) to deliver dynamic content and functionalities.
 
-```bash
-docker-compose -f docker-compose.dev.yml up -d --build app_dev
-```
+---
 
-# Getting Started with Create React App
+## 🚀 Features
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+* **Responsive Design**: Ensures optimal viewing across various devices.
+* **Modular Architecture**: Facilitates maintainability and scalability.
+* **Dockerized Development Environment**: Simplifies setup and deployment processes.
+* **Integration with Backend API**: Communicates efficiently with the Hispanie Backend for data retrieval and manipulation.
+* **Utilizes Create React App**: Leverages the robust tooling and configurations provided by Create React App.([GitHub][1])
 
-## Available Scripts
+---
+
+## 🛠️ Getting Started
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+* **Node.js** (v14 or above)
+* **npm** (v6 or above)
+* **Docker** (for containerized development)
+
+### Installation
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/DanielDucuara2018/hispanie_frontend.git
+   cd hispanie_frontend
+   ```
+   
+2. **Install Dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Start the Development Server**
+
+   ```bash
+   npm start
+   ```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+---
+
+## 🐳 Dockerized Development
+
+For a containerized development environment:
+
+1. **Build and Start Containers**
+
+   ```bash
+   docker-compose -f docker-compose.dev.yml up -d --build app_dev
+   ```
+
+2. **Access the Application**
+
+   Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 📜 Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+* **`npm start`**: Runs the app in development mode.
+* **`npm test`**: Launches the test runner in interactive watch mode.
+* **`npm run build`**: Builds the app for production to the `build` folder.
+* **`npm run eject`**: Removes the single build dependency from your project. **Note: This is a one-way operation.**([GitHub][1])
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📁 Project Structure
 
-### `npm test`
+```bash
+hispanie_frontend/
+├── public/             # Static assets
+├── src/                # Source code
+│   ├── components/     # Reusable components
+│   ├── pages/          # Page components
+│   ├── services/       # API calls and services
+│   └── App.js          # Main application component
+├── Dockerfile.dev      # Docker configuration for development
+├── docker-compose.dev.yml # Docker Compose configuration
+├── package.json        # Project metadata and dependencies
+└── README.md           # Project documentation
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🤝 Contributing
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📄 License
 
-### `npm run eject`
+This project is licensed under the [MIT License](LICENSE).
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
