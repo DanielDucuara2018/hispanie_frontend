@@ -1,35 +1,32 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import EventCard from './agenda/EventCard';
 import { Row, Col, Form, InputGroup, FormControl, Button, Dropdown, Container } from "react-bootstrap";
 import { FaSearch, FaFilter, FaSort } from "react-icons/fa";
 import DiscoverCard from './discover/DiscoverCard';
 
-class Search extends Component {
-  state = {
-    searchQuery: "",
-    selectedCity: "",
-  };
+const Search = ({ events = [], businesses = [] }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
 
-  // Inside your Search component
-  componentDidMount() {
+  useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
-    const searchQuery = queryParams.get('q') || '';
-    this.setState({ searchQuery });
-  }
+    const query = queryParams.get('q') || '';
+    setSearchQuery(query);
+  }, []);
 
-  handleSearchChange = (e) => {
-    this.setState({ searchQuery: e.target.value });
-  };
+  const handleSearchChange = useCallback((e) => {
+    setSearchQuery(e.target.value);
+  }, []);
 
-  handleSearchSubmit = (e) => {
+  const handleSearchSubmit = useCallback((e) => {
     e.preventDefault();
-  };
+  }, []);
 
-  handleCityFilter = (city) => {
-    this.setState({ selectedCity: city });
-  };
+  const handleCityFilter = useCallback((city) => {
+    setSelectedCity(city);
+  }, []);
 
-  applyFilters = (data, query, city) => {
+  const applyFilters = useCallback((data, query, city) => {
     const normalizedQuery = query?.toLowerCase() || '';
   
     return data
@@ -40,17 +37,17 @@ class Search extends Component {
         return nameMatches || cityMatches || descriptionMatches;
       })
       .filter(item => !city || item.city?.toLowerCase() === city.toLowerCase());
-  };
+  }, []);
 
-  render() {
-    const { events, businesses } = this.props;
-    const { searchQuery, selectedCity } = this.state;
+  const filteredEvents = useMemo(() => {
+    return applyFilters(events, searchQuery, selectedCity);
+  }, [events, searchQuery, selectedCity, applyFilters]);
 
-    // Apply filters in order
-    const filteredEvents = this.applyFilters(events, searchQuery, selectedCity);
-    const filteredBusinesses = this.applyFilters(businesses, searchQuery, selectedCity);
+  const filteredBusinesses = useMemo(() => {
+    return applyFilters(businesses, searchQuery, selectedCity);
+  }, [businesses, searchQuery, selectedCity, applyFilters]);
 
-    return (
+  return (
       <Container className="mt-4">
         {/* Centered Title, Search Bar, and Filters */}
         <Row className="justify-content-center text-center">
@@ -58,13 +55,13 @@ class Search extends Component {
             <h2 className="mb-3">Search Results</h2>
 
             {/* Search Bar */}
-            <Form onSubmit={this.handleSearchSubmit} className="mb-3">
+            <Form onSubmit={handleSearchSubmit} className="mb-3">
               <InputGroup>
                 <FormControl
                   type="text"
                   placeholder="Search"
                   value={searchQuery}
-                  onChange={this.handleSearchChange}
+                  onChange={handleSearchChange}
                 />
                 <Button variant="outline-secondary" type="submit">
                   <FaSearch />
@@ -75,7 +72,7 @@ class Search extends Component {
             {/* Filters */}
             <Row className="justify-content-center">
               <Col xs={6} md={4} className="mb-2">
-                <Dropdown onSelect={this.handleCityFilter}>
+                <Dropdown onSelect={handleCityFilter}>
                   <Dropdown.Toggle variant="outline-dark">
                     {selectedCity || "City"} <FaFilter />
                   </Dropdown.Toggle>
@@ -132,7 +129,6 @@ class Search extends Component {
         </Row>
       </Container>
     );
-  }
-}
+};
 
 export default Search;

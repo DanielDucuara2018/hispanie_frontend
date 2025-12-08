@@ -1,73 +1,76 @@
-import React, { Component } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Container, Row, Col, Button, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setActiveCategoryHeader, setActiveCategoryDiscover } from "./actions/appActions";
 import EventCard from "./components/agenda/EventCard";
 import DiscoverCard from "./components/discover/DiscoverCard";
 
-class WelcomePage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentDate: new Date().toLocaleDateString("en-FR", {
-        weekday: "long",
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
-      startIndex: 0, 
-      visibleCount: 4, // Adjusted for better responsiveness
-    };
-  }
+const getStartOfWeek = (date) => {
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+  return new Date(date.setDate(diff));
+};
+
+const getEndOfWeek = (startOfWeek) => {
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(endOfWeek.getDate() + 6);
+  return endOfWeek;
+};
+
+const filterEventsForCurrentWeek = (events) => {
+  const today = new Date();
+  const startOfWeek = getStartOfWeek(new Date(today));
+  const endOfWeek = getEndOfWeek(startOfWeek);
+
+  return events.filter((event) => {
+    const eventDate = new Date(event.start_date);
+    return eventDate >= startOfWeek && eventDate <= endOfWeek;
+  });
+};
+
+const WelcomePage = ({ events = [], businesses = [] }) => {
+  const [currentDate] = useState(() => 
+    new Date().toLocaleDateString("en-FR", {
+      weekday: "long",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })
+  );
+  const [startIndex, setStartIndex] = useState(0);
+  const visibleCount = 4;
+
+  const dispatch = useDispatch();
   
-  handleCategoryChange = (headerCategory, discoverCategory) => {
-    this.props.setActiveCategoryHeader(headerCategory);
-    this.props.setActiveCategoryDiscover(discoverCategory);
-  };
+  const handleCategoryChange = useCallback((headerCategory, discoverCategory) => {
+    dispatch(setActiveCategoryHeader(headerCategory));
+    dispatch(setActiveCategoryDiscover(discoverCategory));
+  }, [dispatch]);
 
-  handleNext = () => {
-    this.setState((prevState) => ({
-      startIndex: Math.min(prevState.startIndex + 1, this.props.businesses.length - prevState.visibleCount),
-    }));
-  };
+  const handleNext = useCallback(() => {
+    setStartIndex(prev => Math.min(prev + 1, businesses.length - visibleCount));
+  }, [businesses.length, visibleCount]);
 
-  handlePrev = () => {
-    this.setState((prevState) => ({
-      startIndex: Math.max(prevState.startIndex - 1, 0),
-    }));
-  };
+  const handlePrev = useCallback(() => {
+    setStartIndex(prev => Math.max(prev - 1, 0));
+  }, []);
 
-  getStartOfWeek = (date) => {
-    const day = date.getDay();
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
-    return new Date(date.setDate(diff));
-  };
-  
-  getEndOfWeek = (startOfWeek) => {
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(endOfWeek.getDate() + 6);
-    return endOfWeek;
-  };
-  
-  filterEventsForCurrentWeek = (events) => {
-    const today = new Date();
-    const startOfWeek = this.getStartOfWeek(new Date(today));
-    const endOfWeek = this.getEndOfWeek(startOfWeek);
-  
-    return events.filter((event) => {
-      const eventDate = new Date(event.start_date);
-      return eventDate >= startOfWeek && eventDate <= endOfWeek;
-    });
-  };
+  const visibleBusinesses = useMemo(() => {
+    return businesses
+      .slice(startIndex, startIndex + visibleCount)
+      .filter(x => x.category === "artist");
+  }, [businesses, startIndex, visibleCount]);
 
-  render() {
-    const { events, businesses } = this.props;
-    const { startIndex, visibleCount } = this.state;
-    const visibleBusinesses = businesses.slice(startIndex, startIndex + visibleCount).filter(x => x.category === "artist");
-    const visibleEvents = this.filterEventsForCurrentWeek(events)
+  const visibleEvents = useMemo(() => {
+    return filterEventsForCurrentWeek(events);
+  }, [events]);
 
-    return (
+  const nantesEventCount = useMemo(() => {
+    return events.filter(x => x.city === "Nantes").length;
+  }, [events]);
+
+  return (
       <div className="d-flex flex-column bg-light">
         {/* HEADER SECTION */}
         <Container
@@ -77,7 +80,7 @@ class WelcomePage extends Component {
         >
           <Row className="justify-content-center">
             <Col xs={12} md={8}>
-              <p className="text-muted small fw-bold">{this.state.currentDate}</p>
+              <p className="text-muted small fw-bold">{currentDate}</p>
               <h1 className="fw-bold animate__animated animate__slideInDown">
                 Yo traigo alegría, pa' tu corazón ❤️‍🔥, pa' los corazones 😌.
               </h1>
@@ -106,7 +109,7 @@ class WelcomePage extends Component {
                 />
                 <div>
                   <h5 className="fw-bold mb-0">Nantes ❤️</h5>
-                  <p className="text-muted">{events.filter(x => x.city === "Nantes").length} Events</p>
+                  <p className="text-muted">{nantesEventCount} Events</p>
                 </div>
               </div>
             </Col>
@@ -125,7 +128,7 @@ class WelcomePage extends Component {
                   <Button
                     variant="light"
                     className="rounded-pill shadow-sm"
-                    onClick={() => this.handleCategoryChange("discover", "/discover/artists")}
+                    onClick={() => handleCategoryChange("discover", "/discover/artists")}
                   >
                     See More
                   </Button>
@@ -139,7 +142,7 @@ class WelcomePage extends Component {
                 <Button
                   variant="light"
                   className="rounded-circle shadow-sm"
-                  onClick={this.handlePrev}
+                  onClick={handlePrev}
                   disabled={startIndex === 0}
                 >
                   {"<"}
@@ -166,7 +169,7 @@ class WelcomePage extends Component {
                 <Button
                   variant="light"
                   className="rounded-circle shadow-sm"
-                  onClick={this.handleNext}
+                  onClick={handleNext}
                   disabled={startIndex >= businesses.length - visibleCount}
                 >
                   {">"}
@@ -187,7 +190,7 @@ class WelcomePage extends Component {
                 <Button
                   variant="light"
                   className="rounded-pill shadow-sm"
-                  onClick={() => this.handleCategoryChange("agenda", "/agenda/all")}
+                  onClick={() => handleCategoryChange("agenda", "/agenda/all")}
                 >
                   See More
                 </Button>
@@ -215,17 +218,6 @@ class WelcomePage extends Component {
         </Container>)}
       </div>
     );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  activeCategoryHeader: state.appRootReducer.activeCategoryHeader,
-  activeCategoryDiscover: state.appRootReducer.activeCategoryDiscover,
-});
-
-const mapDispatchToProps = {
-  setActiveCategoryHeader,
-  setActiveCategoryDiscover,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);
+export default WelcomePage;

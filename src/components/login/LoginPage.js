@@ -1,122 +1,139 @@
-import React, { Component } from 'react';
-import Api from '../../Api';
-import { connect } from "react-redux";
-import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from "react-redux";
 import { Navigate } from 'react-router-dom';
 import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import Api from '../../Api';
+import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: '',
-      errorMessage: '',
-    };
-  }
+const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
+  const isLoggedIn = useSelector((state) => state.appRootReducer.isLoggedIn);
+  const activeCategoryAgenda = useSelector((state) => state.appRootReducer.activeCategoryAgenda);
+  const dispatch = useDispatch();
 
-  handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (isSubmitting) return;
+
     try {
+      setIsSubmitting(true);
+      setErrorMessage('');
+
       await Api.post('/accounts/public/login', 
         {
-          username: this.state.username,
-          password: this.state.password,
+          username: username,
+          password: password,
         },
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
-          },
-          withCredentials: true
-        },
-      )
-      this.props.setIsLoggedIn(!this.props.isLoggedIn)
+          }
+        }
+      );
+
+      dispatch(setIsLoggedIn(true));
       window.location.reload();
     } catch (error) {
-      this.setState({
-        errorMessage: "Invalid username or password",
-      });
-      if (error.response.status === 401) {
-        this.props.setIsLoggedIn(false);
+      console.error('Login error:', error);
+      setErrorMessage(error.response?.data?.detail || "Invalid username or password");
+      
+      if (error.response?.status === 401) {
+        dispatch(setIsLoggedIn(false));
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  render() {
-    const agenda_path = this.props.activeCategoryAgenda
-    if (this.props.isLoggedIn) {
-      this.props.setActiveCategoryHeader("agenda"); // TODO extact "agenda" value from agenda_path variable
-      return <Navigate to={ agenda_path } replace />;
-    }
-
-    return (
-      <Container className="min-vh-100 d-flex flex-column justify-content-center">
-        <Row className="row justify-content-center">
-          <Col className="col-md-4">
-            <Card className="card">
-              <Card.Body className="card-body">
-                <Card.Title className="text-center fw-bold">Login</Card.Title>
-                {this.state.errorMessage && (
-                  <div className="alert alert-danger" role="alert">
-                    {this.state.errorMessage}
-                  </div>
-                )}
-                <Form onSubmit={(e) => this.handleSubmit(e)}>
-                  <Form.Group className="mb-3">
-                    <Form.Label className="fw-bold">
-                      Username
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      id="username"
-                      name="username"
-                      value={this.state.username}
-                      onChange={this.handleChange}
-                      required
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label className="fw-bold">
-                      Password
-                    </Form.Label>
-                    <Form.Control
-                      type="password"
-                      id="password"
-                      name="password"
-                      value={this.state.password}
-                      onChange={this.handleChange}
-                      required
-                    />
-                  </Form.Group>
-                  <Button type="submit" className="btn btn-dark w-100">
-                    Login
-                  </Button>
-                </Form>
-                <div className="text-center mt-3">
-                  <Link to="/forgot_password" >Forgot Password?</Link>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>    
-    );
+  if (isLoggedIn) {
+    dispatch(setActiveCategoryHeader("agenda"));
+    return <Navigate to={activeCategoryAgenda} replace />;
   }
-}
 
-const mapStateToProps = (state) => ({
-  isLoggedIn: state.appRootReducer.isLoggedIn,
-  activeCategoryAgenda: state.appRootReducer.activeCategoryAgenda,
-});
+  return (
+    <Container className="min-vh-100 d-flex flex-column justify-content-center">
+      <Row className="justify-content-center">
+        <Col md={4}>
+          <Card className="border-0 shadow-sm">
+            <Card.Body className="p-4">
+              <Card.Title className="text-center fw-bold mb-4 fs-3">
+                Login
+              </Card.Title>
+              
+              {errorMessage && (
+                <div className="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+                  <span>{errorMessage}</span>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setErrorMessage('')}
+                    aria-label="Close"
+                  ></button>
+                </div>
+              )}
 
-const mapDispatchToProps = {
-  setIsLoggedIn,
-  setActiveCategoryHeader,
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-bold">Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    id="username"
+                    name="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter your username"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-bold">Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </Form.Group>
+
+                <Button
+                  type="submit"
+                  className="btn btn-dark w-100 mb-3"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Logging in...
+                    </>
+                  ) : (
+                    'Login'
+                  )}
+                </Button>
+              </Form>
+
+              <div className="text-center">
+                <Link to="/forgot_password" className="text-decoration-none">
+                  Forgot Password?
+                </Link>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>    
+  );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;

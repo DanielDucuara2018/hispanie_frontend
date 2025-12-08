@@ -1,4 +1,3 @@
-import React from 'react';
 import { Container, Row, Col, Card, Carousel, Button, Image } from 'react-bootstrap';
 import { Link } from "react-router-dom"; // Import Link from React Router
 import { Fade } from "react-awesome-reveal";

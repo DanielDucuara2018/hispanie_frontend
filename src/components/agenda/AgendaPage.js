@@ -1,4 +1,3 @@
-import React from 'react';
 import Categories from './Categories';
 import HomePage from './HomePage';
 

@@ -1,175 +1,184 @@
-import React, { Component } from "react";
+import React, { useState, useCallback } from "react";
 import { Container, Row, Col, Card, Button, Image, Tabs, Tab } from "react-bootstrap";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setActiveCategoryHeader, setIsLoggedIn } from "../../actions/appActions";
 import { Navigate } from 'react-router-dom';
 import ItemList from "./ItemList";
 import Api from "../../Api";
 import sleep from "../../hooks/Sleep";
 
-// Main ProfilePage component
-class ProfilePage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeTab: "events", // Default tab
-      redirectTo: null,    // State variable for navigation
-    };
-  }
+const ProfilePage = () => {
+  const [activeTab, setActiveTab] = useState("events");
+  const [redirectTo, setRedirectTo] = useState(null);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+  
+  const { events, businesses, account, isLoggedIn, activeCategoryAgenda } = useSelector(state => ({
+    events: state.appRootReducer.events,
+    businesses: state.appRootReducer.businesses,
+    account: state.appRootReducer.account,
+    isLoggedIn: state.appRootReducer.isLoggedIn,
+    activeCategoryAgenda: state.appRootReducer.activeCategoryAgenda,
+  }));
+  
+  const dispatch = useDispatch();
 
-  handleTabChange = (tab) => {
-    this.setState({ activeTab: tab });
-  };
+  const handleTabChange = useCallback((tab) => {
+    setActiveTab(tab);
+  }, []);
 
-  handleDeleteEvent = async (id) => {
+  const handleDeleteEvent = useCallback(async (id) => {
     try {
-      await Api.delete(`/events/private/delete/${id}`, 
-        {
-          withCredentials: true
-        },
-      )
-      this.setState({ message: "Password has been reset successfully.", error: "" });
-      this.setState({
-        message: "Event deleted successfully!",
-        messageType: "success",
+      await Api.delete(`/events/private/delete/${id}`, {
+        withCredentials: true
       });
-      await sleep(2000)
+      
+      setMessage("Event deleted successfully!");
+      setMessageType("success");
+      
+      await sleep(2000);
       window.location.reload();
     } catch (error) {
-      this.setState({
-        message: `Error deleting event. Please try again. Details ${error}`,
-        messageType: "error",
-      });
-      if (error.response.status === 401) {
-        this.props.setIsLoggedIn(false);
+      setMessage(`Error deleting event. Please try again. Details: ${error.message}`);
+      setMessageType("error");
+      
+      if (error.response?.status === 401) {
+        dispatch(setIsLoggedIn(false));
       }
     }
-  };
+  }, [dispatch]);
 
-  handleUpdateaccount= async (id) => {
-    this.setState({ redirectTo: `/account/update/${id}` });
-  };
+  const handleUpdateAccount = useCallback((id) => {
+    setRedirectTo(`/account/update/${id}`);
+  }, []);
 
-  handleUpdateEvent = async (id) => {
-    this.setState({ redirectTo: `/event/update/${id}` });
-  };
+  const handleUpdateEvent = useCallback((id) => {
+    setRedirectTo(`/event/update/${id}`);
+  }, []);
 
-  handleDeleteBusiness = async (id) => {
-    await Api.delete(`/businesses/private/delete/${id}`, 
-      {
+  const handleDeleteBusiness = useCallback(async (id) => {
+    try {
+      await Api.delete(`/businesses/private/delete/${id}`, {
         withCredentials: true
-      },
-    )
-    .then((res) => {
-      // TODO show a message saying delete was sucessful
-    })
-    .catch((error) => {
-      // TODO show a message saying there was a probleme deleting
-      if (error.response.status === 401) {
-        this.props.setIsLoggedIn(false);
+      });
+      
+      setMessage("Business deleted successfully!");
+      setMessageType("success");
+      
+      await sleep(2000);
+      window.location.reload();
+    } catch (error) {
+      setMessage(`Error deleting business. Please try again. Details: ${error.message}`);
+      setMessageType("error");
+      
+      if (error.response?.status === 401) {
+        dispatch(setIsLoggedIn(false));
       }
-    });
-  };
-
-  handleUpdateBusiness = (id) => {
-    this.setState({ redirectTo: `/business/update/${id}` });
-  };
-
-  render() {
-    const { events, businesses, account, isLoggedIn, activeCategoryAgenda } = this.props;
-    const { activeTab, redirectTo, message, messageType } = this.state;
-
-    if (!isLoggedIn) {
-      this.props.setActiveCategoryHeader("agenda");
-      return <Navigate to={activeCategoryAgenda} replace />;
     }
+  }, [dispatch]);
 
-    if (redirectTo) {
-      return <Navigate to={redirectTo} replace />;
-    }
+  const handleUpdateBusiness = useCallback((id) => {
+    setRedirectTo(`/business/update/${id}`);
+  }, []);
 
-    return (
-      <Container className="my-4">
-        {/* Profile Card */}
-        <Card className="shadow-lg p-5 rounded-4 border-0 bg-light">
+  // Early returns for redirects
+  if (!isLoggedIn) {
+    dispatch(setActiveCategoryHeader("agenda"));
+    return <Navigate to={activeCategoryAgenda} replace />;
+  }
 
-          {/* Success/Error Message */}
-          {message && (
-            <div className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`} role="alert">
-              {message}
-            </div>
-          )}
+  if (redirectTo) {
+    return <Navigate to={redirectTo} replace />;
+  }
 
-          {/* Cover Photo */}
+  const profileImage = account?.files?.find((x) => x.category === "profile_image")?.path;
+  const coverImage = account?.files?.find((x) => x.category === "cover_image")?.path;
+
+  return (
+    <Container className="my-4">
+      {/* Profile Card */}
+      <Card className="shadow-lg p-5 rounded-4 border-0 bg-light">
+
+        {/* Success/Error Message */}
+        {message && (
+          <div 
+            className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"} alert-dismissible fade show`} 
+            role="alert"
+          >
+            {message}
+            <button 
+              type="button" 
+              className="btn-close" 
+              onClick={() => setMessage("")}
+              aria-label="Close"
+            ></button>
+          </div>
+        )}
+
+        {/* Cover Photo */}
+        {coverImage && (
           <Card className="mb-3">
             <Card.Img
-              src={account.files?.find((x) => x.category === "cover_image")?.path}// Replace with user's cover image
+              src={coverImage}
               alt="Cover"
               className="img-fluid"
             />
           </Card>
+        )}
 
-          {/* Profile Section */}
-          <Row className="mb-4">
-            <Col md={4} className="text-center">
+        {/* Profile Section */}
+        <Row className="mb-4">
+          <Col md={4} className="text-center">
+            {profileImage && (
               <Image
-                src={account.files?.find((x) => x.category === "profile_image")?.path} // Replace with user's profile image
+                src={profileImage}
                 roundedCircle
                 width={150}
                 height={150}
                 className="border border-3 shadow-sm"
               />
-              <h3 className="mt-3 fw-bold">{account.username}</h3>
-              {/* <p className="text-muted">🎵 Latin Music | 🌮 Mexican Food Lover</p> */}
-              <Button variant="dark" className="mt-2" onClick={() => this.handleUpdateaccount(account.id)}>Edit Profile</Button>
-            </Col>
-            <Col md={8}>
-              <h5 className="fw-bold">About Me</h5>
-              <p>{account.description}</p>
-              <h6 className="fw-bold mt-3">Email</h6>
-              <p>{account.email}</p>
-              {/* <h6 className="fw-bold mt-3">Social Links</h6>
-              <p>
-                <a href="https://www.instagram.com">Instagram</a> | <a href="https://www.facebook.com">Facebook</a> | <a href="https://www.linkedin.com">LinkedIn</a>
-              </p> */}
-            </Col>
-          </Row>
+            )}
+            <h3 className="mt-3 fw-bold">{account?.username}</h3>
+            <Button 
+              variant="dark" 
+              className="mt-2" 
+              onClick={() => handleUpdateAccount(account?.id)}
+            >
+              Edit Profile
+            </Button>
+          </Col>
+          <Col md={8}>
+            <h5 className="fw-bold">About Me</h5>
+            <p>{account?.description || "No description provided."}</p>
+            <h6 className="fw-bold mt-3">Email</h6>
+            <p>{account?.email}</p>
+          </Col>
+        </Row>
 
-          {/* Navigation Tabs */}
-          <Tabs
-            activeKey={activeTab}
-            onSelect={this.handleTabChange}
-            className="mb-3"
-          >
-            <Tab eventKey="events" title="Events">
-              <ItemList
-                items={events}
-                onDelete={this.handleDeleteEvent}
-                onUpdate={this.handleUpdateEvent}
-              />
-            </Tab>
-            <Tab eventKey="businesses" title="Businesses">
-              <ItemList
-                items={businesses}
-                onDelete={this.handleDeleteBusiness}
-                onUpdate={this.handleUpdateBusiness}
-              />
-            </Tab>
-          </Tabs>
-        </Card>
-      </Container>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  isLoggedIn: state.appRootReducer.isLoggedIn,
-  activeCategoryAgenda: state.appRootReducer.activeCategoryAgenda,
-});
-
-const mapDispatchToProps = {
-  setIsLoggedIn,
-  setActiveCategoryHeader,
+        {/* Navigation Tabs */}
+        <Tabs
+          activeKey={activeTab}
+          onSelect={handleTabChange}
+          className="mb-3"
+        >
+          <Tab eventKey="events" title="Events">
+            <ItemList
+              items={events || []}
+              onDelete={handleDeleteEvent}
+              onUpdate={handleUpdateEvent}
+            />
+          </Tab>
+          <Tab eventKey="businesses" title="Businesses">
+            <ItemList
+              items={businesses || []}
+              onDelete={handleDeleteBusiness}
+              onUpdate={handleUpdateBusiness}
+            />
+          </Tab>
+        </Tabs>
+      </Card>
+    </Container>
+  );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);
+export default ProfilePage;

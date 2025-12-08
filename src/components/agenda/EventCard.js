@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, Badge, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import FormattedDateRangeWrapper from '../../hooks/FormattedDateRangeWrapper';

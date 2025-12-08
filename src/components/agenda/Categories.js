@@ -1,60 +1,48 @@
-import React, { Component } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { connect } from "react-redux";
-import { setActiveCategoryAgenda } from "../../actions/appActions";
+import { useSelector, useDispatch } from 'react-redux';
+import { setActiveCategoryAgenda } from '../../actions/appActions';
 
-class Categories extends Component {
-  constructor(props) {
-    super(props);
-    // Define navigation categories
-    this.categories = [
-      { path: '/agenda/all', label: 'All' },
-      { path: '/agenda/cinemas', label: 'Cinema' },
-      { path: '/agenda/courses', label: 'Course' },
-      { path: '/agenda/concerts', label: 'Concert' },
-      { path: '/agenda/parties', label: 'Party' },
-      { path: '/agenda/expositions', label: 'Exposition' },
-      { path: '/agenda/language_exchanges', label: 'Language Exchange' },
-      { path: '/agenda/theaters', label: 'Theater' },
-      { path: '/agenda/gastronomies', label: 'Gastronomy' },
-      { path: '/agenda/dances', label: 'Dance' },
-    ];
-  }
+const Categories = () => {
+  const activeCategoryAgenda = useSelector(state => state.appRootReducer.activeCategoryAgenda);
+  const dispatch = useDispatch();
 
-  handleCategoryChange = (category) => {
-    this.props.setActiveCategoryAgenda(category);
-  };
+  // Define navigation categories as constant
+  const categories = useMemo(() => [
+    { path: '/agenda/all', label: 'All' },
+    { path: '/agenda/cinemas', label: 'Cinema' },
+    { path: '/agenda/courses', label: 'Course' },
+    { path: '/agenda/concerts', label: 'Concert' },
+    { path: '/agenda/parties', label: 'Party' },
+    { path: '/agenda/expositions', label: 'Exposition' },
+    { path: '/agenda/language_exchanges', label: 'Language Exchange' },
+    { path: '/agenda/theaters', label: 'Theater' },
+    { path: '/agenda/gastronomies', label: 'Gastronomy' },
+    { path: '/agenda/dances', label: 'Dance' },
+  ], []);
 
-  render() {
-    const category = this.props.activeCategoryAgenda;
+  const handleCategoryChange = useCallback((category) => {
+    dispatch(setActiveCategoryAgenda(category));
+  }, [dispatch]);
 
-    return (
-      <Nav className="justify-content-center my-3">
-        {this.categories.map(({ path, label }) => (
-          <Nav.Item key={path}>
-            <Nav.Link
-              as={Link}
-              to={path}
-              onClick={() => this.handleCategoryChange(path)}
-              className={category === path ? "text-danger fw-bold" : "text-dark fw-bold"}
-              style={{fontSize: "1.2rem", fontFamily: "Figtree, sans-serif"}}
-            >
-              {label}
-            </Nav.Link>
-          </Nav.Item>
-        ))}
-      </Nav>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  activeCategoryAgenda: state.appRootReducer.activeCategoryAgenda
-});
-
-const mapDispatchToProps = {
-  setActiveCategoryAgenda
+  return (
+    <Nav className="justify-content-center my-3">
+      {categories.map(({ path, label }) => (
+        <Nav.Item key={path}>
+          <Nav.Link
+            as={Link}
+            to={path}
+            onClick={() => handleCategoryChange(path)}
+            className={activeCategoryAgenda === path ? "text-danger fw-bold" : "text-dark fw-bold"}
+            style={{fontSize: "1.2rem", fontFamily: "Figtree, sans-serif"}}
+          >
+            {label}
+          </Nav.Link>
+        </Nav.Item>
+      ))}
+    </Nav>
+  );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Categories);
+export default Categories;
