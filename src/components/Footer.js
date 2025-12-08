@@ -1,4 +1,3 @@
-import React from 'react';
 import { Container, Row, Col, Nav, Dropdown } from 'react-bootstrap';
 import { FaInstagram, FaLinkedin } from 'react-icons/fa';
 

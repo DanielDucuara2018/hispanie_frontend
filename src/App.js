@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
+import { Fade } from "react-awesome-reveal";
 import Api from './Api';
 import WelcomePage from './WelcomePage';
 import Header from './components/Header';
@@ -16,72 +18,78 @@ import DiscoverCreateForm from './components/login/DiscoverCreateForm';
 import TagCreateForm from './components/login/TagCreateForm';
 import AboutPage from './components/AboutPage';
 import BlogPage from './components/BlogPage';
-import { connect } from "react-redux";
-import { setIsLoggedIn } from "./actions/appActions";
-import { Fade } from "react-awesome-reveal";
-
-import 'bootstrap/dist/css/bootstrap.css';
-import "leaflet/dist/leaflet.css";
 import AccountCreationForm from './components/login/AccountCreateForm';
 import Search from './components/Search';
 import ForgotPassword from './components/login/ForgotPassword';
 import ResetPassword from './components/login/ResetPassword';
+import { setIsLoggedIn } from "./actions/appActions";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      events: [],
-      businesses: [],
-      tags: [],
-      account: null
+import 'bootstrap/dist/css/bootstrap.css';
+import "leaflet/dist/leaflet.css";
+import './App.css';
+
+const App = () => {
+  const [events, setEvents] = useState([]);
+  const [businesses, setBusinesses] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [account, setAccount] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const isLoggedIn = useSelector((state) => state.appRootReducer.isLoggedIn);
+  const dispatch = useDispatch();
+
+  // Fetch data on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Fetch public data in parallel
+        const [publicEventsRes, publicBusinessesRes] = await Promise.all([
+          Api.get('/events/public/read'),
+          Api.get('/businesses/public/read')
+        ]);
+
+        setEvents(publicEventsRes.data);
+        setBusinesses(publicBusinessesRes.data);
+
+        // Fetch private data if logged in
+        if (isLoggedIn) {
+          const [privateTagsRes, accountRes] = await Promise.all([
+            Api.get('/tags/private/read'),
+            Api.get('/accounts/private/read')
+          ]);
+          
+          setTags(privateTagsRes.data);
+          setAccount(accountRes.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        setError(error.message);
+        
+        if (error.response?.status === 401) {
+          dispatch(setIsLoggedIn(false));
+        }
+      } finally {
+        setIsLoading(false);
+      }
     };
-  }
 
-  async componentDidMount() {
-    try {
-      // Fetch events data
-      const publicEvents = await Api.get('/events/public/read');
-      const publicBusinesses = await Api.get('/businesses/public/read');
+    fetchData();
+  }, [isLoggedIn, dispatch]);
 
-      this.setState({
-        events: publicEvents.data,
-        businesses: publicBusinesses.data,
-      });
-
-      if (this.props.isLoggedIn){
-        const privateTags = await Api.get('/tags/private/read', {withCredentials: true} );
-        const account = await Api.get('/accounts/private/read', {withCredentials: true});
-        this.setState({
-          tags: privateTags.data, account: account.data
-        });
-      }
-    } catch (error) {
-      if (error.response.status === 401) {
-        this.props.setIsLoggedIn(false);
-      }
-    }
-  }
-
-  render() {
-    const { tags, account } = this.state;
-    const availableBusinesses = this.state.businesses;
-    const availableEvents = this.state.events;
-    const agenda = "/agenda"
-    const discover = "/discover"
-
-    const businesses = availableBusinesses.filter(event => event.is_public === true)
-
-    // TODO add some filters to /events/public/read endpoint
-    // Get today's date without time (for accurate comparison)
+  // Filter and format events
+  const processedEvents = useMemo(() => {
     const today = new Date();
+    
+    // Filter public events that haven't ended
+    const eventsToDisplay = events
+      .filter(event => event.is_public === true)
+      .filter(event => new Date(event.end_date) > today);
 
-    // Filter events where end_date is greater than today
-    const eventsToDisplay = availableEvents
-    .filter(event => event.is_public === true)
-    .filter(event => new Date(event.end_date) > today);
-
-    // Sort events by start_date (descending order)
+    // Format and sort events
     const formattedEvents = eventsToDisplay.map((event) => ({
       ...event,
       formatted_start_date: new Date(event.start_date).toLocaleDateString('en-FR', {
@@ -92,78 +100,118 @@ class App extends Component {
       }),
     }));
     
-    const events = [...formattedEvents].sort(
+    return formattedEvents.sort(
       (a, b) => new Date(a.start_date) - new Date(b.start_date)
     );
+  }, [events]);
 
-    // Define your routes in an array
-    const routes = [
-      { path: `/`, element: <WelcomePage events={events} businesses={businesses}/> },
-      { path: `/profile`, element: <ProfilePage account={account}  events={availableEvents} businesses={availableBusinesses} /> },
-      { path: `${agenda}`, element: <AgendaPage events={events} /> },
-      { path: `${agenda}/all`, element: <AgendaPage events={events} /> },
-      { path: `${agenda}/cinemas`, element: <AgendaPage events={events.filter(x => x.category === "cinema")} /> },
-      { path: `${agenda}/courses`, element: <AgendaPage events={events.filter((x) => x.category === "course")} /> },
-      { path: `${agenda}/concerts`, element: <AgendaPage events={events.filter((x) => x.category === "concert")} /> },
-      { path: `${agenda}/parties`, element: <AgendaPage events={events.filter((x) => x.category === "party")} /> },
-      { path: `${agenda}/expositions`, element: <AgendaPage events={events.filter((x) => x.category === "exposition")} /> },
-      { path: `${agenda}/language_exchanges`, element: <AgendaPage events={events.filter((x) => x.category === "language_exchange")} /> },
-      { path: `${agenda}/theaters`, element: <AgendaPage events={events.filter((x) => x.category === "theater")} /> },
-      { path: `${agenda}/gastronomies`, element: <AgendaPage events={events.filter((x) => x.category === "gastronomy")} /> },
-      { path: `${agenda}/dances`, element: <AgendaPage events={events.filter((x) => x.category === "dance")} /> },
-      { path: `${agenda}/event/:id`, element: <EventDetail events={events} /> },
-      { path: `/event/create`, element: <EventCreateForm tags={tags} formMode="create" />},
-      { path: `/event/update/:id`, element: <EventCreateForm tags={tags} events={availableEvents} formMode="update" />},
-      { path: `${discover}`, element: <DiscoverPage businesses={businesses} /> },
-      { path: `${discover}/all`, element: <DiscoverPage businesses={businesses} /> },
-      { path: `${discover}/artists`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "artist")} /> },
-      { path: `${discover}/restaurants`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "restaurant")} /> },
-      { path: `${discover}/cafes`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "cafe")} /> },
-      { path: `${discover}/boutiques`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "boutique")} /> },
-      { path: `${discover}/expositions`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "exposition")} /> },
-      { path: `${discover}/associations`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "association")} /> },
-      { path: `${discover}/academies`, element: <DiscoverPage businesses={businesses.filter(x => x.category === "academy")} /> },
-      { path: `${discover}/business/:id`, element: <DiscoverDetail businesses={businesses} /> },
-      { path: `/business/create`, element: <DiscoverCreateForm tags={tags} formMode="create" />},
-      { path: `/business/update/:id`, element: <DiscoverCreateForm tags={tags} businesses={availableBusinesses} formMode="update" />},
-      { path: `/tag/create`, element: <TagCreateForm />},
-      { path: `/account/create`, element: <AccountCreationForm formMode="create" />},
-      { path: `/account/update/:id`, element: <AccountCreationForm account={account} formMode="update"  />},
-      { path: '/maps', element: <MapView events={events} businesses={businesses.filter(x => x.address !== null)}/> },
-      { path: '/login', element: <Login />},
-      { path: '/about', element: <AboutPage />},
-      { path: '/blog', element: <BlogPage />},
-      { path: '/search', element: <Search events={events} businesses={businesses} />},
-      { path: '/forgot_password', element: <ForgotPassword />},
-      { path: '/reset_password', element: <ResetPassword />},
-    ];
-    const custom_style = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"}
+  // Filter public businesses
+  const publicBusinesses = useMemo(() => 
+    businesses.filter(business => business.is_public === true),
+    [businesses]
+  );
+
+  // Filter events by category
+  const filterEventsByCategory = useCallback((category) => {
+    return processedEvents.filter(x => x.category === category);
+  }, [processedEvents]);
+
+  // Filter businesses by category
+  const filterBusinessesByCategory = useCallback((category) => {
+    return publicBusinesses.filter(x => x.category === category);
+  }, [publicBusinesses]);
+
+  // Define route paths
+  const agenda = "/agenda";
+  const discover = "/discover";
+
+  // Loading state
+  if (isLoading) {
     return (
-      <Router>
-        <div  style={custom_style} className="container-fluid p-0 d-flex flex-column min-vh-100">
-          <Header />
-          <main className="flex-grow-1">
-            <Routes>
-              {routes.map((route, index) => (
-                <Route key={index} path={route.path} element={route.element} />
-              ))}
-              </Routes>
-          </main>
-          <Fade>
-            <Footer />
-          </Fade>
+      <div className="app-loading">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
         </div>
-      </Router>
+      </div>
     );
   }
-}
 
-const mapStateToProps = (state) => ({
-  isLoggedIn: state.appRootReducer.isLoggedIn,
-});
+  // Error state
+  if (error) {
+    return (
+      <div className="app-error">
+        <div className="alert alert-danger" role="alert">
+          <h4>Error loading application</h4>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()} className="btn btn-primary">
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-const mapDispatchToProps = {
-  setIsLoggedIn,
+  // Define your routes in an array
+  const routes = [
+    { path: `/`, element: <WelcomePage events={processedEvents} businesses={publicBusinesses}/> },
+    { path: `/profile`, element: <ProfilePage account={account} events={events} businesses={businesses} /> },
+    { path: `${agenda}`, element: <AgendaPage events={processedEvents} /> },
+    { path: `${agenda}/all`, element: <AgendaPage events={processedEvents} /> },
+    { path: `${agenda}/cinemas`, element: <AgendaPage events={filterEventsByCategory("cinema")} /> },
+    { path: `${agenda}/courses`, element: <AgendaPage events={filterEventsByCategory("course")} /> },
+    { path: `${agenda}/concerts`, element: <AgendaPage events={filterEventsByCategory("concert")} /> },
+    { path: `${agenda}/parties`, element: <AgendaPage events={filterEventsByCategory("party")} /> },
+    { path: `${agenda}/expositions`, element: <AgendaPage events={filterEventsByCategory("exposition")} /> },
+    { path: `${agenda}/language_exchanges`, element: <AgendaPage events={filterEventsByCategory("language_exchange")} /> },
+    { path: `${agenda}/theaters`, element: <AgendaPage events={filterEventsByCategory("theater")} /> },
+    { path: `${agenda}/gastronomies`, element: <AgendaPage events={filterEventsByCategory("gastronomy")} /> },
+    { path: `${agenda}/dances`, element: <AgendaPage events={filterEventsByCategory("dance")} /> },
+    { path: `${agenda}/event/:id`, element: <EventDetail events={processedEvents} /> },
+    { path: `/event/create`, element: <EventCreateForm tags={tags} formMode="create" />},
+    { path: `/event/update/:id`, element: <EventCreateForm tags={tags} events={events} formMode="update" />},
+    { path: `${discover}`, element: <DiscoverPage businesses={publicBusinesses} /> },
+    { path: `${discover}/all`, element: <DiscoverPage businesses={publicBusinesses} /> },
+    { path: `${discover}/artists`, element: <DiscoverPage businesses={filterBusinessesByCategory("artist")} /> },
+    { path: `${discover}/restaurants`, element: <DiscoverPage businesses={filterBusinessesByCategory("restaurant")} /> },
+    { path: `${discover}/cafes`, element: <DiscoverPage businesses={filterBusinessesByCategory("cafe")} /> },
+    { path: `${discover}/boutiques`, element: <DiscoverPage businesses={filterBusinessesByCategory("boutique")} /> },
+    { path: `${discover}/expositions`, element: <DiscoverPage businesses={filterBusinessesByCategory("exposition")} /> },
+    { path: `${discover}/associations`, element: <DiscoverPage businesses={filterBusinessesByCategory("association")} /> },
+    { path: `${discover}/academies`, element: <DiscoverPage businesses={filterBusinessesByCategory("academy")} /> },
+    { path: `${discover}/business/:id`, element: <DiscoverDetail businesses={publicBusinesses} /> },
+    { path: `/business/create`, element: <DiscoverCreateForm tags={tags} formMode="create" />},
+    { path: `/business/update/:id`, element: <DiscoverCreateForm tags={tags} businesses={businesses} formMode="update" />},
+    { path: `/tag/create`, element: <TagCreateForm />},
+    { path: `/account/create`, element: <AccountCreationForm formMode="create" />},
+    { path: `/account/update/:id`, element: <AccountCreationForm account={account} formMode="update" />},
+    { path: '/maps', element: <MapView events={processedEvents} businesses={publicBusinesses.filter(x => x.address !== null)}/> },
+    { path: '/login', element: <Login />},
+    { path: '/about', element: <AboutPage />},
+    { path: '/blog', element: <BlogPage />},
+    { path: '/search', element: <Search events={processedEvents} businesses={publicBusinesses} />},
+    { path: '/forgot_password', element: <ForgotPassword />},
+    { path: '/reset_password', element: <ResetPassword />},
+  ];
+
+  const customStyle = {fontSize: "0.9rem", fontFamily: "Figtree, sans-serif"};
+
+  return (
+    <Router>
+      <div style={customStyle} className="container-fluid p-0 d-flex flex-column min-vh-100">
+        <Header />
+        <main className="flex-grow-1">
+          <Routes>
+            {routes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element} />
+            ))}
+          </Routes>
+        </main>
+        <Fade>
+          <Footer />
+        </Fade>
+      </div>
+    </Router>
+  );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

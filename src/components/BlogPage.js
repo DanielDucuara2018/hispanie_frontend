@@ -1,12 +1,11 @@
-import React, { Component } from "react";
+import React, { useMemo } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import { Link } from "react-router-dom"; // Import Link from React Router
+import { Link } from "react-router-dom";
 import { Fade } from "react-awesome-reveal";
 
-class BlogPage extends Component {
-  render() {
-    // TODO move this data do data folder
-    const featuredArticle = {
+const BlogPage = () => {
+  // TODO move this data to data folder
+  const featuredArticle = useMemo(() => ({
       title: "NHE, a medium that promotes the Latin American community in Nantes",
       date: "September 2023",
       description:
@@ -14,9 +13,10 @@ class BlogPage extends Component {
       imageUrl:
         "https://d3skpo6i31hl4s.cloudfront.net/Frame_268.webp",
       articleUrl: "/news/nhe-latin-american-community-nantes",
-    };
+    }
+  ), []);
 
-    const recentNews = [
+  const recentNews = useMemo(() => [
       {
         title: "Hispanie 2025: A New Focus Centered on Our Clients' Needs",
         date: "January 7, 2025",
@@ -37,9 +37,9 @@ class BlogPage extends Component {
           "https://d3skpo6i31hl4s.cloudfront.net/1729829257187.webp",
         articleUrl: "/news/hispanie-emprelatam",
       },
-    ];
+    ], []);
 
-    return (
+  return (
       <Container className="my-5">
         <Fade>
           <Row className="mb-4">
@@ -94,7 +94,6 @@ class BlogPage extends Component {
         </Fade>
       </Container>
     );
-  }
-}
+};
 
 export default BlogPage;
