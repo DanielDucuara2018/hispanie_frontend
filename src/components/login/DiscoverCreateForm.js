@@ -7,6 +7,7 @@ import ImageCategoryMapping from "../../hooks/ImageCategoryMapping";
 import axios from "axios";
 import Api from "../../Api";
 import sleep from "../../hooks/Sleep";
+import { sanitizeUrl } from "../../utils/urlSanitizer";
 
 // Enum for Social Network Categories
 const SocialNetworkCategory = {
@@ -443,7 +444,7 @@ const DiscoverCreateForm = ({ formMode, businesses, tags }) => {
               {formState.social_networks.map((item, index) => (
                 <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
                   <div>
-                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                    <a href={sanitizeUrl(item.url)} target="_blank" rel="noopener noreferrer">
                       {item.url}
                     </a>
                     <Badge bg="secondary" className="ms-2">
