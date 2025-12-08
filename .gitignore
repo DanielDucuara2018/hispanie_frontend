@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+package-lock.json
 
 # testing
 /coverage
@@ -23,7 +24,32 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# SSL certificates
+nginx/ssl/
+
 # Backup files
 /tmp
 *.backup
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# OS files
+Thumbs.db
+.DS_Store
+*.log
+
+# Docker
+.dockerignore
+
+# Resources (if these are generated/local)
+/resources/nginx_dev_ssl.conf/
+/resources/ssl/
 
