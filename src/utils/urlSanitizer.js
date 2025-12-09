@@ -20,6 +20,11 @@ export const sanitizeUrl = (url) => {
   // Allow relative URLs, http, and https
   const safeProtocols = /^(https?:\/\/|\/|\.\/|\.\.\/)/i;
   if (!safeProtocols.test(trimmedUrl)) {
+    // If the URL contains a colon, but is not a safe or dangerous protocol, treat as unsafe
+    if (trimmedUrl.includes(':')) {
+      console.warn('Blocked URL with unknown protocol:', trimmedUrl);
+      return '#';
+    }
     // If no protocol is specified, assume https
     return `https://${trimmedUrl}`;
   }
