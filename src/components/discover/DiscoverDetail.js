@@ -12,6 +12,7 @@ import FormattedAddressWrapper from '../../hooks/FormattedAddressWrapper';
 import CATEGORY_EMOJIS from '../../hooks/CategoryEmojis';
 import L from "leaflet";
 import withCurrentUrl from '../../hooks/withCurrentUrl';
+import { sanitizeUrl } from '../../utils/urlSanitizer';
 
 const SOCIAL_NETWORK_ICONS = {
   web: <TbWorld size={24} className="me-3" />,
@@ -158,7 +159,7 @@ const DiscoverDetail = ({ businesses, currentUrl }) => {
                                 <ListGroup.Item key={index} className="bg-transparent border-0 px-0">
                                   <h6 className="my-1">
                                     <a
-                                      href={webSite.url}
+                                      href={sanitizeUrl(webSite.url)}
                                       className="text-decoration-none text-dark"
                                       target="_blank"
                                       rel="noopener noreferrer"
@@ -185,7 +186,7 @@ const DiscoverDetail = ({ businesses, currentUrl }) => {
                                 key={index}
                                 variant="outline-dark"
                                 className="w-100 mb-2"
-                                href={socialNetwork.url}
+                                href={sanitizeUrl(socialNetwork.url)}
                                 target="_blank"
                               >
                                 {SOCIAL_NETWORK_ICONS[socialNetwork.category]} 
